@@ -1,6 +1,6 @@
 // need to get the id and actual item to write
 
-export class lessonCompleteDataAccess {
+export class CompleteLessonDataAccess {
     async findSessionById(sessionId) {
         throw new Error('findSessionById not implemented');
     }

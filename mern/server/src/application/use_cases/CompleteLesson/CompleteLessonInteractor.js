@@ -1,7 +1,7 @@
-import { lessonCompleteInputBoundary } from './lessonCompleteInputBoundary.js';
-import { lessonCompleteOutputData } from './lessonCompleteOutputData.js';
+import { CompleteLessonInputBoundary } from './CompleteLessonInputBoundary.js';
+import { CompleteLessonOutputData } from './CompleteLessonOutputData.js';
 
-export class lessonCompleteInteractor extends lessonCompleteInputBoundary {
+export class CompleteLessonInteractor extends CompleteLessonInputBoundary {
     constructor({ dataAccess, presenter }){
         super();
         this.dataAccess = dataAccess;
@@ -31,15 +31,19 @@ export class lessonCompleteInteractor extends lessonCompleteInputBoundary {
 
         // update streak and points
         let streak = agent.streak || 0;
-        const today = new Date().toLocaleDateString('en-CA'); // date in YYYY-MM-DD format
-        const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toLocaleDateString('en-CA');
-
+        const now = new Date();
+        const today = now.toLocaleDateString('en-CA'); // date in YYYY-MM-DD format
+        const yesterdayDate = new Date(now);
+        yesterdayDate.setDate(yesterdayDate.getDate - 1); // calendar day subtract 1
+        const yesterday = yesterdayDate.toLocaleDateString('en-CA');
+        
         if (agent.lastActivity == yesterday) {
-            agent.streak += 1;
+            streak += 1;
         }
         else if (agent.lastActivity != today){
-            agent.streak = 1;
+            streak = 1;
         }
+        agent.streak = 1;
 
         const prevScore = agent.lessonScores[session.sessionId] ?? 0;
         agent.totalPoints += (session.cScore - prevScore);
@@ -50,7 +54,7 @@ export class lessonCompleteInteractor extends lessonCompleteInputBoundary {
         await this.dataAccess.updateSession(session);
         await this.dataAccess.updateAgent(agent);
 
-        const outputData = new lessonCompleteOutputData({
+        const outputData = new CompleteLessonOutputData({
             agentId: agent.agentId,
             sessionId: session.sessionId,
             streak: agent.streak,

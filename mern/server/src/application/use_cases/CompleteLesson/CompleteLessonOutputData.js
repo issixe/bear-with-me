@@ -1,4 +1,4 @@
-export class lessonCompleteOutputData {
+export class CompleteLessonOutputData {
     constructor({ agentId, sessionId, streak, sessionScore, totalPoints }) {
         this.agentId = agentId;
         this.sessionId = sessionId;
