@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb';
 import db from '../connection.js';
-import { lessonCompleteDataAccess } from '../../application/use_cases/lessonComplete/lessonCompleteDataAccess.js';
+import { CompleteLessonDataAccess } from '../../application/use_cases/CompleteLesson/CompleteLessonDataAccess.js';
 
-export class MongoLessonCompleteDataAccess extends lessonCompleteDataAccess {
+export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
     async findSessionById(sessionId) {
         if (!ObjectId.isValid(sessionId)) {
             return null;
@@ -60,7 +60,7 @@ export class MongoLessonCompleteDataAccess extends lessonCompleteDataAccess {
             { $set: {
                     totalPoints: agent.totalPoints,
                     streak: agent.streak,
-                    lastActivity: agent.lastAcivitiy,
+                    lastActivity: agent.lastActivity,
                     lessonScores: agent.lessonScores
             }}
         );

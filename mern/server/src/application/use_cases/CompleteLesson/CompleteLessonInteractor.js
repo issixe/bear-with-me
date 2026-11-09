@@ -34,7 +34,7 @@ export class CompleteLessonInteractor extends CompleteLessonInputBoundary {
         const now = new Date();
         const today = now.toLocaleDateString('en-CA'); // date in YYYY-MM-DD format
         const yesterdayDate = new Date(now);
-        yesterdayDate.setDate(yesterdayDate.getDate - 1); // calendar day subtract 1
+        yesterdayDate.setDate(yesterdayDate.getDate() - 1); // calendar day subtract 1
         const yesterday = yesterdayDate.toLocaleDateString('en-CA');
         
         if (agent.lastActivity == yesterday) {
@@ -43,7 +43,7 @@ export class CompleteLessonInteractor extends CompleteLessonInputBoundary {
         else if (agent.lastActivity != today){
             streak = 1;
         }
-        agent.streak = 1;
+        agent.streak = streak;
 
         const prevScore = agent.lessonScores[session.sessionId] ?? 0;
         agent.totalPoints += (session.cScore - prevScore);
