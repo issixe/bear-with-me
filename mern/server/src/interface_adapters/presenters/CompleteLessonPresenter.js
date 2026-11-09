@@ -1,6 +1,6 @@
-import { lessonCompleteOutputBoundary } from '../../application/use_cases/lessonComplete/lessonCompleteOutputBoundary.js';
+import { CompleteLessonOutputBoundary } from '../../application/use_cases/CompleteLesson/CompleteLessonOutputBoundary.js';
 
-export class lessonCompletePresenter extends lessonCompleteOutputBoundary {
+export class CompleteLessonPresenter extends CompleteLessonOutputBoundary {
     async present(outputData) {
         return {
             agentId: outputData.agentId,
