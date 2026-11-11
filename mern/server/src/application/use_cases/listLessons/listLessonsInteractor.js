@@ -26,13 +26,13 @@ export class listLessonsInteractor extends listLessonsInputBoundary {
             throw new Error('Module ID is required');
         }
 
-        const module = await this.moduleData.findById(moduleId);
+        const module = await this.moduleData.findModuleById(moduleId);
 
         if (!module) {
             throw new Error('Module not found');
         }
 
-        const lessons = await this.lessonData.findByModuleId(moduleId);
+        const lessons = await this.lessonData.findLessonsByModuleId(moduleId);
 
         const outputData = new listLessonsOutputData({
             moduleId,

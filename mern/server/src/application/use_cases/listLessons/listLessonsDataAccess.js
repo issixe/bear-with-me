@@ -1,12 +1,12 @@
 // Data access interface for listing lessons.
-// Implementations must override findById and findByModuleId.
+// Implementations must override findModuleById and findLessonsByModuleId.
 
 export class listLessonsDataAccess {
-    async findById(moduleId) {
-        throw new Error('findById not implemented');
+    async findModuleById(moduleId) {
+        throw new Error('findModuleById not implemented');
     }
 
-    async findByModuleId(moduleId) {
-        throw new Error('findByModuleId not implemented');
+    async findLessonsByModuleId(moduleId) {
+        throw new Error('findLessonsByModuleId not implemented');
     }
 }
