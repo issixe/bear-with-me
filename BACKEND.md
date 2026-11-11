@@ -5,58 +5,86 @@ Not finalized -- more features could be added
 mern/server/
 ├── server.js
 ├── package.json
-├── scripts/
-│   └── seed.js
-└── src/
-    ├── domain/
-    │   ├── entities/
-    │   │   ├── Module.js
-    │   │   ├── Lesson.js
-    │   │   ├── Session.js
-    │   │   └── User.js
-    │   └── services/
-    │       ├── scoring.js
-    │       └── streak.js
-    ├── application/
-    │   ├── use_cases/
-    │   │   ├── ListModules.js
-    │   │   ├── ListLessons.js
-    │   │   ├── StartTrainingSession.js
-    │   │   ├── SubmitAnswer.js
-    │   │   ├── GetSessionResults.js
-    │   │   └── GetUserProgress.js
-    │   └── ports/
-    │       ├── ModuleRepository.js
-    │       ├── LessonRepository.js
-    │       ├── SessionRepository.js
-    │       └── UserRepository.js
-    ├── interfaces/
-    │   └── http/
-    │       ├── routes/
-    │       │   ├── moduleRoutes.js
-    │       │   ├── lessonRoutes.js
-    │       │   ├── userRoutes.js
-    │       │   ├── sessionRoutes.js
-    │       │   └── userRoutes.js
-    │       ├── controllers/
-    │       │   ├── moduleController.js
-    │       │   ├── lessonController.js
-    │       │   ├── sessionController.js
-    │       │   └── userController.js
-    │       └── middleware/
-    │           └── errorHandler.js
-    └── infrastructure/
-        └── database/
-            ├── connection.js
-            ├── repositories/
-            │   ├── MongoModuleRepository.js
-            │   ├── MongoLessonRepository.js
-            │   ├── MongoSessionRepository.js
-            │   └── MongoUserRepository.js
-            └── seeds/
-                ├── seed.js
-                └── seedData.js
+├── src/
+│   ├── routes/
+│   │   └── getUserProgressRoute.js
+│   ├── enterprise/
+│   │   └── entities/
+│   │       ├── lesson.js
+│   │       ├── module.js
+│   │       ├── session.js
+│   │       └── user.js
+│   ├── application/
+│   │   └── use_cases/
+│   │       ├── CompleteLesson/
+│   │       │   ├── CompleteLessonDataAccess.js
+│   │       │   ├── CompleteLessonInputBoundary.js
+│   │       │   ├── CompleteLessonInputData.js
+│   │       │   ├── CompleteLessonInteractor.js
+│   │       │   ├── CompleteLessonOutputBoundary.js
+│   │       │   └── CompleteLessonOutputData.js
+│   │       ├── SubmitAnswer/
+│   │       │   ├── SubmitAnswer.js
+│   │       │   ├── SubmitAnswerInputBoundary.js
+│   │       │   ├── SubmitAnswerInputData.js
+│   │       │   ├── SubmitAnswerInteractor.js
+│   │       │   ├── SubmitAnswerOutput.js
+│   │       │   └── SubmitAnswerOutputBoundary.js
+│   │       ├── getSessionResults/
+│   │       │   ├── getSessionResultsDataAccess.js
+│   │       │   ├── getSessionResultsInputBoundary.js
+│   │       │   ├── getSessionResultsInputData.js
+│   │       │   ├── getSessionResultsInteractor.js
+│   │       │   ├── getSessionResultsOutputBoundary.js
+│   │       │   └── getSessionResultsOutputData.js
+│   │       ├── getUserProgress/
+│   │       │   ├── getUserProgressDataAccess.js
+│   │       │   ├── getUserProgressInputBoundary.js
+│   │       │   ├── getUserProgressInputData.js
+│   │       │   ├── getUserProgressInteractor.js
+│   │       │   ├── getUserProgressOutputBoundary.js
+│   │       │   └── getUserProgressOutputData.js
+│   │       ├── listLessons/
+│   │       │   ├── listLessonsDataAccess.js
+│   │       │   ├── listLessonsInputBoundary.js
+│   │       │   ├── listLessonsInputData.js
+│   │       │   ├── listLessonsInteractor.js
+│   │       │   ├── listLessonsOutputBoundary.js
+│   │       │   └── listLessonsOutputData.js
+│   │       ├── listModules/
+│   │       │   ├── ListModulesInteractor.js
+│   │       │   ├── listModulesDataAccess.js
+│   │       │   ├── listModulesInputBoundary.js
+│   │       │   ├── listModulesInputData.js
+│   │       │   ├── listModulesOutputBoundary.js
+│   │       │   └── listModulesOutputData.js
+│   │       └── startTrainingSession/
+│   │           └── StartTrainingSession.js
+│   ├── interface_adapters/
+│   │   ├── controllers/
+│   │   │   ├── CompleteLessonController.js
+│   │   │   └── getUserProgressController.js
+│   │   └── presenters/
+│   │       ├── CompleteLessonPresenter.js
+│   │       └── getUserProgressPresenter.js
+│   └── database/
+│       ├── connection.js
+│       ├── dataAccess/
+│       │   ├── CompleteLessonDataAccess.js
+│       │   └── getUserProgressDataAccess.js
+│       └── seeds/
+│           ├── seed.js
+│           └── seedData.js
+├── tests/
+│   └── domain/
+│       └── domain.test.js
+└── package-lock.json
 ```
+
+This tree reflects files currently present in the repository. `server.js` imports
+HTTP route modules from `src/interfaces/http/routes/`, but those files are not
+present in the current tree, so the documented application architecture and
+runtime wiring are not yet aligned.
 
 ## Vocabulary 
 
