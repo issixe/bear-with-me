@@ -110,6 +110,19 @@ The Vite config proxies `/record` requests to the backend at `localhost:5050`, s
 - Confirm the API responds at `http://localhost:5050/record`
 - Make sure your MongoDB database is reachable and the connection string is valid
 
+## Seed example training content
+
+From `mern/server`, run:
+
+```bash
+npm run seed
+```
+
+This loads the module and lesson examples from `src/database/seeds/seedData.js`
+into the `bear_db` database. **The seeder clears the existing `modules` and
+`lessons` collections before inserting the examples.** See [BACKEND.md](BACKEND.md)
+for the module-to-lesson reference shape.
+
 ## Common troubleshooting
 
 ### MongoDB connection errors

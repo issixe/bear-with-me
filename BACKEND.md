@@ -54,6 +54,7 @@ mern/server/
             │   ├── MongoSessionRepository.js
             │   └── MongoUserRepository.js
             └── seeds/
+                ├── seed.js
                 └── seedData.js
 ```
 
@@ -61,7 +62,7 @@ mern/server/
 
 |Concept|Definition|
 |----|----|
-| Module | A training module can contain several lesson|
+| Module | A training module can contain several lessons, listed by lesson ID.|
 | Lesson |One lesson is one conversation of agent & customer |
 | Answer | Agent’s answer among different given option to reply to the customer |
 | Customer Response | Customer’s response / text to the agent (aka player) |
@@ -88,10 +89,23 @@ Operations that accomplish specific application goals by coordinating domain log
 ## Domain entities 
 |Entity|Data|
 |---|---|
-|Module|ID, title, description, lesson references|
+|Module|ID, title, description, lesson ID list|
 |Lesson|ID, title, starting stage, stages, customer responses, answer options and their scores|
 |Session|Agent ID, lesson ID, current stage, mood, cScore, answer history, status|
 |AgentProfile|Agent identity, overall points, completed lessons, streak information| 
+
+## Seed data
+
+From `mern/server`, run `npm run seed` after setting `ATLAS_URI` in `config.env`.
+The example records are defined in `src/database/seeds/seedData.js`. A module
+contains a `lessons` array of lesson IDs; the current `conflict_resolution`
+module references the `double_billing` lesson. The seeder inserts module
+records into `modules` and lesson records into `lessons` in the `bear_db`
+database.
+
+Before inserting, the seeder clears **all documents** from both collections.
+Do not run it against a database whose module or lesson data needs to be
+preserved.
 
 ## Domain service 
 |service file | what does it do|
