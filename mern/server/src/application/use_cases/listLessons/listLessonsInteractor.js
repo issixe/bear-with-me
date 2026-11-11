@@ -1,4 +1,4 @@
-// listLessonsInteractor.js
+// ListLessonsInteractor.js
 // Business logic for the "list lessons" use case.
 // 1. Receive the selected module ID.
 // 2. Check that the module exists.
@@ -9,10 +9,10 @@
 //  - lessonData: looks up lessons
 //  - outputBoundary: receives the result
 
-import { listLessonsInputBoundary } from './listLessonsInputBoundary.js';
-import { listLessonsOutputData } from './listLessonsOutputData.js';
+import { ListLessonsInputBoundary } from './ListLessonsInputBoundary.js';
+import { ListLessonsOutputData } from './ListLessonsOutputData.js';
 
-export class listLessonsInteractor extends listLessonsInputBoundary {
+export class ListLessonsInteractor extends ListLessonsInputBoundary {
     constructor({ moduleData, lessonData, outputBoundary }) {
         super();
 
@@ -26,15 +26,15 @@ export class listLessonsInteractor extends listLessonsInputBoundary {
             throw new Error('Module ID is required');
         }
 
-        const module = await this.moduleData.findById(moduleId);
+        const module = await this.moduleData.findModuleById(moduleId);
 
         if (!module) {
             throw new Error('Module not found');
         }
 
-        const lessons = await this.lessonData.findByModuleId(moduleId);
+        const lessons = await this.lessonData.findLessonsByModuleId(moduleId);
 
-        const outputData = new listLessonsOutputData({
+        const outputData = new ListLessonsOutputData({
             moduleId,
             lessons: lessons.map((lesson) => ({
                 id: lesson.id,
