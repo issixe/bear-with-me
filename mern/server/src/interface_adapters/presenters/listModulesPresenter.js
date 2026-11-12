@@ -1,23 +1,22 @@
-import { ListModulesOutputBoundary } from
-    "../../application/use_cases/ListModules/ListModulesOutputBoundary.js";
+import { ListModulesOutputBoundary } from "../../application/use_cases/listModules/ListModulesOutputBoundary.js";
 
-export class listModulesPresenter extends listModulesOutputBoundary {
-    constructor(viewModel) {
-        super();
-        this.viewModel = viewModel;
-    }
+export class ListModulesPresenter extends ListModulesOutputBoundary {
+  constructor(viewModel) {
+    super();
+    this.viewModel = viewModel;
+  }
 
-    prepareSuccessView(outputData) {
-        this.viewModel.httpStatus = 200;
-        this.viewModel.body = {
-            modules: outputData.modules,
-        };
-    }
+  prepareSuccessView(outputData) {
+    this.viewModel.httpStatus = 200;
+    this.viewModel.body = {
+      modules: outputData.modules,
+    };
+  }
 
-    prepareFailView(errorMessage) {
-        this.viewModel.httpStatus = 500;
-        this.viewModel.body = {
-        error: errorMessage,
-        };
-    }
+  prepareFailView(errorMessage) {
+    this.viewModel.httpStatus = 500;
+    this.viewModel.body = {
+      error: errorMessage,
+    };
+  }
 }

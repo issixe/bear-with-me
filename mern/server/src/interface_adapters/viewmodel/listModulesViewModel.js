@@ -1,6 +1,6 @@
 export class ListModulesViewModel {
   constructor() {
-    this.httpStatus = null;
-    this.body = null;
+    this.httpStatus = 500;
+    this.body = { error: "No response prepared." };
   }
 }
