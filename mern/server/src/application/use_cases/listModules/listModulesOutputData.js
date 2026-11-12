@@ -4,7 +4,7 @@
 // No logic, it just carries data from the interactor to the presenter.
 
 
-export class listModulesOutputData {
+export class ListModulesOutputData {
     constructor({ modules }) {
         this.modules = modules;
     }
