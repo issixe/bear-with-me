@@ -3,7 +3,7 @@
 // Defines the entry point the controller calls: execute(inputData).
 // The interactor must extend this class and override execute.
 
-export class listModulesInputBoundary {
+export class ListModulesInputBoundary {
     async execute(inputData) {
         throw new Error('Execute not implemented');
     }
