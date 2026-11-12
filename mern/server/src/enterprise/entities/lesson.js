@@ -23,7 +23,7 @@ export class Lesson {
     /** Get all possible customer responses for a given stage and mood */
     getCustomerResponses(stageId, mood) {
         const stage = this.getStage(stageId);
-        const responses = stage["customer_responses"]?.[mood];
+        const responses = stage.customerResponses?.[mood];
         if (typeof responses !==  "string") {
             throw new Error(`Customer responses for mood "${mood}" not found in stage ${stageId} of lesson ${this.lessonId}`);
         }
@@ -44,6 +44,8 @@ export class Lesson {
       text: answer.text,
     }));
     }
+
+    /** Get the full response to use in backend score/mood calculation for a given answer in a given stage */
 
     getAnswer(stageId, answerId) {
         const stage = this.getStage(stageId);
