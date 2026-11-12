@@ -1,6 +1,15 @@
+export const exampleModules = [
+  {
+    module_id: "conflict_resolution",
+    title: "Conflict Resolution",
+    description: "Learn how to respond when a customer is upset or frustrated.",
+    lessons: ["double_billing"],
+  },
+];
+
 export const exampleLessons = [
   {
-    module_id: "double_billing",
+    lesson_id: "double_billing",
     title: "Double Billing Complaint",
     starting_stage: "initial complaint",
     stages: {
