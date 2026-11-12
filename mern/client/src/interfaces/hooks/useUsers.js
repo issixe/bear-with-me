@@ -1,10 +1,25 @@
-import { useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useServices } from "../context/ServicesContext";
-import { useAsync } from "./useAsync";
 
 export function useCurrentUser() {
   const { userService } = useServices();
-  const load = useCallback(() => userService.getCurrentUser(), [userService]);
-  const { data, loading, error } = useAsync(load);
-  return { user: data, loading, error };
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    userService
+      .getCurrentUser()
+      .then((data) => {
+        if (!cancelled) setUser(data);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [userService]);
+
+  return { user, loading: user === null && !error, error };
 }

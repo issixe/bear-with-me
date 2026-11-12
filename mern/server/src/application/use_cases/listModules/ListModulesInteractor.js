@@ -1,16 +1,16 @@
 // ListModulesInteractor.js
 // Business logic for the "list modules" use case.
 // 1. Load all modules from the module data access.
-// 2. Return each module's id, title, description and lessonReferences.
+// 2. Return each module's id, title, description and lessonIds.
 //
 // Dependencies (injected through the constructor):
 //  - moduleData: loads modules
 //  - outputBoundary: receives the result
 
-import { listModulesInputBoundary } from './listModulesInputBoundary.js';
-import { listModulesOutputData } from './listModulesOutputData.js';
+import { ListModulesInputBoundary } from './ListModulesInputBoundary.js';
+import { ListModulesOutputData } from './ListModulesOutputData.js';
 
-export class ListModulesInteractor extends listModulesInputBoundary {
+export class ListModulesInteractor extends ListModulesInputBoundary {
     constructor({ moduleData, outputBoundary }) {
         super();
 
@@ -21,12 +21,12 @@ export class ListModulesInteractor extends listModulesInputBoundary {
     async execute() {
         const modules = await this.moduleData.findAll();
 
-        const outputData = new listModulesOutputData({
+        const outputData = new ListModulesOutputData({
             modules: modules.map((module) => ({
                 id: module.id,
                 title: module.title,
                 description: module.description,
-                lessonReferences: module.lessonReferences
+                lessonIds: module.lessonIds
             }))
         });
 
