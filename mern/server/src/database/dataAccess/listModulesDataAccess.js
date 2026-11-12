@@ -1,18 +1,18 @@
 import db from "../connection.js";
-import { listModulesDataAccess } from
-    "../../application/use_cases/listModules/listModulesDataAccess.js";
+import { ListModulesDataAccess } from
+    "../../application/use_cases/ListModules/ListModulesDataAccess.js";
 
-export class MongoListModulesDataAccess extends listModulesDataAccess {
+export class MongoListModulesDataAccess extends ListModulesDataAccess {
     async findAll() {
         const modules = await db.collection("modules")
             .find({})
             .toArray();
 
-        return modules.map((module) => ({
-            id: module._id.toString(),
-            title: module.title,
-            description: module.description,
-            lessonReferences: module.lessonReferences
+        return modules.map((m) => ({
+            id: m.module_id,
+            title: m.title,
+            description: m.description,
+            lessonIds: m.lessons ?? []
         }));
     }
 }
