@@ -1,11 +1,12 @@
 import express from "express";
 import cors from "cors";
 
-import { ListModulesInteractor } from "./src/application/use_cases/listModules/ListModulesInteractor.js";
-import { MongoListModulesDataAccess } from "./src/database/dataAccess/listModulesDataAccess.js";
-import { listModulesPresenter } from "./src/interface_adapters/presenters/listModulesPresenter.js";
-import { createListModulesController } from "./src/interface_adapters/controllers/listModulesController.js";
+
+import { MongoListModulesDataAccess } from "./src/database/dataAccess/MongoListModuleDataAccess.js";
 import { createListModulesRoute } from "./src/routes/listModulesRoute.js";
+import { MongoListLessonsDataAccess } from "./src/database/dataAccess/MongoListLessonsDataAccess.js";
+import { createListLessonsRoute } from "./src/routes/listLessonRoute.js";
+
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -14,22 +15,17 @@ app.use(cors());
 app.use(express.json());
 
 const moduleData = new MongoListModulesDataAccess();
-const modulePresenter = new listModulesPresenter();
 
-const listModules = new ListModulesInteractor({
-    moduleData,
-    outputBoundary: modulePresenter
-});
+const lessonData = new MongoListLessonsDataAccess();
 
-const listModulesController = createListModulesController({
-    listModules
-});
+app.use(
+  "/modules/:moduleId/lessons",
+  createListLessonsRoute({ moduleData, lessonData })
+);
 
 app.use(
     "/modules",
-    createListModulesRoute({
-        listModulesController
-    })
+    createListModulesRoute({ moduleData })
 );
 
 app.listen(PORT, () => {

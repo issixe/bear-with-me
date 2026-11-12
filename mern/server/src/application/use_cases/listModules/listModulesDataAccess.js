@@ -7,4 +7,8 @@ export class listModulesDataAccess {
     async findAll() {
         throw new Error('findAll not implemented');
     }
+
+    findModuleById(moduleId) {
+        throw new Error('findModuleById not implemented');
+    }
 }

@@ -9,8 +9,8 @@
 //  - lessonData: looks up lessons
 //  - outputBoundary: receives the result
 
-import { ListLessonsInputBoundary } from './ListLessonsInputBoundary.js';
-import { ListLessonsOutputData } from './ListLessonsOutputData.js';
+import { ListLessonsInputBoundary } from './listLessonsInputBoundary.js';
+import { ListLessonsOutputData } from './listLessonsOutputData.js';
 
 export class ListLessonsInteractor extends ListLessonsInputBoundary {
     constructor({ moduleData, lessonData, outputBoundary }) {
@@ -29,21 +29,21 @@ export class ListLessonsInteractor extends ListLessonsInputBoundary {
         const module = await this.moduleData.findModuleById(moduleId);
 
         if (!module) {
-            throw new Error('Module not found');
+            this.outputBoundary.prepareFailView("Module not found");
+            return;
         }
 
-        const lessons = await this.lessonData.findLessonsByModuleId(moduleId);
+        const lessons = await this.lessonData.findLessonsByIds(module.lessonIds);
+
 
         const outputData = new ListLessonsOutputData({
             moduleId,
             lessons: lessons.map((lesson) => ({
                 id: lesson.id,
                 title: lesson.title,
-                startingStage: lesson.startingStage,
-                stages: lesson.stages
             }))
         });
 
-        return this.outputBoundary.present(outputData);
+        return this.outputBoundary.prepareSuccessView(outputData);
     }
 }

@@ -9,10 +9,24 @@ export class MongoListModulesDataAccess extends listModulesDataAccess {
             .toArray();
 
         return modules.map((module) => ({
-            id: module._id.toString(),
+            id: module.module_id,
             title: module.title,
             description: module.description,
-            lessonReferences: module.lessonReferences
-        }));
+            lessonReferences: module.lessons ?? [],
+    }));
     }
+
+    async findModuleById(moduleId) {
+        const doc = await db.collection("modules").findOne({
+            module_id: moduleId,
+        });
+
+        if (!doc) return null;
+
+        return {
+        id: doc.module_id,
+        title: doc.title,
+        lessonIds: doc.lessons ?? [],
+  };
+}
 }

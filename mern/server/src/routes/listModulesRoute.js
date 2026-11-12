@@ -1,9 +1,36 @@
 import express from "express";
 
-export function createListModulesRoute({ listModulesController }) {
-    const router = express.Router();
+import { ListModulesInteractor }
+  from "../application/use_cases/listModules/ListModulesInteractor.js";
+import { ListModulesController }
+  from "../interface_adapters/controllers/listModulesController.js";
+import { listModulesPresenter }
+  from "../interface_adapters/presenters/listModulesPresenter.js";
+import { ListModulesViewModel }
+  from "../interface_adapters/viewmodel/listModulesViewModel.js";
 
-    router.get("/", listModulesController);
+export function createListModulesRoute({ moduleData }) {
+  const router = express.Router();
 
-    return router;
+  router.get("/", async (req, res, next) => {
+    try {
+      const viewModel = new ListModulesViewModel();
+      const presenter = new listModulesPresenter(viewModel);
+
+      const interactor = new ListModulesInteractor({
+        moduleData,
+        outputBoundary: presenter,
+      });
+
+      const controller = new ListModulesController(interactor);
+
+      await controller.execute();
+
+      return res.status(viewModel.httpStatus).json(viewModel.body);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  return router;
 }

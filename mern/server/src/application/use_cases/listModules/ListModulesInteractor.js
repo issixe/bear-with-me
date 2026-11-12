@@ -30,6 +30,6 @@ export class ListModulesInteractor extends listModulesInputBoundary {
             }))
         });
 
-        return this.outputBoundary.present(outputData);
+        return this.outputBoundary.prepareSuccessView(outputData);
     }
 }

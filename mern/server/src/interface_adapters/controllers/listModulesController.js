@@ -1,15 +1,12 @@
-import { listModulesInputData } from
-    '../../application/use_cases/listModules/listModulesInputData.js';
+import { listModulesInputData }
+  from "../../application/use_cases/listModules/listModulesInputData.js";
 
-export function createListModulesController({ listModules }) {
-    return async function listModulesController(req, res, next) {
-        try {
-            const inputData = new listModulesInputData();
-            const responseData = await listModules.execute(inputData);
+export class ListModulesController {
+  constructor(inputBoundary) {
+    this.inputBoundary = inputBoundary;
+  }
 
-            return res.status(200).json(responseData);
-        } catch (error) {
-            return next(error);
-        }
-    };
+  execute() {
+    return this.inputBoundary.execute(new listModulesInputData());
+  }
 }
