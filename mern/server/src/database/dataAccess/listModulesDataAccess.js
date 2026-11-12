@@ -8,11 +8,19 @@ export class MongoListModulesDataAccess extends ListModulesDataAccess {
             .find({})
             .toArray();
 
+<<<<<<< HEAD
         return modules.map((m) => ({
             id: m.module_id,
             title: m.title,
             description: m.description,
             lessonIds: m.lessons ?? []
+=======
+        return modules.map((module) => ({
+            id: module.module_id,
+            title: module.title,
+            description: module.description,
+            lessonIds: module.lessons ?? []
+>>>>>>> 4a22fca (refactor(server): switch list modules/lessons to ca-login pattern and fix seed data mapping)
         }));
     }
 }

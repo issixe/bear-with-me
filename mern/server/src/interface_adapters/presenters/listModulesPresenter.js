@@ -1,10 +1,18 @@
 import { listModulesOutputBoundary } from
     "../../application/use_cases/listModules/listModulesOutputBoundary.js";
-
 export class listModulesPresenter extends listModulesOutputBoundary {
-    async present(outputData) {
-        return {
-            modules: outputData.modules
-        };
+    constructor(viewModel) {
+        super();
+        this.viewModel = viewModel;
+    }
+
+    prepareSuccessView(out) {
+        this.viewModel.httpStatus = 200;
+        this.viewModel.body = { modules: out.modules };
+    }
+
+    prepareFailView(msg) {
+        this.viewModel.httpStatus = 500;
+        this.viewModel.body = { error: msg };
     }
 }

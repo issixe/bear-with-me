@@ -7,20 +7,29 @@
 //  - moduleData: loads modules
 //  - outputBoundary: receives the result
 
+<<<<<<< HEAD
 import { ListModulesInputBoundary } from './ListModulesInputBoundary.js';
 import { ListModulesOutputData } from './ListModulesOutputData.js';
 
 export class ListModulesInteractor extends ListModulesInputBoundary {
     constructor({ moduleData, outputBoundary }) {
+=======
+import { listModulesInputBoundary } from './listModulesInputBoundary.js';
+import { listModulesOutputData } from './listModulesOutputData.js';
+export class ListModulesInteractor extends listModulesInputBoundary {
+    constructor({ dataAccess, outputBoundary }) {
+>>>>>>> 4a22fca (refactor(server): switch list modules/lessons to ca-login pattern and fix seed data mapping)
         super();
 
-        this.moduleData = moduleData;
+        this.dataAccess = dataAccess;
         this.outputBoundary = outputBoundary;
     }
 
     async execute() {
-        const modules = await this.moduleData.findAll();
+        try {
+            const modules = await this.dataAccess.findAll();
 
+<<<<<<< HEAD
         const outputData = new ListModulesOutputData({
             modules: modules.map((module) => ({
                 id: module.id,
@@ -29,7 +38,20 @@ export class ListModulesInteractor extends ListModulesInputBoundary {
                 lessonIds: module.lessonIds
             }))
         });
+=======
+            const outputData = new listModulesOutputData({
+                modules: modules.map((module) => ({
+                    id: module.id,
+                    title: module.title,
+                    description: module.description,
+                    lessonIds: module.lessonIds
+                }))
+            });
+>>>>>>> 4a22fca (refactor(server): switch list modules/lessons to ca-login pattern and fix seed data mapping)
 
-        return this.outputBoundary.present(outputData);
+            this.outputBoundary.prepareSuccessView(outputData);
+        } catch (error) {
+            this.outputBoundary.prepareFailView("Could not load modules.");
+        }
     }
 }
