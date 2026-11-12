@@ -99,26 +99,20 @@ runtime wiring are not yet aligned.
 | Agent | The person who completing the training module |
 | Agent profile | Information about an agent, including their identity and training progress: overall points, daily streak, and completed lessons.|
 
-## Use Cases 
+## Use case files present
 
-Operations that accomplish specific application goals by coordinating domain logic
-
-| Use cases | What it does |
-|---|---|
-| ListModules | Show the available training modules.|
-|ListLessons | Show the lessons within a selected module. |
-| StartSession | Start an agent’s attempt at a lesson with cScore = 0 and its starting stage; returns the opening customer response and available answers.|
-| SubmitAnswer | Process a selected answer, update points and conversation progress (returns the next customer answer), and finish the session when appropriat|
-| CompleteSession | Retrieve the session’s score and answer history. | 
-| GetUserProgress | view day streak and overall points| 
-| *GetStage | Giving the response and answer options based on the updated cScore |
-| GetPip| Get pip advice on the side | 
+The application layer currently contains use-case files for listing modules
+and lessons, starting a training session, submitting an answer, completing a
+lesson, retrieving session results, and retrieving user progress. Several are
+split into input/output data, boundaries, and interactors. This inventory
+describes files in the repository; it does not imply that all use cases are
+connected to the Express server.
 
 ## Domain entities 
 |Entity|Data|
 |---|---|
-|Module|ID, title, description, lesson ID list|
-|Lesson|ID, title, starting stage, stages, customer responses, answer options and their scores|
+|Module|`module_id`, title, description, `lessons` (lesson ID list)|
+|Lesson|`lesson_id`, title, starting stage, stages, customer responses, answer options and their scores|
 |Session|Agent ID, lesson ID, current stage, mood, cScore, answer history, status|
 |AgentProfile|Agent identity, overall points, completed lessons, streak information| 
 
@@ -135,18 +129,17 @@ Before inserting, the seeder clears **all documents** from both collections.
 Do not run it against a database whose module or lesson data needs to be
 preserved.
 
-## Domain service 
-|service file | what does it do|
-|---|---|
-|scoring|Validate scoring weights and calculate points for an answer|
-|streak|Calculate streak changes from lesson-completion dates|
+## Entities
+
+The current entity files are `module.js`, `lesson.js`, `session.js`, and
+`user.js` under `src/enterprise/entities/`. There are no domain service files
+in the current backend tree.
 
 ## Components responsibility 
 |Component|Job|
 |---|---|
 |Route|Defines an HTTP method and URL, such as POST /sessions, and directs matching requests to a controller.|
 |Controller|Handles HTTP communication: reads and validates request input, calls a use case, and converts its result into an HTTP response.|
-|Use case|Performs one application operation, such as starting a session. Coordinates domain behavior and repository calls to complete the operation|
-|Domain|Defines business concepts and rules. Contains entities such as Session and rules such as scoring, progression, and streak calculation. Works independently of HTTP and databases.|
-|Repository contract|Defines the data-access operations a use case needs, such as findById() and save(), without specifying a database technology.|
-|repository inplementation|Implements that contract using a storage technology such as MongoDB. Runs database queries and translates stored documents into application/domain data and back.|
+|Use case|Performs one application operation. The current use-case files are under `src/application/use_cases/`; their runtime wiring varies.|
+|Domain|The `enterprise/entities/` directory currently contains module, lesson, session, and user entity files. Separate scoring or streak service files are not present.|
+|Data access|The current `src/database/dataAccess/` files provide MongoDB-facing data access for user progress and lesson completion. Separate repository contracts and repository implementations are not present in the current tree.|
