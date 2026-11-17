@@ -26,7 +26,7 @@ export default function Home() {
         <h2 id="modules-heading" className="mb-4 text-3xl font-extrabold text-[#24413B]">
           Modules
         </h2>
-        <p className="mb-4 text-stone-500">Sample lessons — progress is not saved yet.</p>
+        <p className="mb-4 text-stone-500">Sample lessons. Progress is not saved yet.</p>
 
         <div className="flex flex-col gap-3">
           {modules.map((m) => (
