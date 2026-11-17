@@ -1,4 +1,3 @@
-import { FlameIcon } from "../..assets/streakIcon.png";
 
 export default function StreakBadge({ count }) {
   return (

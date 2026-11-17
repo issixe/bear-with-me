@@ -4,7 +4,12 @@ import { useAsync } from "./useAsync";
 
 export function useCurrentUser() {
   const { userService } = useServices();
-  const load = useCallback(() => userService.getCurrentUser(), [userService]);
+  const load = useCallback(() => {
+    if (!userService?.getCurrentUser) {
+      throw new Error("The current-user service is not connected yet.");
+    }
+    return userService.getCurrentUser();
+  }, [userService]);
   const { data, loading, error } = useAsync(load);
   return { user: data, loading, error };
 }
