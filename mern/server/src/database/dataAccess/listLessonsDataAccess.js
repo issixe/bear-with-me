@@ -1,8 +1,8 @@
 import db from "../connection.js";
-import { listLessonsDataAccess } from
+import { ListLessonsDataAccess } from
     "../../application/use_cases/listLessons/listLessonsDataAccess.js";
 
-export class MongoListLessonsDataAccess extends listLessonsDataAccess {
+export class MongoListLessonsDataAccess extends ListLessonsDataAccess {
     async findModuleById(moduleId) {
         const m = await db.collection("modules").findOne({ module_id: moduleId });
         return m ? { id: m.module_id, title: m.title, lessonIds: m.lessons ?? [] } : null;
