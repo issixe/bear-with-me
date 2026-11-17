@@ -65,7 +65,7 @@ function Lesson({ lesson }) {
 
   return (
     <main className="mx-auto min-h-screen max-w-6xl text-[#24413B] md:flex">
-      <aside className="border-b border-stone-200 bg-white p-4 md:w-56 md:shrink-0 md:border-r md:border-b-0">
+      <aside className="border-b border-stone-200 bg-white p-4 md:sticky md:top-6 md:max-h-[calc(100dvh-3rem)] md:w-56 md:shrink-0 md:self-start md:overflow-y-auto md:border-r md:border-b-0">
         <Link to="/" className="font-bold hover:underline">← My Progress</Link>
         <p className="mt-6 mb-3 font-bold">{module?.title}</p>
         <nav aria-label="Module lessons" className="flex gap-2 overflow-x-auto md:flex-col">
