@@ -1,6 +1,6 @@
-import { listModulesOutputBoundary } from
-    "../../application/use_cases/listModules/listModulesOutputBoundary.js";
-export class listModulesPresenter extends listModulesOutputBoundary {
+import { ListModulesOutputBoundary } from
+    "../../application/use_cases/ListModules/ListModulesOutputBoundary.js";
+export class ListModulesPresenter extends ListModulesOutputBoundary {
     constructor(viewModel) {
         super();
         this.viewModel = viewModel;

@@ -1,8 +1,8 @@
 import express from "express";
 
-import { listLessonsViewModel } from "../interface_adapters/viewModels/listLessonsViewModel.js";
+import { ListLessonsViewModel } from "../interface_adapters/viewModels/ListLessonsViewModel.js";
 import { ListLessonsPresenter } from "../interface_adapters/presenters/ListLessonsPresenter.js";
-import { ListLessonsInteractor } from "../application/use_cases/listLessons/listLessonsInteractor.js";
+import { ListLessonsInteractor } from "../application/use_cases/ListLessons/ListLessonsInteractor.js";
 import { ListLessonsController } from "../interface_adapters/controllers/ListLessonsController.js";
 
 export function createListLessonsRoute({ dataAccess }) {
@@ -11,7 +11,7 @@ export function createListLessonsRoute({ dataAccess }) {
     router.get("/:moduleId/lessons", async (req, res, next) => {
         try {
             // fresh objects per request so responses never get mixed up
-            const viewModel = new listLessonsViewModel();
+            const viewModel = new ListLessonsViewModel();
             const presenter = new ListLessonsPresenter(viewModel);
             const interactor = new ListLessonsInteractor({
                 dataAccess,
