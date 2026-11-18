@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
 import db from "../connection.js";
-import { StartSessionDataAccess } from "../../application/use_cases/startSession/startSessionDataAccess.js";
+import { StartSessionDataAccess } from "../../application/use_cases/StartSession/StartSessionDataAccess.js";
 
-export class MongoUserProgressDataAccess extends StartSessionDataAccess {
+export class MongoStartSessionDataAccess extends StartSessionDataAccess {
   async getUserById(agentId) {
     if (!ObjectId.isValid(agentId)) {
       return null;

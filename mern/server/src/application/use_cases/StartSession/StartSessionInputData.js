@@ -10,7 +10,7 @@
 // 5. Return the session ID, opening customer response,
 //    and available answer options without their scores.
 
-export class startSessionInputData {
+export class StartSessionInputData {
   constructor({ agentId, lessonId }) {
     this.agentId = agentId;
     this.lessonId = lessonId;

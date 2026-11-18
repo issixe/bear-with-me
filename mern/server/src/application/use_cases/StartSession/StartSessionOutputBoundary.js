@@ -10,7 +10,7 @@
 // 5. Return the session ID, opening customer response,
 //    and available answer options without their scores.
 
-export class startSessionOutputBoundary {
+export class StartSessionOutputBoundary {
   async present(outputData) {
     throw new Error("Present not implemented");
   }

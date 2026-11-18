@@ -10,7 +10,7 @@
 // 5. Return the session ID, opening customer response,
 //    and available answer options without their scores.
 
-export class startSessionDataAccess {
+export class StartSessionDataAccess {
   async getUserById(agentId) {
     throw new Error("getUserById not implemented");
   }

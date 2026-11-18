@@ -10,11 +10,11 @@
 // 5. Return the session ID, opening customer response,
 //    and available answer options without their scores.
 
-import { startSessionInputBoundary } from "./startSessionInputBoundary.js";
-import { startSessionOutputData } from "./startSessionOutputData.js";
+import { StartSessionInputBoundary } from "./StartSessionInputBoundary.js";
+import { startSessionOutputData } from "./StartSessionOutputData.js";
 import { Session } from "../../enterprise/entities/session.js";
 
-export class startSessionInteractor extends startSessionInputBoundary {
+export class StartSessionInteractor extends StartSessionInputBoundary {
   constructor({ dataAccess, presenter }) {
     super();
     this.dataAccess = dataAccess;
@@ -52,7 +52,7 @@ export class startSessionInteractor extends startSessionInputBoundary {
 
     const sessionId = await this.sessionAccess.saveNewSession(session);
 
-    const outputData = new startSessionOutputData({ sessionId });
+    const outputData = new StartSessionOutputData({ sessionId });
 
     return this.presenter.present(outputData);
   }
