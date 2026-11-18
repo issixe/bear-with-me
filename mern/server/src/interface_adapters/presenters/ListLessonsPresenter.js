@@ -1,5 +1,5 @@
 import { ListLessonsOutputBoundary }
-  from "../../application/use_cases/listLessons/ListLessonsOutputBoundary.js";
+  from "../../application/use_cases/ListLessons/ListLessonsOutputBoundary.js";
 
 export class ListLessonsPresenter extends ListLessonsOutputBoundary {
     constructor(viewModel) {

@@ -12,7 +12,7 @@ export class MongoListModulesDataAccess extends ListModulesDataAccess {
             id: module.module_id,
             title: module.title,
             description: module.description,
-            lessonReferences: module.lessons ?? [],
+            lessonIds: module.lessons ?? [],
     }));
     }
 

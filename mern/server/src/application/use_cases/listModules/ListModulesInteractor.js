@@ -7,9 +7,9 @@
 //  - moduleData: loads modules
 //  - outputBoundary: receives the result
 
-import { listModulesInputBoundary } from './listModulesInputBoundary.js';
-import { listModulesOutputData } from './listModulesOutputData.js';
-export class ListModulesInteractor extends listModulesInputBoundary {
+import { ListModulesInputBoundary } from './ListModulesInputBoundary.js';
+import { ListModulesOutputData } from './ListModulesOutputData.js';
+export class ListModulesInteractor extends ListModulesInputBoundary {
     constructor({ dataAccess, outputBoundary }) {
         super();
 
@@ -21,7 +21,7 @@ export class ListModulesInteractor extends listModulesInputBoundary {
         try {
             const modules = await this.dataAccess.findAll();
 
-            const outputData = new listModulesOutputData({
+            const outputData = new ListModulesOutputData({
                 modules: modules.map((module) => ({
                     id: module.id,
                     title: module.title,

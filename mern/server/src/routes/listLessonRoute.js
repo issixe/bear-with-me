@@ -3,9 +3,9 @@ import express from "express";
 import { ListLessonsPresenter }
   from "../interface_adapters/presenters/ListLessonsPresenter.js";
 import { ListLessonViewModel }
-  from "../interface_adapters/viewmodel/listLessonViewModel.js";
+  from "../interface_adapters/viewmodel/ListLessonViewModel.js";
 import { ListLessonsInteractor }
-  from "../application/use_cases/listLessons/listLessonsInteractor.js";
+  from "../application/use_cases/ListLessons/ListLessonsInteractor.js";
 import { ListLessonsController }
   from "../interface_adapters/controllers/ListLessonsController.js";
 

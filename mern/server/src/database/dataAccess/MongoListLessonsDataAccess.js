@@ -1,8 +1,22 @@
 import db from "../connection.js";
 import { ListLessonsDataAccess }
-  from "../../application/use_cases/listLessons/listLessonsDataAccess.js";
+  from "../../application/use_cases/ListLessons/ListLessonsDataAccess.js";
 
 export class MongoListLessonsDataAccess extends ListLessonsDataAccess {
+    async findModuleById(moduleId) {
+        const module = await db.collection("modules").findOne({ module_id: moduleId });
+        return module ? {
+            id: module.module_id,
+            title: module.title,
+            lessonIds: module.lessons ?? [],
+        } : null;
+    }
+
+    async findLessonsByModuleId(moduleId) {
+        const module = await this.findModuleById(moduleId);
+        return module ? this.findLessonsByIds(module.lessonIds) : [];
+    }
+
     /**
     * @param {string[]} lessonIds
     */
