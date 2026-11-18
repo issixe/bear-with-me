@@ -6,7 +6,7 @@
 //    and completed-lesson progress.
 // 5. Do not award points or record a new completion.
 
-export class getUserProgressInputBoundary {
+export class GetUserProgressInputBoundary {
     async execute(inputData) {
         throw new Error('Execute not implemented');
     }

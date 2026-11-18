@@ -6,7 +6,7 @@
 //    and completed-lesson progress.
 // 5. Do not award points or record a new completion.
 
-export class getUserProgressInputData {
+export class GetUserProgressInputData {
     constructor({ agentId }) {
         this.agentId = agentId;
     }

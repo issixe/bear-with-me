@@ -6,7 +6,7 @@
 //    and completed-lesson progress.
 // 5. Do not award points or record a new completion.
 
-export class getUserProgressOutputData {
+export class GetUserProgressOutputData {
     constructor({ agentId, streak, totalPoints, completedModules }) {
         this.agentId = agentId;
         this.streak = streak;
