@@ -58,17 +58,8 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
         let answerOptions = [];
 
         if (!isFinished) {
-            const nextStage = lesson.stages[session.stageId];
-
-            if (!nextStage) {
-                throw new Error("Next stage not found");
-            }
-
-            customerResponse = nextStage[customerResponse][customerMood];
-            answerOptions = Object.entries(nextStage.answers).map(([answerId, answer]) => ({ //convert answer object to array of answer options (list)
-                answerId,
-                text: answer.text,
-            }));
+            customerResponse = lesson.getCustomerResponses(session.stage, session.customerMood);
+            answerOptions = lesson.getAgentResponses(session.stage);
         }
         
         const outputData = new SubmitAnswerOutputData({
@@ -76,9 +67,9 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
             cScore: session.cScore,
             earnedScore: earnedScore,
             status: session.status,
-            stageId: session.stageId,
+            stageId: session.stage,
             customerMood: session.customerMood,
-            customerResponse: this.customerResponse,
+            customerResponse: customerResponse,
             answerOptions: answerOptions
         });
 
@@ -91,31 +82,15 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
         if (!session) {
             throw new Error("Session not found");
         }
-        if (session.userId !== inputData.userId) {
+        if (session.agentId !== inputData.userId) {
             throw new Error("User does not own this session");
         }
         if (session.status !== "in_progress") {
             throw new Error("Session is not in progress");
         }
-        if (session.stageId !== inputData.stageId) {
+        if (session.stage !== inputData.stageId) {
             throw new Error("Session is not in the correct stage");
         }
-    }
-
-    // Validate and find answer in the lesson 
-    findAnswer(lesson, session, inputData) {
-        if (!lesson) {
-            throw new Error("Lesson not found");
-        }
-        const stage = lesson.stages?.[session.stageId];
-        if (!stage) {
-            throw new Error("Stage not found");
-        }
-        const answer = stage.answers[inputData.answerId];
-        if (!answer) {
-            throw new Error("Answer not found");
-        }
-        return answer;
     }
 
     // Return the earned score based on the answer score and the module weight
