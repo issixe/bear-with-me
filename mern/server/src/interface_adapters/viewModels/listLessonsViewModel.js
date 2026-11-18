@@ -1,4 +1,6 @@
-export class listLessonsViewModel {
-    httpStatus = null;
-    body = null;
+export class ListLessonsViewModel {
+  constructor() {
+    this.httpStatus = 500;
+    this.body = { error: "No response prepared." };
+  }
 }

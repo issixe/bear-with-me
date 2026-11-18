@@ -5,8 +5,8 @@ import StreakBadge from "../components/home/StreakBadge";
 import pipWave from "../../assets/pip/waving.png";
 
 export default function Home() {
-  const { user, loading: userLoading, error: userError } = useCurrentUser();
-  const { modules, loading: modulesLoading, error: modulesError } = useModules();
+  const { user } = useCurrentUser();
+  const { modules, loading, error } = useModules();
 
   return (
     <main className="mx-auto max-w-5xl">
@@ -22,25 +22,35 @@ export default function Home() {
         )}
       </header>
 
-      <section>
+      <section aria-labelledby="modules-heading">
         <h2 id="modules-heading" className="mb-4 text-3xl font-extrabold text-[#24413B]">
           Modules
         </h2>
-        {(userLoading || modulesLoading) && <p className="text-stone-500">Loading modules...</p>}
-        {(userError || modulesError) && (
+
+        {loading && <p className="text-stone-500">Loading modules...</p>}
+
+        {error && (
           <p role="alert" className="text-red-700">
             Couldn't load modules. Check that the server is running and refresh.
           </p>
         )}
 
-        {user && !modulesLoading && !modulesError && (
+        {!loading && !error && modules.length === 0 && (
+          <p className="text-stone-500">No modules yet.</p>
+        )}
+
+        {!loading && !error && modules.length > 0 && (
           <div className="flex flex-col gap-3">
             {modules.map((m) => (
-              <ModuleItem key={m.id} module={m} completedLessonIds={user.completedLessonIds} />
+              <ModuleItem
+                key={m.id}
+                module={m}
+                completedLessonIds={user?.completedLessonIds ?? []}
+              />
             ))}
           </div>
         )}
       </section>
     </main>
-  )
+  );
 }

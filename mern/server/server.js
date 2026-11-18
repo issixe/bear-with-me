@@ -1,10 +1,10 @@
 import express from "express";
 import cors from "cors";
 
-import { MongoListModulesDataAccess } from "./src/database/dataAccess/listModulesDataAccess.js";
-import { MongoListLessonsDataAccess } from "./src/database/dataAccess/listLessonsDataAccess.js";
-import { createListModulesRoute } from "./src/routes/listModulesRoute.js";
-import { createListLessonsRoute } from "./src/routes/listLessonsRoute.js";
+import { MongoListModulesDataAccess } from "./src/database/dataAccess/MongoListModuleDataAccess.js";
+import { MongoListLessonsDataAccess } from "./src/database/dataAccess/MongoListLessonsDataAccess.js";
+import { createListModulesRoute } from "./src/routes/ListModulesRoute.js";
+import { createListLessonsRoute } from "./src/routes/ListLessonsRoute.js";
 
 const PORT = process.env.PORT || 5050;
 const app = express();

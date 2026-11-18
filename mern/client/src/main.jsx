@@ -7,6 +7,8 @@ import Learn from "./interfaces/pages/Learn";
 import Manage from "./interfaces/pages/Manage";
 import ModuleComplete from "./interfaces/pages/ModuleComplete";
 import "./styles/index.css";
+import { ServicesProvider } from "./interfaces/context/ServicesContext";
+
 
 const router = createBrowserRouter([
   {
