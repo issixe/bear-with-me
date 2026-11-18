@@ -12,6 +12,7 @@
 //    - The next customer response and answer options.
 //    - An indication that the session has finished.
 
+import { calculateScore } from "./SubmitAnswer.js"
 import { SubmitAnswerInputBoundary } from "./SubmitAnswerInputBoundary.js";
 import { SubmitAnswerOutputData } from "./SubmitAnswerOutputData.js";
 
@@ -40,7 +41,7 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
 
         // Calculate the answer's score and update user cScore 
         const module = await this.moduleRepository.findById(lesson.moduleId); // Load the module to get the weights 
-        const earnedScore = this.calculateEarnedScore(answer.scores, module.weight);
+        const earnedScore = calculateScore(answer.scores, module.weights);
 
         // Update session history, customer mood, stage, and completion status.
         session.updateCScore(earnedScore);
@@ -77,7 +78,9 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
         return this.outputBoundary.present(outputData);
     }
 
-    // Validate ownership, session status, and the submitted stage.
+    /**
+     * Validate ownership, session status, and the submitted stage.
+     */
     validateSubmission(session, inputData) {
         if (!session) {
             throw new Error("Session not found");
@@ -92,24 +95,4 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
             throw new Error("Session is not in the correct stage");
         }
     }
-
-    // Return the earned score based on the answer score and the module weight
-    calculateEarnedScore(answerScore, moduleWeight) {
-        let weightedScoreSum = 0;
-        let weightSum = 0;
-        for (const dimension of Object.keys(moduleWeight)) {
-            const weight = moduleWeight[dimension];
-            const score = answerScore[dimension] || 0;
-
-            weightedScoreSum += score * weight;
-            weightSum += weight;
-        }
-        if (weightSum !== 1) {
-            // NOTE: Not sure if this step is necessary 
-            throw new Error("Total weight must be equal to one");
-        }
-        return weightedScoreSum;
-    }
-
-
 }
