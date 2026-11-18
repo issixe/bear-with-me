@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb';
 import db from '../connection.js';
-import { getUserProgressDataAccess } from '../../application/use_cases/getUserProgress/getUserProgressDataAccess.js';
+import { GetUserProgressDataAccess } from '../../application/use_cases/GetUserProgress/GetUserProgressDataAccess.js';
 
-export class MongoUserProgressDataAccess extends getUserProgressDataAccess {
+export class MongoUserProgressDataAccess extends GetUserProgressDataAccess {
     async getUserById(agentId) {
         if (!ObjectId.isValid(agentId)) {
             return null;

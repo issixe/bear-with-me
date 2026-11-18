@@ -1,7 +1,7 @@
-import { getUserProgressInputBoundary } from 
-'../../application/use_cases/getUserProgress/getUserProgressInputBoundary.js';
-import { getUserProgressInputData } from
-'../../application/use_cases/getUserProgress/getUserProgressInputData.js';
+import { GetUserProgressInputBoundary } from 
+'../../application/use_cases/GetUserProgress/GetUserProgressInputBoundary.js';
+import { GetUserProgressInputData } from
+'../../application/use_cases/GetUserProgress/GetUserProgressInputData.js';
 
 export function createGetUserProgressController({ getUserProgress }) {
   return async function getUserProgressController(req, res, next) {
@@ -12,7 +12,7 @@ export function createGetUserProgressController({ getUserProgress }) {
     }
 
     try {
-      const inputData = new getUserProgressInputData({ agentId });
+      const inputData = new GetUserProgressInputData({ agentId });
       const responseData = await getUserProgress.execute(inputData);
 
       return res.status(200).json(responseData);

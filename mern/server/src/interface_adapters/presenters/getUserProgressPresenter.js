@@ -1,9 +1,9 @@
-import { getUserProgressOutputData } 
-from '../../application/use_cases/getUserProgress/getUserProgressOutputData.js';
-import { getUserProgressOutputBoundary } 
-from '../../application/use_cases/getUserProgress/getUserProgressOutputBoundary.js';
+import { GetUserProgressOutputData } 
+from '../../application/use_cases/GetUserProgress/GetUserProgressOutputData.js';
+import { GetUserProgressOutputBoundary } 
+from '../../application/use_cases/GetUserProgress/GetUserProgressOutputBoundary.js';
 
-export class getUserProgressPresenter extends getUserProgressOutputBoundary {
+export class GetUserProgressPresenter extends GetUserProgressOutputBoundary {
     async present(outputData) {
         return {
             agentId: outputData.agentId,
