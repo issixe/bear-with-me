@@ -39,9 +39,8 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
         const answer = lesson.getAnswer(session.stage, inputData.answerId);
 
         // Calculate the answer's score and update user cScore 
-        const answerScore = this.calculateEarnedScore(answer.scores, lesson.moduleWeight);
         const module = await this.moduleRepository.findById(lesson.moduleId); // Load the module to get the weights 
-        const earnedScore = this.calculateEarnedScore(answerScore, module.weight);
+        const earnedScore = this.calculateEarnedScore(answer.scores, module.weight);
 
         // Update session history, customer mood, stage, and completion status.
         session.updateCScore(earnedScore);
