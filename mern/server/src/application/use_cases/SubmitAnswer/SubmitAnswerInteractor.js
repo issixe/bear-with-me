@@ -12,39 +12,36 @@
 //    - The next customer response and answer options.
 //    - An indication that the session has finished.
 
-import { SubmitAnswerInputBoundary } from
-    "./SubmitAnswerInputBoundary.js";
+import { calculateScore } from "./SubmitAnswer.js"
+import { SubmitAnswerInputBoundary } from "./SubmitAnswerInputBoundary.js";
 import { SubmitAnswerOutputData } from "./SubmitAnswerOutputData.js";
 
 export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
     constructor(sessionRepository, lessonRepository, moduleRepository, outputBoundary) {
         super();
+        // Dependency injection for repositories
         this.sessionRepository = sessionRepository;
-        this.lessonRepository = lessonRepository;  // Dependency injection for repositories
+        this.lessonRepository = lessonRepository;
         this.moduleRepository = moduleRepository;
         this.outputBoundary = outputBoundary;
     }
 
     async execute(inputData) {
-        // find the session using session repository and inputData.sessionId
+        // Find the session using session repository and inputData.sessionId
         const session = await this.sessionRepository.findById(inputData.sessionId);
 
-        // validate user owenship of the session, sessions status and stageID.
+        // Validate user ownership of the session, sessions status, and stageID.
         this.validateSubmission(session, inputData);
 
-        // load the lesson using session.lessonId and lesson repo 
+        // Load the lesson using session.lessonId and lesson repo 
         const lesson = await this.lessonRepository.findById(session.lessonId);
 
-        // Check inputData.answerId in the current stage. 
-        this.findAnswer(lesson, session.stageId, inputData.answerId);
-
         // Find the answer in the lesson so we can calculate the score and update the session.
-        const answer = this.findAnswer(lesson, session, inputData);
+        const answer = lesson.getAnswer(session.stage, inputData.answerId);
 
         // Calculate the answer's score and update user cScore 
-        const answerScore = this.calculateEarnedScore(answer.score, lesson.moduleWeight);
         const module = await this.moduleRepository.findById(lesson.moduleId); // Load the module to get the weights 
-        const earnedScore = this.calculateEarnedScore(answerScore, module.weight);
+        const earnedScore = calculateScore(answer.scores, module.weights);
 
         // Update session history, customer mood, stage, and completion status.
         session.updateCScore(earnedScore);
@@ -62,71 +59,40 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
         let answerOptions = [];
 
         if (!isFinished) {
-            const nextStage = lesson.stages[session.stageId];
-
-            if (!nextstage) {throw new Error("Next stage not found");}
-
-            customerResponse = nextStage[customerResponse][customerMood];
-            answerOptions = Object.entries(nextStage.answers).map(([answerId, answer]) => ({ //convert answer object to array of answer options (list)
-                answerId,
-                text: answer.text,
-            }));
+            customerResponse = lesson.getCustomerResponses(session.stage, session.customerMood);
+            answerOptions = lesson.getAgentResponses(session.stage);
         }
+        
         const outputData = new SubmitAnswerOutputData({
             sessionId: inputData.sessionId,
             cScore: session.cScore,
             earnedScore: earnedScore,
             status: session.status,
-            stageId: session.stageId,
+            stageId: session.stage,
             customerMood: session.customerMood,
-            customerResponse: this.customerResponse,
-            answerOptions: this.answerOptions
+            customerResponse: customerResponse,
+            answerOptions: answerOptions
         });
 
         // return output data and pass it to output boundary. 
-        return this.outputBoundary.present(outputSata);
+        return this.outputBoundary.present(outputData);
     }
 
-    // Validate ownership, session status, and the submitted stage.
+    /**
+     * Validate ownership, session status, and the submitted stage.
+     */
     validateSubmission(session, inputData) {
         if (!session) {
             throw new Error("Session not found");
         }
-        if (session.userId !== inputData.userId) {
+        if (session.agentId !== inputData.userId) {
             throw new Error("User does not own this session");
         }
         if (session.status !== "in_progress") {
             throw new Error("Session is not in progress");
         }
-        if (session.stageId !== inputData.stageId) {
+        if (session.stage !== inputData.stageId) {
             throw new Error("Session is not in the correct stage");
         }
     }
-
-    // Validate and Find answer in the lesson 
-    findAnswer(lesson, session, inputData) {
-        if (!lesson) { throw new Error("Lesson not found"); }
-        const stage = lesson.stages?.[session.stageId];
-        if (!stage) { throw new Error("Stage not found"); }
-        const answer = stage.answers[inputData.answerId];
-        if (!answer) { throw new Error("Answer not found"); }
-        return answer;
-    }
-
-    // Return the earnted score based on the answer score and the module weight.
-    calculateEarnedScore(answerScore, moduleWeight) {
-        let weightedScoreSum = 0;
-        let weightSum = 0;
-        for (const dimension of Object.keys(moduleWeight)) {
-            const weight = moduleWeight[dimension];
-            const score = answerScore[dimension] || 0;
-
-            weightedScoreSum += score * weight;
-            weightSum += weight;
-        }
-        if (weightSum !== 1) { throw new Error("Total weight must be equal to one"); } //NOTE: Not sure if this step is necessary 
-        return weightedScoreSum;
-    }
-
-
 }

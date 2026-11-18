@@ -16,6 +16,7 @@
 //    - An indication that the session has finished.
 
 // Scoring code below, does not actually belong in this file but does in this use case
+const EPSILON = 1e-9;
 
 /** Default weights for the five answer assessment dimensions. */
 export const DEFAULT_WEIGHTS = Object.freeze({
@@ -44,7 +45,7 @@ export function calculateScore(response, weights = DEFAULT_WEIGHTS) {
   if (values.some((weight) => !Number.isFinite(weight))) {
     throw new TypeError("Weights must be finite numbers");
   }
-  if (Math.abs(values.reduce((sum, weight) => sum + weight, 0) - 1) > 1e-9) {
+  if (Math.abs(values.reduce((sum, weight) => sum + weight, 0) - 1) > EPSILON) {
     throw new Error("Weights must add up to 1.0");
   }
   if (
