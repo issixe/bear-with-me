@@ -1,5 +1,4 @@
-import { ListModulesInputData } from
-    '../../application/use_cases/listModules/listModulesInputData.js';
+import { ListModulesInputData } from "../../application/use_cases/ListModules/ListModulesInputData.js";
 
 export class ListModulesController {
     constructor(inputBoundary) {

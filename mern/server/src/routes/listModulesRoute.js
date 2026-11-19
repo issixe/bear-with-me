@@ -1,17 +1,17 @@
 import express from "express";
 
-import { listModulesViewModel } from "../interface_adapters/viewModels/listModulesViewModel.js";
-import { listModulesPresenter } from "../interface_adapters/presenters/listModulesPresenter.js";
-import { ListModulesInteractor } from "../application/use_cases/listModules/ListModulesInteractor.js";
-import { ListModulesController } from "../interface_adapters/controllers/listModulesController.js";
+import { ListModulesViewModel } from "../interface_adapters/viewModels/ListModulesViewModel.js";
+import { ListModulesPresenter } from "../interface_adapters/presenters/ListModulesPresenter.js";
+import { ListModulesInteractor } from "../application/use_cases/ListModules/ListModulesInteractor.js";
+import { ListModulesController } from "../interface_adapters/controllers/ListModulesController.js";
 
 export function createListModulesRoute({ dataAccess }) {
     const router = express.Router();
 
     router.get("/", async (req, res, next) => {
         try {
-            const viewModel = new listModulesViewModel();
-            const presenter = new listModulesPresenter(viewModel);
+            const viewModel = new ListModulesViewModel();
+            const presenter = new ListModulesPresenter(viewModel);
             const interactor = new ListModulesInteractor({
                 dataAccess,
                 outputBoundary: presenter
@@ -26,5 +26,25 @@ export function createListModulesRoute({ dataAccess }) {
         }
     });
 
-    return router;
+  router.get("/", async (req, res, next) => {
+    try {
+      const viewModel = new ListModulesViewModel();
+      const presenter = new ListModulesPresenter(viewModel);
+
+      const interactor = new ListModulesInteractor({
+        moduleData,
+        outputBoundary: presenter,
+      });
+
+      const controller = new ListModulesController(interactor);
+
+      await controller.execute();
+
+      return res.status(viewModel.httpStatus).json(viewModel.body);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  return router;
 }

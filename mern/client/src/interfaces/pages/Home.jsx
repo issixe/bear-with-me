@@ -22,7 +22,7 @@ export default function Home() {
         )}
       </header>
 
-      <section>
+      <section aria-labelledby="modules-heading">
         <h2 id="modules-heading" className="mb-4 text-3xl font-extrabold text-[#24413B]">
           Modules
         </h2>

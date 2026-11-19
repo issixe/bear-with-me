@@ -1,6 +1,7 @@
-import { listLessonsOutputBoundary } from '../../application/use_cases/listLessons/listLessonsOutputBoundary.js';
+import { ListLessonsOutputBoundary }
+  from "../../application/use_cases/ListLessons/ListLessonsOutputBoundary.js";
 
-export class ListLessonsPresenter extends listLessonsOutputBoundary {
+export class ListLessonsPresenter extends ListLessonsOutputBoundary {
     constructor(viewModel) {
         super();
         this.viewModel = viewModel;

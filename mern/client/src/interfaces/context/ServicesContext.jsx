@@ -1,13 +1,17 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useMemo } from "react";
 import { moduleService } from "../../application/services/moduleService";
-const services = { moduleService };
+import { lessonService } from "../../application/services/lessonService";
+import { userService } from "../../application/services/userService";
+
 const ServicesContext = createContext(null);
+
 export function ServicesProvider({ children }) {
+  const services = useMemo(() => ({ moduleService, lessonService, userService }), []);
   return <ServicesContext.Provider value={services}>{children}</ServicesContext.Provider>;
 }
-// eslint-disable-next-line react-refresh/only-export-components
+
 export function useServices() {
-  const value = useContext(ServicesContext);
-  if (!value) throw new Error("ServicesProvider is required");
-  return value;
+  const services = useContext(ServicesContext);
+  if (!services) throw new Error("useServices must be used inside <ServicesProvider>");
+  return services;
 }

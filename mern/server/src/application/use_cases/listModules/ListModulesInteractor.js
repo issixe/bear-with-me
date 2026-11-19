@@ -4,12 +4,11 @@
 // 2. Return each module's id, title, description and lessonIds.
 //
 // Dependencies (injected through the constructor):
-//  - dataAccess: loads modules
+//  - moduleData: loads modules
 //  - outputBoundary: receives the result
 
-import { ListModulesInputBoundary } from './listModulesInputBoundary.js';
-import { ListModulesOutputData } from './listModulesOutputData.js';
-
+import { ListModulesInputBoundary } from './ListModulesInputBoundary.js';
+import { ListModulesOutputData } from './ListModulesOutputData.js';
 export class ListModulesInteractor extends ListModulesInputBoundary {
     constructor({ dataAccess, outputBoundary }) {
         super();
@@ -22,14 +21,14 @@ export class ListModulesInteractor extends ListModulesInputBoundary {
         try {
             const modules = await this.dataAccess.findAll();
 
-        const outputData = new ListModulesOutputData({
-            modules: modules.map((module) => ({
-                id: module.id,
-                title: module.title,
-                description: module.description,
-                lessonIds: module.lessonIds
-            }))
-        });
+            const outputData = new ListModulesOutputData({
+                modules: modules.map((module) => ({
+                    id: module.id,
+                    title: module.title,
+                    description: module.description,
+                    lessonIds: module.lessonIds
+                }))
+            });
 
             this.outputBoundary.prepareSuccessView(outputData);
         } catch (error) {
