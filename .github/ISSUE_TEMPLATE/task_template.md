@@ -1,6 +1,6 @@
 ---
-name: Task Template
-about: Standard layout for tasks and features
+name: Task / Issue
+about: Standard template for features, bugs, or general tasks
 title: ''
 labels: ''
 assignees: ''
@@ -8,16 +8,16 @@ assignees: ''
 
 ## Goal
 
-Summarize the user-facing result in one or two sentences.
+Summarize the user-facing result or core objective in one or two sentences.
 
 ## Acceptance checklist
 
-- [ ] I reproduced or located the current behavior.
-- [ ] I made a focused source change.
-- [ ] The smoke test still passes.
-- [ ] The relevant feature tests pass.
+- [ ] I made a focused, self-contained source change.
 - [ ] I manually checked the behavior in the application.
-- [ ] I added the required file under `submissions/`.
+- [ ] The project builds successfully without new warnings or errors.
+- [ ] New and existing tests pass (if applicable).
+- [ ] I performed a self-review of my code for readability and edge cases.
+- [ ] I updated relevant documentation or comments.
 
 ## Notes
 
