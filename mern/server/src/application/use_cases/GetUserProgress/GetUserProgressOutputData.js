@@ -6,8 +6,11 @@
 //    and completed-lesson progress.
 // 5. Do not award points or record a new completion.
 
-export class getUserProgressInputBoundary {
-    async execute(inputData) {
-        throw new Error('Execute not implemented');
+export class GetUserProgressOutputData {
+    constructor({ agentId, streak, totalPoints, completedModules }) {
+        this.agentId = agentId;
+        this.streak = streak;
+        this.totalPoints = totalPoints;
+        this.completedModules = completedModules;
     }
 }

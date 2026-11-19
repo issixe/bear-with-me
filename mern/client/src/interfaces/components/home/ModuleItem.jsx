@@ -5,7 +5,7 @@ import { useLessons } from "../../hooks/useLessons";
 export default function ModuleItem({ module, completedLessonIds = [] }) {
   const [open, setOpen] = useState(false);
   
-  // Only fetch lessons (listLessons) once the module is opened
+  // Only fetch lessons (ListLessons) once the module is opened
   const { lessons, loading, error } = useLessons(open ? module.id : null);
   const panelId = `module-${module.id}-lessons`;
 

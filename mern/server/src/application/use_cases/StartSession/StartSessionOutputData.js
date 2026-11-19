@@ -10,7 +10,7 @@
 // 5. Return the session ID, opening customer response,
 //    and available answer options without their scores.
 
-export class startSessionOutputData {
+export class StartSessionOutputData {
   constructor({ sessionId }) {
     this.sessionId = sessionId;
   }
