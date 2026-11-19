@@ -32,7 +32,7 @@ function createFakePresenter() {
     };
 }
 
-test("modules exist, ListModulesInteractor prepares success view with all modules", async () => {
+test("modules exist, ListModulesInteractor prepares success view with all lessons", async () => {
     const dataAccess = createFakeDataAccess({
         modules: [
             {
