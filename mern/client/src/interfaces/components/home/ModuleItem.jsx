@@ -53,7 +53,7 @@ export default function ModuleItem({ module, completedLessonIds = [] }) {
                 return (
                   <li key={lesson.id}>
                     <Link
-                      to={`/learn?lessonId=${encodeURIComponent(lesson.id)}`}
+                      to={`/learn?lesson=${encodeURIComponent(lesson.id)}`}
                       className="flex items-center justify-between rounded-xl px-4 py-3 text-[#24413B] hover:bg-[var(--selection)] hover:text-[var(--selection-text)]"
                     >
                       <span>{lesson.title}</span>

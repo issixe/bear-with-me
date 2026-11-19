@@ -6,7 +6,7 @@ import pipWave from "../../assets/pip/waving.png";
 
 export default function Home() {
   const { user } = useCurrentUser();
-  const { modules, loading, error } = useModules();
+  const { modules, loading: modulesLoading, error: modulesError } = useModules();
 
   return (
     <main className="mx-auto max-w-5xl">
@@ -26,31 +26,21 @@ export default function Home() {
         <h2 id="modules-heading" className="mb-4 text-3xl font-extrabold text-[#24413B]">
           Modules
         </h2>
-
-        {loading && <p className="text-stone-500">Loading modules...</p>}
-
-        {error && (
+        {modulesLoading && <p className="text-stone-500">Loading modules...</p>}
+        {modulesError && (
           <p role="alert" className="text-red-700">
             Couldn't load modules. Check that the server is running and refresh.
           </p>
         )}
 
-        {!loading && !error && modules.length === 0 && (
-          <p className="text-stone-500">No modules yet.</p>
-        )}
-
-        {!loading && !error && modules.length > 0 && (
+        {!modulesLoading && !modulesError && (
           <div className="flex flex-col gap-3">
             {modules.map((m) => (
-              <ModuleItem
-                key={m.id}
-                module={m}
-                completedLessonIds={user?.completedLessonIds ?? []}
-              />
+              <ModuleItem key={m.id} module={m} completedLessonIds={user?.completedLessonIds} />
             ))}
           </div>
         )}
       </section>
     </main>
-  );
+  )
 }
