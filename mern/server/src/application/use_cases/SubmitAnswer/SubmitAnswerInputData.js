@@ -7,9 +7,10 @@
 
 export class SubmitAnswerInputData {
   constructor(userId, sessionId, stageId, answerId) {
-    this.userId = userId;
-    this.sessionId = sessionId;
-    this.stageId = stageId;
-    this.answerId = answerId;
+    this.userId = userId; // the current user 
+    this.sessionId = sessionId; // the current taining attempt 
+    this.stageId = stageId; // the current stage user is in for the lesson 
+    this.answerId = answerId; // the answer user selected for the current stage
+    this.moduleId = moduleId; // the module that the lesson belongs to  
   }
 }

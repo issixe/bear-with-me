@@ -20,6 +20,12 @@ export class Lesson {
 
         return stage;
     }
+
+    /** Get the next stage of the lesson for given current stage */
+    getNextStage(currentStageId){
+        return this.stages[currentStageId].next_stage;
+    }
+
     /** Get all possible customer responses for a given stage and mood */
     getCustomerResponses(stageId, mood) {
         const stage = this.getStage(stageId);
@@ -30,13 +36,13 @@ export class Lesson {
 
         return responses;
     }
-    /** Get all possible agent responses for a given stage, along with text to display */
-    getAgentResponses(stageId) {
+    /** Get all possible user responses for a given stage, along with text to display */
+    getUserResponses(stageId) {
         const stage = this.getStage(stageId);
         const responses = stage.answers;
 
         if (!responses || typeof responses !== "object") {
-            throw new Error(`Agent responses not found in stage ${stageId} of lesson ${this.lessonId}`);
+            throw new Error(`User responses not found in stage ${stageId} of lesson ${this.lessonId}`);
         }
 
         return Object.entries(responses).map(([answerId, answer]) => ({

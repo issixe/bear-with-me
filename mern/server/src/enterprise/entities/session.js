@@ -31,7 +31,7 @@ export class Session {
         "Answer score must be a finite number between 0 and 100",
       );
     }
-    this.answerScores.push(answerScore);
+    this.answerScores.push(answerScore); //TODO: check if its necessary here to make scores into arrays 
     this.cScore += answerScore;
   }
 
@@ -44,5 +44,17 @@ export class Session {
       throw new Error("Status must be either 'completed' or 'failed'");
     }
     this.status = status;
+  }
+
+  updateCustomerMood(){
+    // TODO: decide the mood thresholds in the module 
+  }
+
+  updateStage(nextStage){
+    this.stage = nextStage;
+  }
+
+  updateCompleteStatus(){
+    //TODO: 
   }
 }
