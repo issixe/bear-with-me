@@ -31,17 +31,23 @@ export class ListLessonsInteractor extends ListLessonsInputBoundary {
             this.outputBoundary.prepareFailView(`Module "${moduleId}" not found.`);
             return;
         }
-
-        const lessons = await this.dataAccess.findLessonsByModuleId(moduleId);
-
-        const outputData = new ListLessonsOutputData({
-            moduleId,
-            lessons: lessons.map((lesson) => ({
-                id: lesson.id,
-                title: lesson.title
-            }))
-        });
-
+        
+        try{
+            const lessons = await this.dataAccess.findLessonsByModuleId(moduleId);
+            if (!module) {
+                this.outputBoundary.prepareFailView('Module not found.');
+                return;
+            }
+            const outputData = new ListLessonsOutputData({
+                moduleId,
+                lessons: lessons.map((lesson) => ({
+                    id: lesson.id,
+                    title: lesson.title
+                }))
+            });
         this.outputBoundary.prepareSuccessView(outputData);
+        } catch (error) {
+            this.outputBoundary.prepareFailView('Could not load lessons for module "${moduleId}".');
+        }
     }
 }
