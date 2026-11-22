@@ -7,9 +7,9 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
         if (!ObjectId.isValid(sessionId)) {
             return null;
         }
-        const session = await db
-            .collection("sessions")
-            .findone({ _id: new ObjectId(sessionId) });
+        const session = await db.collection('sessions').findOne(
+            { _id: new ObjectId(sessionId) }
+        );
 
         if (!session) {
             return null;
@@ -28,9 +28,9 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
         if (!ObjectId.isValid(agentId)) {
             return null;
         }
-        const user = await db
-            .collection("users")
-            .findone({ _id: new ObjectId(userId) });
+        const user = await db.collection('users').findOne(
+            { _id: new ObjectId(userId) }
+        );
 
         if (!user) {
             return null;
@@ -42,6 +42,7 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
             streak: user.streak,
             lastActivity: user.lastActivity,
             lessonScores: user.lessonScores,
+            pointsWeekStart: user.pointsWeekStart
         };
     }
 
@@ -65,8 +66,8 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
                     streak: agent.streak,
                     lastActivity: agent.lastActivity,
                     lessonScores: agent.lessonScores,
-                },
-            },
+                    pointsWeekStart: agent.pointsWeekStart
+            }}
         );
     }
 }
