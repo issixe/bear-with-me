@@ -20,10 +20,11 @@ export class FindWorstCallsInteractor extends FindWorstCallsInputBoundary {
     }
 
     const worstCalls = [];
+    let unscoredCount = 0;
 
     for (let i = 0; i < calls.length; i++) {
         const call = calls[i];
-        let unscoredCount = 0;
+        
         if (!call || typeof call !== 'object' || Array.isArray(call)) {
             this.outputBoundary.prepareFailView(`Invalid call data at index ${i}.`);
             return;
