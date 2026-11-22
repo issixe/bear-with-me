@@ -1,8 +1,9 @@
 // FindWorstCallsOutputData.js
 export class FindWorstCallsOutputData {
-  constructor({ conversations, receivedCount }) {
-    this.conversations = conversations;
+  constructor({ calls, receivedCount, unscoredCount }) {
+    this.calls = calls;
     this.receivedCount = receivedCount;
-    this.returnedCount = conversations.length;
+    this.unscoredCount = unscoredCount;
+    this.returnedCount = calls.length;
   }
 }
