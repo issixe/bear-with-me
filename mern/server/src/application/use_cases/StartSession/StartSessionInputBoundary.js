@@ -10,7 +10,7 @@
 // 5. Return the session ID, opening customer response,
 //    and available answer options without their scores.
 
-export class startSessionInputBoundary {
+export class StartSessionInputBoundary {
   async execute(inputData) {
     throw new Error("Execute not implemented");
   }

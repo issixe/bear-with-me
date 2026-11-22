@@ -11,8 +11,4 @@ export class ListLessonsOutputBoundary {
     prepareFailView(errorMessage) {
         throw new Error("Not implemented");
     }
-
-    prepareFailView(errorMessage) {
-        throw new Error("Not Implemented: prepareFailView");
-    }
 }

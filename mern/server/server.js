@@ -7,6 +7,8 @@ import { createListModulesRoute } from "./src/routes/ListModulesRoute.js";
 import { createListLessonsRoute } from "./src/routes/ListLessonsRoute.js";
 import { MongoSubmitAnswerDataAccess } from "./src/database/dataAccess/MongoSubmitAnswerDataAccess.js";
 import { createSubmitAnswerRoute } from "./src/routes/SubmitAnswerRoute.js";
+import { MongoStartSessionDataAccess } from "./src/database/dataAccess/MongoStartSessionDataAccess.js";
+import { createStartSessionRoute } from "./src/routes/StartSessionRoute.js";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -45,12 +47,19 @@ app.use(
 );
 
 app.use(
-    "/modules",
-    createListLessonsRoute({
-        dataAccess: new MongoListLessonsDataAccess()
-    })
+  "/modules",
+  createListLessonsRoute({
+    dataAccess: new MongoListLessonsDataAccess(),
+  }),
+);
+
+app.use(
+  "/sessions",
+  createStartSessionRoute({
+    dataAccess: new MongoStartSessionDataAccess(),
+  }),
 );
 
 app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });
