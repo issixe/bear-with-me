@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import db from "../connection.js";
 import { StartSessionDataAccess } from "../../application/use_cases/StartSession/StartSessionDataAccess.js";
+import { Lesson } from "../../enterprise/entities/lesson.js";
 
 export class MongoStartSessionDataAccess extends StartSessionDataAccess {
   async getUserById(agentId) {
@@ -29,7 +30,7 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
     }
 
     const stages = Object.fromEntries(
-      Object.entries(doc.stages).map(([stageId, stage]) => [
+      Object.entries(lesson.stages).map(([stageId, stage]) => [
         stageId,
         {
           customerResponses: stage["customer responses"],

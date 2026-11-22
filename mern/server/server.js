@@ -5,6 +5,8 @@ import { MongoListModulesDataAccess } from "./src/database/dataAccess/MongoListM
 import { MongoListLessonsDataAccess } from "./src/database/dataAccess/MongoListLessonsDataAccess.js";
 import { createListModulesRoute } from "./src/routes/ListModulesRoute.js";
 import { createListLessonsRoute } from "./src/routes/ListLessonsRoute.js";
+import { MongoStartSessionDataAccess } from "./src/database/dataAccess/MongoStartSessionDataAccess.js";
+import { createStartSessionRoute } from "./src/routes/StartSessionRoute.js";
 
 const PORT = process.env.PORT || 5050;
 const app = express();

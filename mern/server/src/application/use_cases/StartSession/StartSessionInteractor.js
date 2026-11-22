@@ -23,20 +23,21 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
 
   async execute({ agentId, lessonId }) {
     // Check that the agent and lesson referenced actually exist
+    // TODO: restore once users are seeded
 
-    if (!agentId) {
-      throw new Error("Agent ID is required");
-    }
+    // if (!agentId) {
+    //   throw new Error("Agent ID is required");
+    // }
 
     if (!lessonId) {
       throw new Error("Lesson ID is required");
     }
 
-    const userProfile = await this.dataAccess.getUserById(agentId);
+    // const userProfile = await this.dataAccess.getUserById(agentId);
 
-    if (!userProfile) {
-      throw new Error(`User with ID ${agentId} not found`);
-    }
+    // if (!userProfile) {
+    //   throw new Error(`User with ID ${agentId} not found`);
+    // }
 
     const lesson = await this.dataAccess.getLessonById(lessonId);
 
@@ -47,11 +48,11 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
     const stage = lesson.startingStage;
     const customerMood = "angry";
 
-    const session = new Session({ agentId, lessonId, curStage, curMood });
+    const session = new Session({ agentId, lessonId, stage, customerMood });
 
     const sessionId = await this.dataAccess.saveNewSession(session);
 
-    const opening = lesson.getCustomerResponses(
+    const customerResponse = lesson.getCustomerResponses(
       lesson.startingStage,
       customerMood,
     );
@@ -63,7 +64,7 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
       lessonId,
       stage,
       customerMood,
-      opening,
+      customerResponse,
       options,
     });
 
