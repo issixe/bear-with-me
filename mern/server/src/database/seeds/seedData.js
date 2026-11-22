@@ -4,6 +4,13 @@ export const exampleModules = [
     title: "Conflict Resolution",
     description: "Learn how to respond when a customer is upset or frustrated.",
     lessons: ["double_billing"],
+    module_weight: {
+      compliance: 0.2,
+      process: 0.2,
+      communication: 0.2,
+      efficiency: 0.2,
+      outcome: 0.2,
+    }
   },
 ];
 
@@ -14,7 +21,7 @@ export const exampleLessons = [
     starting_stage: "initial complaint",
     stages: {
       "initial complaint": {
-        "customer responses": {
+        "customer response": {
           calm: "Hi, I noticed I have been charged twice for my last month's bill",
           frustrated:
             "I can't believe I was charged twice for my last month's bill!",
@@ -53,10 +60,11 @@ export const exampleLessons = [
             },
           },
         },
+        pipWords: "Ah, the customer is having a bad day... Listen carefully and acknowledge the concern. You got this!",
         next_stage: "investigation",
       },
-      investigation: {
-        "customer responses": {
+      "investigation": {
+        "customer response": {
           calm: "Thanks for investigating for me. My name is Jane Doe and my birthday is January 10, 2000.",
           frustrated:
             "Well can't you just check for me? My name is Jane Doe and my birthday is January 10, 2000.",
@@ -95,10 +103,11 @@ export const exampleLessons = [
             },
           },
         },
+        pipWords: "Good Job!",
         next_stage: "resolution",
       },
-      resolution: {
-        "customer responses": {
+      "resolution": {
+        "customer response": {
           calm: "That's all from me, thank you!",
           frustrated: "Uhh yeah that's everything I need I guess.",
           angry:
@@ -136,6 +145,7 @@ export const exampleLessons = [
             },
           },
         },
+        pipWords: "YAY YOU SOLVED!",
         next_stage: null,
       },
     },
