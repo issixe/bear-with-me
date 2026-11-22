@@ -1,5 +1,3 @@
-import { GetUserProgressOutputData } 
-from '../../application/use_cases/GetUserProgress/GetUserProgressOutputData.js';
 import { GetUserProgressOutputBoundary } 
 from '../../application/use_cases/GetUserProgress/GetUserProgressOutputBoundary.js';
 
