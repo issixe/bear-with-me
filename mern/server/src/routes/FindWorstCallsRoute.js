@@ -3,7 +3,7 @@ import express from "express";
 import { FindWorstCallsController } from "../interface_adapters/controllers/FindWorstCallsController.js";
 import { FindWorstCallsPresenter } from "../interface_adapters/presenters/FindWorstCallsPresenter.js";
 import { FindWorstCallsInteractor } from "../application/use_cases/FindWorstCalls/FindWorstCallsInteractor.js";
-import { FindWorstCallsViewModel } from "../interface_adapters/view_models/FindWorstCallsViewModel.js";
+import { FindWorstCallsViewModel } from "../interface_adapters/viewModels/FindWorstCallsViewModel.js";
 
 export function createFindWorstCallsRoute() {
     const router = express.Router();
