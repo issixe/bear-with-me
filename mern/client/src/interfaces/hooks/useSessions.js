@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { useServices } from "../context/ServicesContext";
+import { useNavigate } from "react-router-dom";
 
 export function useStartSession() {
   const { sessionService } = useServices();
@@ -23,4 +24,25 @@ export function useStartSession() {
   );
 
   return { start, starting, error };
+}
+
+export function useOpenLesson(agentId) {
+  const navigate = useNavigate();
+  const { start, starting, error } = useStartSession();
+
+  const openLesson = useCallback(
+    async (lessonId) => {
+      try {
+        const session = await start(agentId, lessonId);
+        navigate(`/learn?lesson=${encodeURIComponent(lessonId)}`, {
+          state: { session },
+        });
+      } catch {
+        // error is already stored by useStartSession
+      }
+    },
+    [agentId, start, navigate],
+  );
+
+  return { openLesson, opening: starting, error };
 }
