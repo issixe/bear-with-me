@@ -1,6 +1,15 @@
 import { CompleteLessonInputBoundary } from "./CompleteLessonInputBoundary.js";
 import { CompleteLessonOutputData } from "./CompleteLessonOutputData.js";
 
+export function getMondayOfWeek(dateInput = new Date()) {
+    const date = new Date(dateInput);
+    date.setHours(0, 0, 0, 0);  // resets time to midnight
+    const day = date.getDay();  // returns day of the week as an index from 0 to 6 (0 = Sunday)
+    const diffToMonday = day === 0 ? -6 : 1 - day;  // how many days to step back to get to Monday
+    date.setDate(date.getDate() + diffToMonday);  // sets date to previous Monday
+    return date.toLocaleDateString('en-CA'); // YYYY-MM-DD
+}
+
 export class CompleteLessonInteractor extends CompleteLessonInputBoundary {
     constructor({ dataAccess, presenter }) {
         super();
@@ -42,6 +51,18 @@ export class CompleteLessonInteractor extends CompleteLessonInputBoundary {
             streak = 1;
         }
         agent.streak = streak;
+
+        // reset weekly points every Monday
+        // pointsWeekStart is a "YYYY-MM-DD" string storing the Monday date of the week that the user's current totalPoints belongs to
+        const currentWeekStart = getMondayOfWeek(now);
+        if (agent.pointsWeekStart !== currentWeekStart) {
+            agent.totalPoints = 0;
+            agent.lessonScores = {};
+            agent.pointsWeekStart = currentWeekStart;
+        }
+        if (!agent.lessonScores) {
+            agent.lessonScores = {};
+        }
 
         const prevScore = agent.lessonScores[session.sessionId] ?? 0;
         agent.totalPoints += session.cScore - prevScore;
