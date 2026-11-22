@@ -9,6 +9,8 @@ export class FindWorstCallsInteractor extends FindWorstCallsInputBoundary {
     this.outputBoundary = outputBoundary;
   }
 
+
+
   async execute(inputData) {
     const calls = inputData?.calls;
 
@@ -21,5 +23,34 @@ export class FindWorstCallsInteractor extends FindWorstCallsInputBoundary {
 
     for (let i = 0; i < calls.length; i++) {
         const call = calls[i];
+        let unscored = 0;
+        if (!call || typeof call !== 'object') {
+            this.outputBoundary.prepareFailureView(`Invalid call data at index ${i}.`);
+            return;
+        }
+        if (call.customerPartnerRating == null) {
+            unscored++;
+            continue;
+        }
+        if (!Number.isSafeInteger(call.customerPartnerRating)) {
+            this.outputBoundary.prepareFailureView(`Invalid customer partner rating at index ${i}.`);
+            return;
+        }
+
+        worstCalls.push(call);
+        worstCalls.sort((call1, call2) => call1.customerPartnerRating - call2.customerPartnerRating);
+
+        if (worstCalls.length > 3) { // Keep only the 3 worst calls
+            worstCalls.pop();
+        }
+
+    }
+    const outputData = new FindWorstCallsOutputData({
+        calls: worstCalls,
+        receivedCount: calls.length,
+        unscored,
+    });
+
+    this.outputBoundary.prepareSuccessView(outputData);
   }
 }
