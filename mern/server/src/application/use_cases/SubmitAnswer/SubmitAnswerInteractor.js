@@ -15,32 +15,30 @@ import { SubmitAnswerInputBoundary } from "./SubmitAnswerInputBoundary.js";
 import { SubmitAnswerOutputData } from "./SubmitAnswerOutputData.js";
 
 export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
-    constructor(sessionRepository, lessonRepository, moduleRepository, outputBoundary) {
+    constructor(SubmitAnswerDataAccess, outputBoundary) {
         super();
         // Dependency injection for repositories
-        this.sessionRepository = sessionRepository; // repository is MongoDataAccess object 
-        this.lessonRepository = lessonRepository;
-        this.moduleRepository = moduleRepository;
+        this.dataAccess = SubmitAnswerDataAccess;
         this.outputBoundary = outputBoundary;
     }
 
-    async execute(InputData) {
+    async execute(inputData) {
         // Find the session using session repository and inputData.sessionId
-        const session = await this.sessionRepository.findById(InputData.sessionId);
+        const session = await this.dataAccess.findSessionById(inputData.sessionId);
 
         // Validate user ownership of the session, sessions status, and stageID.
-        this.validateSubmission(session, InputData);
+        this.validateSubmission(session, inputData);
 
         // Calculate the answer's score and update user cScore 
-        const module = await this.moduleRepository.findById(InputData.moduleId); // Load the module to get the weights 
+        const module = await this.dataAccess.findModuleById(inputData.moduleId); // Load the module to get the weights 
         
         // check if moduleId exists in lesson 
         if (!module) {
-            throw new Error(`Module with ID ${InputData.moduleId} not found`);
+            throw new Error(`Module with ID ${inputData.moduleId} not found`);
         }
 
         // Load the lesson using session.lessonId and lesson repo 
-        const lesson = await this.lessonRepository.findById(session.lessonId);
+        const lesson = await this.dataAccess.findLessonById(session.lessonId);
 
         // check if lesson exists 
         if (!lesson) {
@@ -48,49 +46,66 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
         }
 
         // check if the lesson is in the module's lessons list
-        if (!module.session.lessonId){
+        if (!module.getLessonIds().includes(session.lessonId)){
             throw new Error(`Lesson with ID ${session.lessonId} is not found in module`)
         }
         // Find the answer in the lesson so we can calculate the score and update the session.
-        const answer = lesson.getAnswer(session.stage, InputData.answerId);
+        const answer = lesson.getAnswer(session.stage, inputData.answerId);
 
         const earnedScore = this.calculateEarnedScore(answer.scores, module.weights);
 
-        const nextStage = lesson.getNextStage(session.stage);
+        const nextStage = lesson.getNextStage(session.stage); // next stage could be a string or null
+
+        const moodThreshold = module.moodThreshold; // get the threshold determining different customer moods 
 
         // Update session history, customer mood, stage, and completion status.
         session.updateCScore(earnedScore);
-        session.updateCustomerMood(); // Assuming this method is in session entity
-        session.updateStage(nextStage); // Assumisng this method is in session entity
-        session.updateCompletionStatus();
+        session.updateCustomerMood(moodThreshold); // Assuming this method is in session entity
+        
+        if (nextStage === null) { // When we reach the final stage, update completed and get pipwords. 
+            session.endSession("completed");
+            pipWords = lesson.getPipWords(currentStage);
+            } 
+        else {
+            session.updateStage(nextStage);
+            pipWords = lesson.getPipWords(nextStage);
+        }
+        
+
+        session.updateCompletionStatus() // update the status of this session 
+
+            
 
         // Create customer response and answer options for the next stage if the session is still in progress.
         const isFinished = session.status !== "in_progress";
 
         let customerResponse = null;
         let answerOptions = [];
+        let pipWords = null; 
 
         if (!isFinished) {
             customerResponse = lesson.getCustomerResponses(session.stage, session.customerMood);
             answerOptions = lesson.getUserResponses(session.stage);
+            pipWords = lesson.getPipWords(session.stage);
         }
         
         const outputData = new SubmitAnswerOutputData({
-            sessionId: InputData.sessionId,
+            sessionId: inputData.sessionId,
             cScore: session.cScore,
             earnedScore: earnedScore,
             status: session.status,
             stageId: session.stage,
             customerMood: session.customerMood,
             customerResponse: customerResponse,
-            answerOptions: answerOptions
+            answerOptions: answerOptions,
+            pipWords: pipWords,
         });
 
         // Save the updated session to the database  
-        await this.sessionRepository.save(session);
+        await this.dataAccess.saveSession(session);
 
         // return output data and pass it to output boundary. 
-        return this.outputBoundary.present(outputData);
+        return this.outputBoundary.prepareSuccessView(outputData);
     }
 
     /**
@@ -131,17 +146,25 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
 
         // check every score is a finite number between 100 and 0;
         // check every score dimension exists in the weight dimensions. 
+        // check if every answer dimension has a weight 
         let earnedScore = 0;
         for (const [dimension, score] of Object.entries(answerScores)) {
             if (!Number.isFinite(score) || score < 0 || score > 100) {
-                throw new Error('Invalid score value for ${dimension}');
+                throw new Error(`Invalid score value for ${dimension}`);
             }
 
             if (!Object.hasOwn(moduleWeights, dimension)) {
-                throw new Error('Dimension ${dimension} not found in module weights');
+                throw new Error(`Dimension ${dimension} not found in module weights`);
             }
+
+            if (Object.keys(answerScores).length !== Object.keys(moduleWeights).length) {
+                throw new Error("Scores and weights must have the same dimensions");
+            }
+
             earnedScore += score * moduleWeights[dimension];
+
         }
+
         return earnedScore;
 
     }

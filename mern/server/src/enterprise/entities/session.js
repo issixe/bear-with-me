@@ -25,14 +25,13 @@ export class Session {
   }
 
   /** Record earned points. cScore is intentionally a total, not Python's mean. */
-  updateCScore(answerScore) {
-    if (!Number.isFinite(answerScore) || answerScore < 0 || answerScore > 100) {
+  updateCScore(earnedScore) {
+    if (!Number.isFinite(earnedScore) || earnedScore < 0 || earnedScore > 100) {
       throw new RangeError(
-        "Answer score must be a finite number between 0 and 100",
+        "Earned score must be a finite number between 0 and 100",
       );
     }
-    this.answerScores.push(answerScore); //TODO: check if its necessary here to make scores into arrays 
-    this.cScore += answerScore;
+    this.cScore += earnedScore;
   }
 
   setStage(stage) {
@@ -46,15 +45,28 @@ export class Session {
     this.status = status;
   }
 
-  updateCustomerMood(){
-    // TODO: decide the mood thresholds in the module 
+  /** Determine the next customer mood and update it */
+  updateCustomerMood(moodThreshold){
+    for (const [mood, [min, max]] of Object.entries(moodThreshold)){
+      if (this.cScore >= min && (this.cScore < max || (max === 100 && this.cScore === 100))){
+        this.customerMood = mood;
+        return;
+      }
+    }
   }
 
+  /** Update session's stage */
   updateStage(nextStage){
     this.stage = nextStage;
   }
 
-  updateCompleteStatus(){
-    //TODO: 
+  /**update the status of this session (complete, in progress) */
+  updateCompletionStatus(){
+    
+    if (this.stage === null){
+      this.status = "completed";
+    }
   }
+
+  
 }
