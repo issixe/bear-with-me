@@ -9,10 +9,12 @@ export class StartSessionPresenter extends StartSessionOutputBoundary {
   prepareSuccessView(out) {
     this.viewModel.httpStatus = 200;
     this.viewModel.body = {
-      sessionId: sessionId,
+      sessionId: out.sessionId,
       lessonId: out.lessonId,
       stage: out.stage,
       customerMood: out.customerMood,
+      customerResponse: out.customerResponse,
+      options: out.options,
     };
   }
 

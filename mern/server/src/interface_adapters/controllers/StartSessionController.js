@@ -1,6 +1,6 @@
 import { StartSessionInputData } from "../../application/use_cases/StartSession/StartSessionInputData.js";
 
-export class ListLessonsController {
+export class StartSessionController {
   constructor(inputBoundary) {
     this.inputBoundary = inputBoundary;
   }

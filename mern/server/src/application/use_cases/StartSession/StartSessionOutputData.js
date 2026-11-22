@@ -16,5 +16,7 @@ export class StartSessionOutputData {
     this.lessonId = lessonId;
     this.stage = stage;
     this.customerMood = customerMood;
+    this.customerResponse = customerResponse;
+    this.options = options;
   }
 }

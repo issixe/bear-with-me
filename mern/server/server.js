@@ -13,19 +13,26 @@ app.use(cors());
 app.use(express.json());
 
 app.use(
-    "/modules",
-    createListModulesRoute({
-        dataAccess: new MongoListModulesDataAccess()
-    })
+  "/modules",
+  createListModulesRoute({
+    dataAccess: new MongoListModulesDataAccess(),
+  }),
 );
 
 app.use(
-    "/modules",
-    createListLessonsRoute({
-        dataAccess: new MongoListLessonsDataAccess()
-    })
+  "/modules",
+  createListLessonsRoute({
+    dataAccess: new MongoListLessonsDataAccess(),
+  }),
+);
+
+app.use(
+  "/sessions",
+  createStartSessionRoute({
+    dataAccess: new MongoStartSessionDataAccess(),
+  }),
 );
 
 app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });

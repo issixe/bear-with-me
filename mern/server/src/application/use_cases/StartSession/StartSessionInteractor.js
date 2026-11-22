@@ -12,7 +12,7 @@
 
 import { StartSessionInputBoundary } from "./StartSessionInputBoundary.js";
 import { StartSessionOutputData } from "./StartSessionOutputData.js";
-import { Session } from "../../enterprise/entities/session.js";
+import { Session } from "../../../enterprise/entities/session.js";
 
 export class StartSessionInteractor extends StartSessionInputBoundary {
   constructor({ dataAccess, presenter }) {
@@ -23,6 +23,7 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
 
   async execute({ agentId, lessonId }) {
     // Check that the agent and lesson referenced actually exist
+
     if (!agentId) {
       throw new Error("Agent ID is required");
     }
@@ -43,22 +44,26 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
       throw new Error(`Lesson with ID ${lessonId} not found`);
     }
 
-    const session = new Session(
-      agentId,
-      lessonId,
-      lesson.startingStage,
-      lesson.initialMood,
-    );
+    const stage = lesson.startingStage;
+    const customerMood = lesson.initialMood;
 
-    const sessionId = await this.sessionAccess.saveNewSession(session);
-    const curStage = lesson.startingStage;
-    const curMood = lesson.initialMood;
+    const session = new Session({ agentId, lessonId, curStage, curMood });
+
+    const sessionId = await this.dataAccess.saveNewSession(session);
+
+    const opening = lesson.stages[stage]["customer responses"][customerMood];
+
+    const options = Object.entries(lesson.stages[stage].answers).map(
+      ([answerId, a]) => ({ answerId, text: a.text }),
+    );
 
     const outputData = new StartSessionOutputData({
       sessionId,
       lessonId,
-      curStage,
-      curMood,
+      stage,
+      customerMood,
+      customerResponse,
+      options,
     });
 
     return this.presenter.prepareSuccessView(outputData);

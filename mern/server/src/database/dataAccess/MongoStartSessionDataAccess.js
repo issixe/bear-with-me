@@ -7,10 +7,9 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
     if (!ObjectId.isValid(agentId)) {
       return null;
     }
-    const user = await db.collection("users").findOne(
-      { _id: new ObjectId(agentId) },
-      //TODO: define projection to match existing user profile structure
-    );
+    const user = await db
+      .collection("users")
+      .findOne({ _id: new ObjectId(agentId) });
 
     if (!user) {
       return null;
@@ -21,19 +20,18 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
   }
 
   async getLessonById(lessonId) {
-    if (!ObjectId.isValid(lessonId)) {
-      return null;
-    }
-    const lesson = await db.collection("lessons").findOne(
-      { _id: new ObjectId(agentId) },
-      //TODO: define projection to match existing lesson structure
-    );
+    const lesson = await db
+      .collection("lessons")
+      .findOne({ lesson_id: lessonId });
 
     if (!lesson) {
       return null;
     }
     return {
-      lesson,
+      id: lesson.lesson_id,
+      startingStage: lesson.starting_stage,
+      initialMood: lesson.initial_mood ?? "angry",
+      stages: lesson.stages,
     };
   }
 
