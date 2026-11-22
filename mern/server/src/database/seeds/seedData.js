@@ -145,7 +145,7 @@ export const exampleLessons = [
             },
           },
         },
-        pipWords: "YAY YOU SOLVED!",
+        pipWords: "YOU GOT THIS!!",
         next_stage: null,
       },
     },

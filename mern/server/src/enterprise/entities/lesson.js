@@ -26,10 +26,22 @@ export class Lesson {
         return this.stages[currentStageId].next_stage;
     }
 
+    getPipWords(stageId){
+        const stage = this.getStage(stageId);
+        const pipWords = stage.pipWords;
+
+        if (typeof pipWords !== "string") {
+        throw new Error(`Pip words not found in stage ${stageId}`);
+        }
+
+        return pipWords; 
+
+    }
+
     /** Get all possible customer responses for a given stage and mood */
     getCustomerResponses(stageId, mood) {
         const stage = this.getStage(stageId);
-        const responses = stage.customerResponses?.[mood];
+        const responses = stage["customer responses"]?.[mood];
         if (typeof responses !==  "string") {
             throw new Error(`Customer responses for mood "${mood}" not found in stage ${stageId} of lesson ${this.lessonId}`);
         }
