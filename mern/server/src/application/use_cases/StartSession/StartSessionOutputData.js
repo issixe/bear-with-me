@@ -11,7 +11,10 @@
 //    and available answer options without their scores.
 
 export class StartSessionOutputData {
-  constructor({ sessionId }) {
+  constructor({ sessionId, lessonId, stage, customerMood }) {
     this.sessionId = sessionId;
+    this.lessonId = lessonId;
+    this.stage = stage;
+    this.customerMood = customerMood;
   }
 }

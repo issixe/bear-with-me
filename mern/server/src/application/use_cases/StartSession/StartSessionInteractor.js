@@ -11,7 +11,7 @@
 //    and available answer options without their scores.
 
 import { StartSessionInputBoundary } from "./StartSessionInputBoundary.js";
-import { startSessionOutputData } from "./StartSessionOutputData.js";
+import { StartSessionOutputData } from "./StartSessionOutputData.js";
 import { Session } from "../../enterprise/entities/session.js";
 
 export class StartSessionInteractor extends StartSessionInputBoundary {
@@ -51,9 +51,16 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
     );
 
     const sessionId = await this.sessionAccess.saveNewSession(session);
+    const curStage = lesson.startingStage;
+    const curMood = lesson.initialMood;
 
-    const outputData = new StartSessionOutputData({ sessionId });
+    const outputData = new StartSessionOutputData({
+      sessionId,
+      lessonId,
+      curStage,
+      curMood,
+    });
 
-    return this.presenter.present(outputData);
+    return this.presenter.prepareSuccessView(outputData);
   }
 }
