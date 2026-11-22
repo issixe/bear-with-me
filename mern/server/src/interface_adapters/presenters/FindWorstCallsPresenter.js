@@ -18,7 +18,7 @@ export class FindWorstCallsPresenter extends FindWorstCallsOutputBoundary {
     }
 
     prepareFailView(msg) {
-        this.viewModel.httpStatus = 404;
+        this.viewModel.httpStatus = 400;
         this.viewModel.body = { error: msg };
     }
 }

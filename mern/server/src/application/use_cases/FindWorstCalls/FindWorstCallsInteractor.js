@@ -15,7 +15,7 @@ export class FindWorstCallsInteractor extends FindWorstCallsInputBoundary {
     const calls = inputData?.calls;
 
     if (!Array.isArray(calls)) {
-        this.outputBoundary.prepareFailureView("Invalid input data: calls must be an array.");
+        this.outputBoundary.prepareFailView("Invalid input data: calls must be an array.");
         return;
     }
 
@@ -24,16 +24,16 @@ export class FindWorstCallsInteractor extends FindWorstCallsInputBoundary {
     for (let i = 0; i < calls.length; i++) {
         const call = calls[i];
         let unscoredCount = 0;
-        if (!call || typeof call !== 'object') {
-            this.outputBoundary.prepareFailureView(`Invalid call data at index ${i}.`);
+        if (!call || typeof call !== 'object' || Array.isArray(call)) {
+            this.outputBoundary.prepareFailView(`Invalid call data at index ${i}.`);
             return;
         }
         if (call.customerPartnerRating == null) {
-            unscored++;
+            unscoredCount++;
             continue;
         }
         if (!Number.isSafeInteger(call.customerPartnerRating)) {
-            this.outputBoundary.prepareFailureView(`Invalid customer partner rating at index ${i}.`);
+            this.outputBoundary.prepareFailView(`Invalid customer partner rating at index ${i}.`);
             return;
         }
 
