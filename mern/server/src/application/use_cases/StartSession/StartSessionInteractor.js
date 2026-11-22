@@ -45,24 +45,25 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
     }
 
     const stage = lesson.startingStage;
-    const customerMood = lesson.initialMood;
+    const customerMood = "angry";
 
     const session = new Session({ agentId, lessonId, curStage, curMood });
 
     const sessionId = await this.dataAccess.saveNewSession(session);
 
-    const opening = lesson.stages[stage]["customer responses"][customerMood];
-
-    const options = Object.entries(lesson.stages[stage].answers).map(
-      ([answerId, a]) => ({ answerId, text: a.text }),
+    const opening = lesson.getCustomerResponses(
+      lesson.startingStage,
+      customerMood,
     );
+
+    const options = lesson.getAgentResponses(lesson.startingStage);
 
     const outputData = new StartSessionOutputData({
       sessionId,
       lessonId,
       stage,
       customerMood,
-      customerResponse,
+      opening,
       options,
     });
 

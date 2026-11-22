@@ -27,12 +27,24 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
     if (!lesson) {
       return null;
     }
-    return {
-      id: lesson.lesson_id,
+
+    const stages = Object.fromEntries(
+      Object.entries(doc.stages).map(([stageId, stage]) => [
+        stageId,
+        {
+          customerResponses: stage["customer responses"],
+          answers: stage.answers,
+          nextStage: stage.next_stage,
+        },
+      ]),
+    );
+
+    return new Lesson({
+      lessonId: lesson.lesson_id,
+      title: lesson.title,
       startingStage: lesson.starting_stage,
-      initialMood: lesson.initial_mood ?? "angry",
-      stages: lesson.stages,
-    };
+      stages,
+    });
   }
 
   async saveNewSession(session) {
