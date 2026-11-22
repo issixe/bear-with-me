@@ -5,6 +5,7 @@ import { MongoListModulesDataAccess } from "./src/database/dataAccess/MongoListM
 import { MongoListLessonsDataAccess } from "./src/database/dataAccess/MongoListLessonsDataAccess.js";
 import { createListModulesRoute } from "./src/routes/ListModulesRoute.js";
 import { createListLessonsRoute } from "./src/routes/ListLessonsRoute.js";
+import { createFindWorstCallsRoute } from "./src/routes/FindWorstCallsRoute.js";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -24,6 +25,11 @@ app.use(
     createListLessonsRoute({
         dataAccess: new MongoListLessonsDataAccess()
     })
+);
+
+app.use(
+    "/admin/calls",
+    createFindWorstCallsRoute()
 );
 
 app.listen(PORT, () => {
