@@ -4,13 +4,18 @@ export const exampleModules = [
     title: "Conflict Resolution",
     description: "Learn how to respond when a customer is upset or frustrated.",
     lessons: ["double_billing"],
-    module_weight: {
+    moduleWeight: {
       compliance: 0.2,
       process: 0.2,
       communication: 0.2,
       efficiency: 0.2,
       outcome: 0.2,
-    }
+    },
+    moodThreshold: {
+      angry: [0, 40],
+      frustrated: [40, 75],
+      calm: [75, null],
+},
   },
   {
     module_id: "billing_basics",
