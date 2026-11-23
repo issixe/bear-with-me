@@ -1,5 +1,9 @@
 export class GetLeaderboardOutputBoundary {
-    async present(outputData) {
-        throw new Error('present() not implemented');
+    async prepareSuccessView(_outputData) {
+        throw new Error('prepareSuccessView() must be implemented');
+    }
+
+    async prepareFailView(_message) {
+        throw new Error('prepareFailView() must be implemented');
     }
 }

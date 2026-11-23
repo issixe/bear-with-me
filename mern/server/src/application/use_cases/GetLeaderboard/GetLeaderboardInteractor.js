@@ -18,36 +18,40 @@ export class GetLeaderboardInteractor extends GetLeaderboardInputBoundary {
     }
 
     async execute({ topCount = 5 } = {}) {
-        const safeTopCount = Math.max(1, Number(topCount) || 5);
-        const currentWeekStart = getMondayOfWeek(new Date());
+        try{
+            const safeTopCount = Math.max(1, Number(topCount) || 5);
+            const currentWeekStart = getMondayOfWeek(new Date());
 
-        const agents = await this.dataAccess.getTopUsers({
-            weekStart: currentWeekStart,
-            topCount: safeTopCount
-        });
+            const agents = await this.dataAccess.getTopUsers({
+                weekStart: currentWeekStart,
+                topCount: safeTopCount
+            });
 
-        const activeThisWeek = agents.filter(
-            (agent) => agent.pointsWeekStart === currentWeekStart
-        );
+            const activeThisWeek = agents.filter(
+                (agent) => agent.pointsWeekStart === currentWeekStart
+            );
 
-        const sortedAgents = [...activeThisWeek].sort(
-            (a, b) => (b.totalPoints || 0) - (a.totalPoints || 0)
-        );
+            const sortedAgents = [...activeThisWeek].sort(
+                (a, b) => (b.totalPoints || 0) - (a.totalPoints || 0)
+            );
 
-        /* Return format:
-        [
-            [agentId, name, totalPoints],
-            [agentId, name, totalPoints], and so on
-        ]
-        */
-        const leaderboard = sortedAgents.slice(0, safeTopCount).map((agent) => [
-            agent.agentId,
-            agent.username || 'Unknown Agent',
-            agent.totalPoints || 0
-        ]);
-        
-        const outputData = new GetLeaderboardOutputData({ leaderboard });
-
-        return this.outputBoundary.present(outputData);
+            /* Return format:
+            [
+                [agentId, name, totalPoints],
+                [agentId, name, totalPoints], and so on
+            ]
+            */
+            const leaderboard = sortedAgents.slice(0, safeTopCount).map((agent) => [
+                agent.agentId,
+                agent.username || 'Unknown Agent',
+                agent.totalPoints || 0
+            ]);
+            
+            const outputData = new GetLeaderboardOutputData({ leaderboard });
+            return await this.outputBoundary.prepareSuccessView(outputData);
+        } 
+        catch(error){
+            return await this.outputBoundary.prepareFailView(error?.message || 'Failed to load leaderboard');
+        }
     }
 }

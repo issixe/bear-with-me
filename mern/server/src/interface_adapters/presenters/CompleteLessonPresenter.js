@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { CompleteLessonOutputBoundary } from "../../application/use_cases/CompleteLesson/CompleteLessonOutputBoundary.js";
 
 export class CompleteLessonPresenter extends CompleteLessonOutputBoundary {
@@ -11,3 +12,30 @@ export class CompleteLessonPresenter extends CompleteLessonOutputBoundary {
         };
     }
 }
+=======
+import { CompleteLessonOutputBoundary } from
+    "../../application/use_cases/CompleteLesson/CompleteLessonOutputBoundary.js";
+
+export class CompleteLessonPresenter extends CompleteLessonOutputBoundary {
+    constructor(viewModel) {
+        super();
+        this.viewModel = viewModel;
+    }
+
+    prepareSuccessView(out) {
+        this.viewModel.httpStatus = 200;
+        this.viewModel.body = {
+            agentId: out.agentId,
+            sessionId: out.sessionId,
+            streak: out.streak,
+            totalPoints: out.totalPoints,
+            completedModules: out.completedModules
+        };
+    }
+
+    prepareFailView(msg) {
+        this.viewModel.httpStatus = 500;
+        this.viewModel.body = { error: msg };
+    }
+}
+>>>>>>> 7846f4f (feat: adds routing for GetLeaderboard and CompleteLesson)
