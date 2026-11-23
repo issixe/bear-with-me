@@ -30,15 +30,14 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
     }
 
     const stages = Object.fromEntries(
-      Object.entries(lesson.stages).map(([stageId, stage]) => [
-        stageId,
-        {
-          customerResponses: stage["customer responses"],
-          answers: stage.answers,
-          nextStage: stage.next_stage,
-        },
-      ]),
-    );
+      Object.entries(lesson.stages).map(([stageId, stage]) => [stageId,
+    {
+      ...stage,
+      "customer responses":
+        stage["customer responses"] ?? stage["customer response"],
+    },
+  ]),
+);
 
     return new Lesson({
       lessonId: lesson.lesson_id,
