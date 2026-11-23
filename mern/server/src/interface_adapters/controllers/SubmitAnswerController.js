@@ -1,5 +1,4 @@
-import {SubmitAnswerInputData} from "../../use_cases/submit_answer/SubmitAnswerInputData.js";
-
+import { SubmitAnswerInputData } from "../../application/use_cases/SubmitAnswer/SubmitAnswerInputData.js";
 export class SubmitAnswerController {
     constructor(InputBoundary) {
         this.InputBoundary = InputBoundary;

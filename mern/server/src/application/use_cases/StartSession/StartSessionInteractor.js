@@ -21,22 +21,22 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
     this.presenter = presenter;
   }
 
-  async execute({ agentId, lessonId }) {
-    // Check that the agent and lesson referenced actually exist
+  async execute({ userId, lessonId }) {
+    // Check that the user and lesson referenced actually exist
     // TODO: restore once users are seeded
 
-    // if (!agentId) {
-    //   throw new Error("Agent ID is required");
+    // if (!userId) {
+    //   throw new Error("user ID is required");
     // }
 
     if (!lessonId) {
       throw new Error("Lesson ID is required");
     }
 
-    // const userProfile = await this.dataAccess.getUserById(agentId);
+    // const userProfile = await this.dataAccess.getUserById(userId);
 
     // if (!userProfile) {
-    //   throw new Error(`User with ID ${agentId} not found`);
+    //   throw new Error(`User with ID ${userId} not found`);
     // }
 
     const lesson = await this.dataAccess.getLessonById(lessonId);
@@ -48,7 +48,7 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
     const stage = lesson.startingStage;
     const customerMood = "angry";
 
-    const session = new Session({ agentId, lessonId, stage, customerMood });
+    const session = new Session({ userId, lessonId, stage, customerMood });
 
     const sessionId = await this.dataAccess.saveNewSession(session);
 
@@ -57,7 +57,7 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
       customerMood,
     );
 
-    const options = lesson.getAgentResponses(lesson.startingStage);
+    const options = lesson.getUserResponses(lesson.startingStage);
 
     const outputData = new StartSessionOutputData({
       sessionId,

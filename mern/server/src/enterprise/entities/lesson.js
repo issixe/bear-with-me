@@ -57,9 +57,7 @@ export class Lesson {
             throw new Error(`User responses not found in stage ${stageId} of lesson ${this.lessonId}`);
         }
 
-        return Object.entries(responses).map(([answerId, answer]) => ({
-      answerId,
-      text: answer.text,
+        return Object.entries(responses).map(([answerId, answer]) => ({answerId, text: answer.text,
     }));
     }
 
