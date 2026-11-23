@@ -46,14 +46,19 @@ export class Session {
   }
 
   /** Determine the next customer mood and update it */
-  updateCustomerMood(moodThreshold){
-    for (const [mood, [min, max]] of Object.entries(moodThreshold)){
-      if (this.cScore >= min && (this.cScore < max || (max === 100 && this.cScore === 100))){
+  updateCustomerMood(moodThreshold) {
+    for (const [mood, [min, max]] of Object.entries(moodThreshold)) {
+      const meetsMinimum = this.cScore >= min;
+      const belowMaximum = max === null || this.cScore < max;
+
+      if (meetsMinimum && belowMaximum) {
         this.customerMood = mood;
         return;
       }
-    }
   }
+
+  throw new Error(`No mood threshold matches score ${this.cScore}`);
+}
 
   /** Update session's stage */
   updateStage(nextStage){
