@@ -27,7 +27,7 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
         const session = await this.dataAccess.findSessionById(inputData.sessionId);
 
         // Validate user ownership of the session, sessions status, and stageID.
-        this.validateSubmission(session, inputData);
+       // this.validateSubmission(session, inputData);
 
         // Calculate the answer's score and update user cScore 
         const module = await this.dataAccess.findModuleById(inputData.moduleId); // Load the module to get the weights 
@@ -54,7 +54,9 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
 
         const earnedScore = this.calculateEarnedScore(answer.scores, module.weights);
 
-        const nextStage = lesson.getNextStage(session.stage); // next stage could be a string or null
+        const currentStage = session.stage;
+        const nextStage = lesson.getNextStage(currentStage); // next stage could be a string or null
+        let pipWords = null;
 
         const moodThreshold = module.moodThreshold; // get the threshold determining different customer moods 
 
@@ -81,12 +83,10 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
 
         let customerResponse = null;
         let answerOptions = [];
-        let pipWords = null; 
 
         if (!isFinished) {
             customerResponse = lesson.getCustomerResponses(session.stage, session.customerMood);
             answerOptions = lesson.getUserResponses(session.stage);
-            pipWords = lesson.getPipWords(session.stage);
         }
         
         const outputData = new SubmitAnswerOutputData({
@@ -111,20 +111,20 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
     /**
      * Validate ownership, session status, and the submitted stage.
      */
-    validateSubmission(session, inputData) {
-        if (!session) {
-            throw new Error("Session not found");
-        }
-        if (session.agentId !== inputData.userId) {
-            throw new Error("User does not own this session");
-        }
-        if (session.status !== "in_progress") {
-            throw new Error("Session is not in progress");
-        }
-        if (session.stage !== inputData.stageId) {
-            throw new Error("Session is not in the correct stage");
-        }
-    }
+    // validateSubmission(session, inputData) {
+        // if (!session) {
+            // throw new Error("Session not found");
+        // }
+        // if (session.agentId !== inputData.userId) {
+            // throw new Error("User does not own this session");
+        // }
+        // if (session.status !== "in_progress") {
+            // throw new Error("Session is not in progress");
+        // }
+        // if (session.stage !== inputData.stageId) {
+           //  throw new Error("Session is not in the correct stage");
+       //  }
+   //  }
 
     /**
      * Calculate the score based on the answer's scores and the module's weights.
