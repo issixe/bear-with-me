@@ -4,6 +4,7 @@ import pip from "../../assets/pip/thumbs-up.png";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { useCurrentUser } from "../hooks/useUsers";
 import { useOpenLesson } from "../hooks/useSessions";
+import { useServices } from "../context/ServicesContext";
 
 const Learn = () => {
   const [params] = useSearchParams();
@@ -23,47 +24,102 @@ const Learn = () => {
 const MOOD_TENSION = { angry: 70, frustrated: 50, calm: 20 };
 
 function Lesson({ lesson, session }) {
-  const module = exampleModules.find((item) => item.lessons.includes(lesson.lesson_id));
-  const [stageId, setStageId] = useState(session?.stage ?? lesson.starting_stage);
-  const [tension, setTension] = useState(MOOD_TENSION[session?.customerMood] ?? 70);
-  const [history, setHistory] = useState([]);
-  const [complete, setComplete] = useState(false);
-  const latest = useRef(null);
-  const stage = lesson.stages[stageId];
-  const progress = Math.round(history.length / Object.keys(lesson.stages).length * 100);
-  const isFirstRound = history.length === 0 && session !== null;
+    const module = exampleModules.find((item) =>
+    item.lessons.includes(lesson.lesson_id),
+  );
 
+  const { sessionService } = useServices();
   const { user } = useCurrentUser();
   const { openLesson, opening, error: startError } = useOpenLesson(user?.id);
 
-  const mood = isFirstRound
-    ? session.customerMood
-    : tension > 65 ? "angry" : tension > 35 ? "frustrated" : "calm";
+  // StartSession currently returns stage/options.
+  // SubmitAnswer returns stageId/answerOptions.
+  const [sessionProgress, setSessionProgress] = useState(() =>
+    session
+      ? {
+          ...session,
+          stageId: session.stageId ?? session.stage,
+          answerOptions: session.answerOptions ?? session.options ?? [],
+          isFinished: session.isFinished ?? false,
+        }
+      : null,
+  );
 
-  const customer = isFirstRound
-    ? session.customerResponse
-    : stage["customer responses"][mood];
+  const [history, setHistory] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
-  const options = isFirstRound
-    ? session.options
-    : Object.entries(stage.answers).map(([answerId, a]) => ({ answerId, text: a.text }));
+  const submittingRef = useRef(false);
+  const latest = useRef(null);
 
+  const stageId = sessionProgress?.stageId;
+  const mood = sessionProgress?.customerMood;
+  const customer = sessionProgress?.customerResponse ?? "";
+  const options = sessionProgress?.answerOptions ?? [];
+  const complete = sessionProgress?.isFinished ?? false;
+
+  // Visual indicator based on the mood returned by the backend.
+  const tension = MOOD_TENSION[mood] ?? 70;
+
+  const progress = Math.round(
+    (history.length / Object.keys(lesson.stages).length) * 100,
+  );
+  
   useEffect(() => {
     if (history.length) latest.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [history.length]);
 
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
 
-  function choose(answerId) {
-    const answer = stage.answers[answerId];
-    const score =
-    Object.values(answer.scores).reduce((sum, v) => sum + v, 0) /
-    Object.keys(answer.scores).length;
+    async function choose(answerId) {
+    if (submittingRef.current || complete) return;
 
-    setHistory([...history, { stageId, customer, mood, answer: answer.text }]);
-    setTension(Math.max(0, Math.min(100, tension + (score >= 75 ? -25 : score >= 40 ? 5 : 20))));
-    if (stage.next_stage === null) setComplete(true);
-    else setStageId(stage.next_stage);
+    if (
+      !sessionProgress?.sessionId ||
+      !user?.id ||
+      !module?.module_id
+    ) {
+      setSubmitError("Open the lesson from the module list first.");
+      return;
+    }
+
+    const selectedAnswer = options.find(
+      (option) => option.answerId === answerId,
+    );
+
+    if (!selectedAnswer) return;
+
+    submittingRef.current = true;
+    setSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const result = await sessionService.submitAnswer({
+        sessionId: sessionProgress.sessionId,
+        userId: user.id,
+        moduleId: module.module_id,
+        stageId,
+        answerId,
+      });
+
+      setHistory((previous) => [
+        ...previous,
+        {
+          stageId,
+          customer,
+          mood,
+          answer: selectedAnswer.text,
+        },
+      ]);
+
+      // The backend supplies the next stage, mood, and options.
+      setSessionProgress(result);
+    } catch (error) {
+      setSubmitError(error.message || "Could not submit your answer.");
+    } finally {
+      submittingRef.current = false;
+      setSubmitting(false);
+    }
   }
 
   function speak(text) {
