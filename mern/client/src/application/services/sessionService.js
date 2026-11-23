@@ -1,6 +1,6 @@
 import { apiClient } from "../../infrastructure/http/apiClient";
 
-export const session = {
+export const sessionService = {
     // start a new attempt 
 
     start({ agentId, lessonId }) {
