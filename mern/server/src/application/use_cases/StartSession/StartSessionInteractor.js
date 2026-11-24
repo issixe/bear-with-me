@@ -12,7 +12,7 @@
 
 import { StartSessionInputBoundary } from "./StartSessionInputBoundary.js";
 import { StartSessionOutputData } from "./StartSessionOutputData.js";
-import { Session } from "../../../enterprise/entities/session.js";
+import { Session } from "../../../enterprise/entities/Session.js";
 
 export class StartSessionInteractor extends StartSessionInputBoundary {
   constructor({ dataAccess, presenter }) {
