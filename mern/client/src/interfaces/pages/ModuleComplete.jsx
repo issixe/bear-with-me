@@ -6,9 +6,16 @@ const streakDays = 3;
 const totalDays = 7;
 
 //Lesson passed these in when it was completed
-export default function ModuleComplete({ lessonTitle, moduleTitle, nextLessonId, scores }) {
+export default function ModuleComplete({
+  lessonTitle,
+  moduleTitle,
+  nextLessonId,
+  scores,
+}) {
   //To display the satisfaction score
-  const satisfaction = Math.round(scores.reduce((total, score) => total + score, 0) / scores.length);
+  const satisfaction = Math.round(
+    scores.reduce((total, score) => total + score, 0) / scores.length,
+  );
 
   //Streak, pip's messages are hardcoded.
   return (
@@ -21,9 +28,7 @@ export default function ModuleComplete({ lessonTitle, moduleTitle, nextLessonId,
         <div className="mb-8 flex flex-col items-center gap-3 text-center">
           <p className="font-bold text-[#287F6E]">Pip’s proud of you!</p>
           <img src={pipCelebrate} alt="" className="size-32 object-contain" />
-          <h1 className="text-3xl font-bold">
-            Lesson complete!
-          </h1>
+          <h1 className="text-3xl font-bold">Lesson complete!</h1>
           <p className="text-stone-600">
             {[moduleTitle, lessonTitle].filter(Boolean).join(" · ")}
           </p>
@@ -37,28 +42,49 @@ export default function ModuleComplete({ lessonTitle, moduleTitle, nextLessonId,
           <div className="rounded-2xl bg-[var(--streak-light)] p-4">
             <h2 className="font-bold">{streakDays}-day streak maintained!</h2>
             <div className="mt-2 flex gap-2">
-              {Array.from({ length: totalDays }, (_, index) =>
-                index < streakDays ? (
-                  <span key={index} className="grid size-7 place-items-center rounded-full bg-[#9b5325] font-bold text-white">✓</span>
+              {Array.from({ length: totalDays }, (_, index) => {
+                const day = index + 1;
+                return day <= streakDays ? (
+                  <span
+                    key={`day-${day}`}
+                    className="grid size-7 place-items-center rounded-full bg-[#9b5325] font-bold text-white"
+                  >
+                    ✓
+                  </span>
                 ) : (
-                  <span key={index} className="size-7 rounded-full border-2 border-[#9b5325]"></span>
-                )
-              )}
+                  <span
+                    key={`day-${day}`}
+                    className="size-7 rounded-full border-2 border-[#9b5325]"
+                  ></span>
+                );
+              })}
             </div>
           </div>
           <div className="rounded-2xl bg-white p-4">
             <h2 className="font-bold">Remember</h2>
             <p className="text-stone-600">
-              Acknowledge the customer’s concern, without disregarding their emotion.
+              Acknowledge the customer’s concern, without disregarding their
+              emotion.
             </p>
           </div>
         </div>
 
         <div className="mt-8 grid gap-3 text-center">
-          <Link to={nextLessonId ? `/learn?lesson=${encodeURIComponent(nextLessonId)}` : "/"} className="rounded-xl bg-[#267a6b] p-3 font-bold text-white">
+          <Link
+            to={
+              nextLessonId
+                ? `/learn?lesson=${encodeURIComponent(nextLessonId)}`
+                : "/"
+            }
+            className="rounded-xl bg-[#267a6b] p-3 font-bold text-white"
+          >
             {nextLessonId ? "Continue learning →" : "Back to homepage"}
           </Link>
-          {nextLessonId && <Link to="/" className="font-bold hover:underline">Back to homepage</Link>}
+          {nextLessonId && (
+            <Link to="/" className="font-bold hover:underline">
+              Back to homepage
+            </Link>
+          )}
         </div>
       </div>
     </section>
