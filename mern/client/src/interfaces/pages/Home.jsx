@@ -6,7 +6,11 @@ import pipWave from "../../assets/pip/waving.png";
 
 export default function Home() {
   const { user } = useCurrentUser();
-  const { modules, loading: modulesLoading, error: modulesError } = useModules();
+  const {
+    modules,
+    loading: modulesLoading,
+    error: modulesError,
+  } = useModules();
 
   return (
     <main className="mx-auto max-w-5xl">
@@ -23,7 +27,10 @@ export default function Home() {
       </header>
 
       <section aria-labelledby="modules-heading">
-        <h2 id="modules-heading" className="mb-4 text-3xl font-extrabold text-[#24413B]">
+        <h2
+          id="modules-heading"
+          className="mb-4 text-3xl font-extrabold text-[#24413B]"
+        >
           Modules
         </h2>
         {modulesLoading && <p className="text-stone-500">Loading modules...</p>}
@@ -36,13 +43,16 @@ export default function Home() {
         {!modulesLoading && !modulesError && (
           <div className="flex flex-col gap-3">
             {modules.map((m) => (
-              <ModuleItem key={m.id} module={m} completedLessonIds={user?.completedLessonIds} 
-              agentId={user?.id}
+              <ModuleItem
+                key={m.id}
+                module={m}
+                completedLessonIds={user?.completedLessonIds}
+                agentId={user?.id}
               />
             ))}
           </div>
         )}
       </section>
     </main>
-  )
+  );
 }

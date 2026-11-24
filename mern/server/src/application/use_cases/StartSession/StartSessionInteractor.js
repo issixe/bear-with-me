@@ -15,59 +15,59 @@ import { StartSessionOutputData } from "./StartSessionOutputData.js";
 import { Session } from "../../../enterprise/entities/session.js";
 
 export class StartSessionInteractor extends StartSessionInputBoundary {
-  constructor({ dataAccess, presenter }) {
-    super();
-    this.dataAccess = dataAccess;
-    this.presenter = presenter;
-  }
-
-  async execute({ agentId, lessonId }) {
-    // Check that the agent and lesson referenced actually exist
-    // TODO: restore once users are seeded
-
-    // if (!agentId) {
-    //   throw new Error("Agent ID is required");
-    // }
-
-    if (!lessonId) {
-      throw new Error("Lesson ID is required");
+    constructor({ dataAccess, presenter }) {
+        super();
+        this.dataAccess = dataAccess;
+        this.presenter = presenter;
     }
 
-    // const userProfile = await this.dataAccess.getUserById(agentId);
+    async execute({ agentId, lessonId }) {
+        // Check that the agent and lesson referenced actually exist
+        // TODO: restore once users are seeded
 
-    // if (!userProfile) {
-    //   throw new Error(`User with ID ${agentId} not found`);
-    // }
+        // if (!agentId) {
+        //   throw new Error("Agent ID is required");
+        // }
 
-    const lesson = await this.dataAccess.getLessonById(lessonId);
+        if (!lessonId) {
+            throw new Error("Lesson ID is required");
+        }
 
-    if (!lesson) {
-      throw new Error(`Lesson with ID ${lessonId} not found`);
+        // const userProfile = await this.dataAccess.getUserById(agentId);
+
+        // if (!userProfile) {
+        //   throw new Error(`User with ID ${agentId} not found`);
+        // }
+
+        const lesson = await this.dataAccess.getLessonById(lessonId);
+
+        if (!lesson) {
+            throw new Error(`Lesson with ID ${lessonId} not found`);
+        }
+
+        const stage = lesson.startingStage;
+        const customerMood = "angry";
+
+        const session = new Session({ agentId, lessonId, stage, customerMood });
+
+        const sessionId = await this.dataAccess.saveNewSession(session);
+
+        const customerResponse = lesson.getCustomerResponses(
+            lesson.startingStage,
+            customerMood,
+        );
+
+        const options = lesson.getAgentResponses(lesson.startingStage);
+
+        const outputData = new StartSessionOutputData({
+            sessionId,
+            lessonId,
+            stage,
+            customerMood,
+            customerResponse,
+            options,
+        });
+
+        return this.presenter.prepareSuccessView(outputData);
     }
-
-    const stage = lesson.startingStage;
-    const customerMood = "angry";
-
-    const session = new Session({ agentId, lessonId, stage, customerMood });
-
-    const sessionId = await this.dataAccess.saveNewSession(session);
-
-    const customerResponse = lesson.getCustomerResponses(
-      lesson.startingStage,
-      customerMood,
-    );
-
-    const options = lesson.getAgentResponses(lesson.startingStage);
-
-    const outputData = new StartSessionOutputData({
-      sessionId,
-      lessonId,
-      stage,
-      customerMood,
-      customerResponse,
-      options,
-    });
-
-    return this.presenter.prepareSuccessView(outputData);
-  }
 }

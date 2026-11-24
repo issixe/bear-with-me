@@ -4,6 +4,5 @@
 // Kept so this use case follows the same pattern as the others.
 
 export class ListModulesInputData {
-    constructor() {
-    }
+    constructor() {}
 }

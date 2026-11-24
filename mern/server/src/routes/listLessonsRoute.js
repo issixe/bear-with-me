@@ -15,7 +15,7 @@ export function createListLessonsRoute({ dataAccess }) {
             const presenter = new ListLessonsPresenter(viewModel);
             const interactor = new ListLessonsInteractor({
                 dataAccess,
-                outputBoundary: presenter
+                outputBoundary: presenter,
             });
             const controller = new ListLessonsController(interactor);
 

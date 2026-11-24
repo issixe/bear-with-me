@@ -8,6 +8,6 @@
 
 export class GetUserProgressOutputBoundary {
     async present(outputData) {
-        throw new Error('Present not implemented');
+        throw new Error("Present not implemented");
     }
 }

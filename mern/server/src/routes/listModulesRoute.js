@@ -14,7 +14,7 @@ export function createListModulesRoute({ dataAccess }) {
             const presenter = new ListModulesPresenter(viewModel);
             const interactor = new ListModulesInteractor({
                 dataAccess,
-                outputBoundary: presenter
+                outputBoundary: presenter,
             });
             const controller = new ListModulesController(interactor);
 
@@ -26,25 +26,25 @@ export function createListModulesRoute({ dataAccess }) {
         }
     });
 
-  router.get("/", async (req, res, next) => {
-    try {
-      const viewModel = new ListModulesViewModel();
-      const presenter = new ListModulesPresenter(viewModel);
+    router.get("/", async (req, res, next) => {
+        try {
+            const viewModel = new ListModulesViewModel();
+            const presenter = new ListModulesPresenter(viewModel);
 
-      const interactor = new ListModulesInteractor({
-        moduleData,
-        outputBoundary: presenter,
-      });
+            const interactor = new ListModulesInteractor({
+                moduleData,
+                outputBoundary: presenter,
+            });
 
-      const controller = new ListModulesController(interactor);
+            const controller = new ListModulesController(interactor);
 
-      await controller.execute();
+            await controller.execute();
 
-      return res.status(viewModel.httpStatus).json(viewModel.body);
-    } catch (error) {
-      next(error);
-    }
-  });
+            return res.status(viewModel.httpStatus).json(viewModel.body);
+        } catch (error) {
+            next(error);
+        }
+    });
 
-  return router;
+    return router;
 }

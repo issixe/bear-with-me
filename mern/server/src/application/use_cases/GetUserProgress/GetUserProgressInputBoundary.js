@@ -8,6 +8,6 @@
 
 export class GetUserProgressInputBoundary {
     async execute(inputData) {
-        throw new Error('Execute not implemented');
+        throw new Error("Execute not implemented");
     }
 }

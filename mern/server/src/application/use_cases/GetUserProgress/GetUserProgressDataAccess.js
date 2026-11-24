@@ -8,6 +8,6 @@
 
 export class GetUserProgressDataAccess {
     async getUserById(agentId) {
-        throw new Error('getUserById not implemented');
+        throw new Error("getUserById not implemented");
     }
- }
+}

@@ -1,4 +1,4 @@
-import { CompleteLessonOutputBoundary } from '../../application/use_cases/CompleteLesson/CompleteLessonOutputBoundary.js';
+import { CompleteLessonOutputBoundary } from "../../application/use_cases/CompleteLesson/CompleteLessonOutputBoundary.js";
 
 export class CompleteLessonPresenter extends CompleteLessonOutputBoundary {
     async present(outputData) {
@@ -7,7 +7,7 @@ export class CompleteLessonPresenter extends CompleteLessonOutputBoundary {
             sessionId: outputData.sessionId,
             streak: outputData.streak,
             totalPoints: outputData.totalPoints,
-            completedModules: outputData.completedModules // not sure about this one, too many properties of similar names...
+            completedModules: outputData.completedModules, // not sure about this one, too many properties of similar names...
         };
     }
 }
