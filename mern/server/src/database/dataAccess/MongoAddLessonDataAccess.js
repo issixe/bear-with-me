@@ -1,5 +1,5 @@
 import db from "../connection.js";
-import { AddLessonDataAccess } from "../../application/use_cases/CompleteLesson/CompleteLessonDataAccess.js";
+import { AddLessonDataAccess } from "../../application/use_cases/AddLesson/AddLessonDataAccess.js";
 
 export class MongoAddLessonDataAccess extends AddLessonDataAccess {
   async lessonExists(lessonId) {
@@ -15,7 +15,16 @@ export class MongoAddLessonDataAccess extends AddLessonDataAccess {
       title: lesson.title,
       module: lesson.moduleId,
       starting_stage: lesson.startingStage,
-      stages: lesson.stages,
+      stages: Object.fromEntries(
+        Object.entries(lesson.stages).map(([stageId, stage]) => [
+          stageId,
+          {
+            "customer responses": stage.customerResponses,
+            answers: stage.answers,
+            next_stage: stage.nextStage,
+          },
+        ]),
+      ),
     });
   }
 

@@ -7,7 +7,6 @@
 import { AddLessonInputBoundary } from "./AddLessonInputBoundary.js";
 import { AddLessonOutputData } from "./AddLessonOutputData.js";
 import { Lesson } from "../../../enterprise/entities/lesson.js";
-import { createLessonValidationChain } from "../../../enterprise/validation/CreateLessonValidationChain.js";
 
 const CUSTOM_MODULE = {
   moduleId: "custom_lessons",
@@ -27,18 +26,20 @@ export class AddLessonInteractor extends AddLessonInputBoundary {
     // 1. Start the validation using the Chain of Responsibility design pattern
     const error = this.validator.validate(inputData);
     if (error) {
-      return this.presenter.prepareFailView({
+      this.presenter.prepareFailView({
         reason: "invalid",
         message: error,
       });
+      return;
     }
 
     // 2. Check for duplicate lessonId in database. Exists outside of the validator because this requires database access
     if (await this.dataAccess.lessonExists(inputData.lessonId)) {
-      return this.presenter.prepareFailView({
+      this.presenter.prepareFailView({
         reason: "duplicate",
         message: `A lesson with id "${inputData.lessonId}" already exists`,
       });
+      return;
     }
 
     // 3. Build the entity now that it has been validated
@@ -53,7 +54,7 @@ export class AddLessonInteractor extends AddLessonInputBoundary {
     await this.dataAccess.saveLesson(lesson);
     await this.dataAccess.addLessonToModule(CUSTOM_MODULE, lesson.lessonId);
 
-    return this.presenter.prepareSuccessView(
+    this.presenter.prepareSuccessView(
       new AddLessonOutputData({
         lessonId: lesson.lessonId,
         moduleId: CUSTOM_MODULE.moduleId,

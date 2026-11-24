@@ -1,14 +1,14 @@
-import { ListLessonsOutputBoundary } from "../../application/use_cases/ListLessons/ListLessonsOutputBoundary.js";
+import { AddLessonOutputBoundary } from "../../application/use_cases/AddLesson/AddLessonOutputBoundary.js";
 
-export class ListLessonsPresenter extends ListLessonsOutputBoundary {
+export class AddLessonPresenter extends AddLessonOutputBoundary {
   constructor(viewModel) {
     super();
     this.viewModel = viewModel;
   }
 
   prepareSuccessView(out) {
-    this.viewModel.httpStatus = 200;
-    this.viewModel.body = { moduleId: out.moduleId, lessons: out.lessons };
+    this.viewModel.httpStatus = 201;
+    this.viewModel.body = { lessonId: out.lessonId, moduleId: out.moduleId };
   }
 
   prepareFailView({ reason, message }) {

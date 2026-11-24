@@ -1,5 +1,5 @@
 import express from "express";
-
+import { createLessonValidationChain } from "../enterprise/services/CreateLessonValidationChain.js";
 import { AddLessonViewModel } from "../interface_adapters/viewModels/AddLessonViewModel.js";
 import { AddLessonPresenter } from "../interface_adapters/presenters/AddLessonPresenter.js";
 import { AddLessonInteractor } from "../application/use_cases/AddLesson/AddLessonInteractor.js";
@@ -19,7 +19,7 @@ export function createAddLessonRoute({ dataAccess }) {
       });
       const controller = new AddLessonController(interactor);
 
-      await controller.execute(req.body.moduleId);
+      await controller.execute(req.body);
 
       res.status(viewModel.httpStatus).json(viewModel.body);
     } catch (error) {

@@ -7,6 +7,8 @@ import { createListModulesRoute } from "./src/routes/ListModulesRoute.js";
 import { createListLessonsRoute } from "./src/routes/ListLessonsRoute.js";
 import { MongoStartSessionDataAccess } from "./src/database/dataAccess/MongoStartSessionDataAccess.js";
 import { createStartSessionRoute } from "./src/routes/StartSessionRoute.js";
+import { MongoAddLessonDataAccess } from "./src/database/dataAccess/MongoAddLessonDataAccess.js";
+import { createAddLessonRoute } from "./src/routes/AddLessonRoute.js";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -33,6 +35,11 @@ app.use(
   createStartSessionRoute({
     dataAccess: new MongoStartSessionDataAccess(),
   }),
+);
+
+app.use(
+  "/lessons",
+  createAddLessonRoute({ dataAccess: new MongoAddLessonDataAccess() }),
 );
 
 app.listen(PORT, () => {

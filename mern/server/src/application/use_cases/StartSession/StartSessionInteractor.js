@@ -30,7 +30,8 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
     // }
 
     if (!lessonId) {
-      throw new Error("Lesson ID is required");
+      this.presenter.prepareFailView("Lesson ID is required");
+      return;
     }
 
     // const userProfile = await this.dataAccess.getUserById(agentId);
@@ -42,7 +43,8 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
     const lesson = await this.dataAccess.getLessonById(lessonId);
 
     if (!lesson) {
-      throw new Error(`Lesson with ID ${lessonId} not found`);
+      this.presenter.prepareFailView(`Lesson with ID ${lessonId} not found`);
+      return;
     }
 
     const stage = lesson.startingStage;
@@ -68,6 +70,6 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
       options,
     });
 
-    return this.presenter.prepareSuccessView(outputData);
+    this.presenter.prepareSuccessView(outputData);
   }
 }
