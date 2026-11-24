@@ -8,14 +8,17 @@ import pip from "../../assets/pip/thumbs-up.png";
 import { useOpenLesson } from "../hooks/useSessions";
 import { useCurrentUser } from "../hooks/useUsers";
 
+//Figuring out which lesson to show from the URL that the user clicks
 const Learn = () => {
   const [params] = useSearchParams();
   const location = useLocation();
   const session = location.state?.session ?? null;
 
   const id = params.get("lesson") ?? "double_billing";
+  //Looks through list of lessons in seedData.js and finds the one where lesson_id matches the id
   const lesson = exampleLessons.find((item) => item.lesson_id === id);
 
+  //No lesson was found
   if (!lesson) {
     return (
       <main className="p-6">
@@ -75,6 +78,7 @@ function Lesson({ lesson, session }) {
         text: a.text,
       }));
 
+  //Scrolling to the newest message in the chat
   useEffect(() => {
     if (history.length)
       latest.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -95,23 +99,16 @@ function Lesson({ lesson, session }) {
         Math.min(100, tension + (score >= 75 ? -25 : score >= 40 ? 5 : 20)),
       ),
     );
+    //Continues.
     if (stage.next_stage === null) setComplete(true);
     else setStageId(stage.next_stage);
   }
 
-  function speak(text) {
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
-  }
-
+  //Draws the chat bubble, emoji based on mood
   function customerMessage(text, customerMood) {
     return (
       <div className="flex items-start gap-3">
-        <span
-          className="text-3xl"
-          role="img"
-          aria-label={`${customerMood} customer`}
-        >
+        <span className="text-3xl">
           {customerMood === "angry"
             ? "😠"
             : customerMood === "frustrated"
@@ -122,31 +119,19 @@ function Lesson({ lesson, session }) {
           <p className="mb-2 text-sm font-bold">Customer</p>
           <p>{text}</p>
         </div>
-        {"speechSynthesis" in window && (
-          <button
-            type="button"
-            onClick={() => speak(text)}
-            aria-label="Read customer message aloud"
-            className="rounded-full border border-stone-300 p-2 hover:bg-white"
-          >
-            🔊
-          </button>
-        )}
       </div>
     );
   }
 
+  //Actual page. Sidebar, complete gets info for ModuleComplete screen
   return (
-    <main className="mx-auto min-h-screen max-w-6xl text-[#24413B] md:flex">
-      <aside className="border-b border-stone-200 bg-white p-4 md:sticky md:top-6 md:max-h-[calc(100dvh-3rem)] md:w-56 md:shrink-0 md:self-start md:overflow-y-auto md:border-r md:border-b-0">
+    <main className="mx-auto flex min-h-screen max-w-6xl text-[#24413B]">
+      <aside className="sticky top-6 max-h-[calc(100dvh-3rem)] w-56 shrink-0 self-start overflow-y-auto border-r border-stone-200 bg-white p-4">
         <Link to="/" className="font-bold hover:underline">
           ← My Progress
         </Link>
         <p className="mt-6 mb-3 font-bold">{module?.title}</p>
-        <nav
-          aria-label="Module lessons"
-          className="flex gap-2 overflow-x-auto md:flex-col"
-        >
+        <nav className="flex flex-col gap-2 overflow-x-auto">
           {module?.lessons.map((id) => (
             <button
               key={id}
@@ -175,72 +160,62 @@ function Lesson({ lesson, session }) {
           </p>
         )}
       </aside>
-
-      <section className="min-w-0 flex-1 bg-[var(--background)]">
-        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200 bg-white p-5">
-          <h1 className="text-xl font-extrabold">{lesson.title}</h1>
-          <div className="flex items-center gap-2 text-sm">
-            <label htmlFor="tension">Tension {tension}%</label>
-            <meter
-              id="tension"
-              min="0"
-              max="100"
-              low="35"
-              high="65"
-              optimum="0"
-              value={tension}
-              className="w-28"
-            >
-              {tension}%
-            </meter>
-          </div>
-          <div className="w-full text-sm">
-            <label htmlFor="lesson-progress">
-              Lesson progress: {progress}%
-            </label>
-            <progress
-              id="lesson-progress"
-              max="100"
-              value={progress}
-              className="mt-1 block h-2 w-full accent-[#287F6E]"
-            >
-              {progress}%
-            </progress>
-          </div>
-        </header>
-
-        <div className="space-y-6 p-4 md:p-6">
-          {history.map((turn) => (
-            <div key={turn.stageId} className="space-y-4">
-              {customerMessage(turn.customer, turn.mood)}
-              <div className="ml-8 rounded-2xl border border-[#287F6E] bg-white p-4 md:ml-24">
-                <p className="mb-2 text-sm font-bold">Your response</p>
-                <p>{turn.answer}</p>
-              </div>
+      {complete ? (
+        <ModuleComplete
+          lessonTitle={lesson.title}
+          moduleTitle={module?.title}
+          nextLessonId={nextLessonId}
+          scores={history.map((turn) => turn.score)}
+        />
+      ) : (
+        <section className="min-w-0 flex-1 bg-[var(--background)]">
+          <header className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200 bg-white p-5">
+            <h1 className="text-xl font-extrabold">{lesson.title}</h1>
+            <div className="flex items-center gap-2 text-sm">
+              <label htmlFor="tension">Tension {tension}%</label>
+              <meter
+                id="tension"
+                min="0"
+                max="100"
+                low="35"
+                high="65"
+                optimum="0"
+                value={tension}
+                className="w-28"
+              >
+                {tension}%
+              </meter>
             </div>
-          ))}
-          <div ref={latest} aria-live="polite">
-            {complete ? (
-              <div className="rounded-2xl border border-stone-200 bg-white p-6 text-center">
-                <h2 className="text-2xl font-bold">Lesson complete!</h2>
-                <p className="my-3">
-                  You finished all {history.length} stages. Final customer
-                  tension: {tension}%.
-                </p>
-                <p className="mb-4 text-sm text-stone-500">
-                  This is a sample lesson. Progress is not saved yet.
-                </p>
-                <Link
-                  to="/"
-                  className="inline-block rounded-lg bg-[#287F6E] px-4 py-2 text-white"
-                >
-                  Back to modules
-                </Link>
+            <div className="w-full text-sm">
+              <label htmlFor="lesson-progress">
+                Lesson progress: {progress}%
+              </label>
+              <progress
+                id="lesson-progress"
+                max="100"
+                value={progress}
+                className="mt-1 block h-2 w-full accent-[#287F6E]"
+              >
+                {progress}%
+              </progress>
+            </div>
+          </header>
+
+          <div className="space-y-6 p-6">
+            {history.map((turn) => (
+              <div key={turn.stageId} className="space-y-4">
+                {customerMessage(turn.customer, turn.mood)}
+                <div className="ml-24 rounded-2xl border border-[#287F6E] bg-white p-4">
+                  <p className="mb-2 text-sm font-bold">Your response</p>
+                  <p>{turn.answer}</p>
+                </div>
               </div>
-            ) : (
+            ))}
+
+            <div ref={latest}>
               <div className="space-y-4">
                 {customerMessage(customer, mood)}
-                <fieldset className="ml-8 min-w-0 rounded-2xl border border-stone-200 bg-white p-4 md:ml-24">
+                <fieldset className="ml-24 min-w-0 rounded-2xl border border-stone-200 bg-white p-4">
                   <legend className="px-2 font-bold">Your response</legend>
                   <div className="space-y-3">
                     {options.map((option) => (
@@ -256,10 +231,10 @@ function Lesson({ lesson, session }) {
                   </div>
                 </fieldset>
               </div>
-            )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </main>
   );
 }
