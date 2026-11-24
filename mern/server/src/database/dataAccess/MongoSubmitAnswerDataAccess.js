@@ -1,9 +1,9 @@
 import db from "../connection.js";
 import { ObjectId } from "mongodb";
 import { SubmitAnswerDataAccess } from "../../application/use_cases/SubmitAnswer/SubmitAnswerDataAccess.js";
-import { Session } from "../../enterprise/entities/session.js";
+import { Session } from "../../enterprise/entities/Session.js";
 import { Lesson } from "../../enterprise/entities/Lesson.js";
-import { Module } from "../../enterprise/entities/module.js";
+import { Module } from "../../enterprise/entities/Module.js";
 
 export class MongoSubmitAnswerDataAccess extends SubmitAnswerDataAccess {
     async findSessionById(sessionId) {
