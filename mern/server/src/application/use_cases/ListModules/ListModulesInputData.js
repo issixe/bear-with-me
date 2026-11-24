@@ -3,6 +3,4 @@
 // Intentionally empty: listing all modules needs no input.
 // Kept so this use case follows the same pattern as the others.
 
-export class ListModulesInputData {
-    constructor() {}
-}
+export class ListModulesInputData {}

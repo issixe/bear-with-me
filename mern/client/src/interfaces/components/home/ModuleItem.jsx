@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useOpenLesson } from "../../hooks/useSessions";
 import { useLessons } from "../../hooks/useLessons";
+import { useOpenLesson } from "../../hooks/useSessions";
 
 export default function ModuleItem({
   module,

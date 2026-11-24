@@ -49,9 +49,9 @@ export class ListLessonsInteractor extends ListLessonsInputBoundary {
                 })),
             });
             this.outputBoundary.prepareSuccessView(outputData);
-        } catch (error) {
+        } catch (_error) {
             this.outputBoundary.prepareFailView(
-                'Could not load lessons for module "${moduleId}".',
+                `Could not load lessons for module ${moduleId}.`,
             );
         }
     }

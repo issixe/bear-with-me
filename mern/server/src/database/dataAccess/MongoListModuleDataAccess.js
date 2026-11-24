@@ -1,5 +1,5 @@
-import db from "../connection.js";
 import { ListModulesDataAccess } from "../../application/use_cases/ListModules/ListModulesDataAccess.js";
+import db from "../connection.js";
 
 export class MongoListModulesDataAccess extends ListModulesDataAccess {
     async findAll() {

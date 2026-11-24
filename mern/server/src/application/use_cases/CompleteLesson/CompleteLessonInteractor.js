@@ -18,10 +18,9 @@ export class CompleteLessonInteractor extends CompleteLessonInputBoundary {
         if (!session) {
             throw new Error("session not found");
         }
-        if (session.agentId != agentId) {
+        if (session.agentId !== agentId) {
             throw new Error("session does not belong to this agent");
         }
-        const sessionScore = session.cScore;
 
         // load agent
         const agent = await this.dataAccess.findAgentById(agentId);
@@ -37,9 +36,9 @@ export class CompleteLessonInteractor extends CompleteLessonInputBoundary {
         yesterdayDate.setDate(yesterdayDate.getDate() - 1); // calendar day subtract 1
         const yesterday = yesterdayDate.toLocaleDateString("en-CA");
 
-        if (agent.lastActivity == yesterday) {
+        if (agent.lastActivity === yesterday) {
             streak += 1;
-        } else if (agent.lastActivity != today) {
+        } else if (agent.lastActivity !== today) {
             streak = 1;
         }
         agent.streak = streak;

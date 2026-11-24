@@ -1,14 +1,13 @@
 import express from "express";
-
-import { ListModulesViewModel } from "../interface_adapters/viewModels/ListModulesViewModel.js";
-import { ListModulesPresenter } from "../interface_adapters/presenters/ListModulesPresenter.js";
 import { ListModulesInteractor } from "../application/use_cases/ListModules/ListModulesInteractor.js";
 import { ListModulesController } from "../interface_adapters/controllers/ListModulesController.js";
+import { ListModulesPresenter } from "../interface_adapters/presenters/ListModulesPresenter.js";
+import { ListModulesViewModel } from "../interface_adapters/viewModels/ListModulesViewModel.js";
 
 export function createListModulesRoute({ dataAccess }) {
     const router = express.Router();
 
-    router.get("/", async (req, res, next) => {
+    router.get("/", async (_req, res, next) => {
         try {
             const viewModel = new ListModulesViewModel();
             const presenter = new ListModulesPresenter(viewModel);
@@ -26,7 +25,7 @@ export function createListModulesRoute({ dataAccess }) {
         }
     });
 
-    router.get("/", async (req, res, next) => {
+    router.get("/", async (_req, res, next) => {
         try {
             const viewModel = new ListModulesViewModel();
             const presenter = new ListModulesPresenter(viewModel);

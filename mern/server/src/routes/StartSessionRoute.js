@@ -1,9 +1,8 @@
 import express from "express";
-
-import { StartSessionViewModel } from "../interface_adapters/viewModels/StartSessionViewModel.js";
-import { StartSessionPresenter } from "../interface_adapters/presenters/StartSessionPresenter.js";
 import { StartSessionInteractor } from "../application/use_cases/StartSession/StartSessionInteractor.js";
 import { StartSessionController } from "../interface_adapters/controllers/StartSessionController.js";
+import { StartSessionPresenter } from "../interface_adapters/presenters/StartSessionPresenter.js";
+import { StartSessionViewModel } from "../interface_adapters/viewModels/StartSessionViewModel.js";
 
 export function createStartSessionRoute({ dataAccess }) {
     const router = express.Router();

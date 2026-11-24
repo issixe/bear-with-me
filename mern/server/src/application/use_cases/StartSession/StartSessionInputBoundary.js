@@ -11,7 +11,7 @@
 //    and available answer options without their scores.
 
 export class StartSessionInputBoundary {
-    async execute(inputData) {
+    async execute(_inputData) {
         throw new Error("Execute not implemented");
     }
 }

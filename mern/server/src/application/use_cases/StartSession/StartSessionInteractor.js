@@ -10,9 +10,9 @@
 // 5. Return the session ID, opening customer response,
 //    and available answer options without their scores.
 
+import { Session } from "../../../enterprise/entities/session.js";
 import { StartSessionInputBoundary } from "./StartSessionInputBoundary.js";
 import { StartSessionOutputData } from "./StartSessionOutputData.js";
-import { Session } from "../../../enterprise/entities/session.js";
 
 export class StartSessionInteractor extends StartSessionInputBoundary {
     constructor({ dataAccess, presenter }) {

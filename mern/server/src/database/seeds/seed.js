@@ -1,6 +1,6 @@
-import { MongoClient } from "mongodb";
-import { exampleModules, exampleLessons } from "../seeds/seedData.js";
 import dotenv from "dotenv";
+import { MongoClient } from "mongodb";
+import { exampleLessons, exampleModules } from "../seeds/seedData.js";
 
 // Load Atlas environment variable manually since this runs standalone
 dotenv.config({ path: "./config.env" });

@@ -1,9 +1,8 @@
 import express from "express";
-
-import { ListLessonsPresenter } from "../interface_adapters/presenters/ListLessonsPresenter.js";
-import { ListLessonViewModel } from "../interface_adapters/viewmodel/ListLessonViewModel.js";
 import { ListLessonsInteractor } from "../application/use_cases/ListLessons/ListLessonsInteractor.js";
 import { ListLessonsController } from "../interface_adapters/controllers/ListLessonsController.js";
+import { ListLessonsPresenter } from "../interface_adapters/presenters/ListLessonsPresenter.js";
+import { ListLessonViewModel } from "../interface_adapters/viewmodel/ListLessonViewModel.js";
 
 export function createListLessonsRoute({ moduleData, lessonData }) {
     const router = express.Router({ mergeParams: true });

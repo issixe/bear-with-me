@@ -1,19 +1,19 @@
 // need to get the id and actual item to write
 
 export class CompleteLessonDataAccess {
-    async findSessionById(sessionId) {
+    async findSessionById(_sessionId) {
         throw new Error("findSessionById not implemented");
     }
 
-    async findAgentById(agentId) {
+    async findAgentById(_agentId) {
         throw new Error("findAgentById not implemented");
     }
 
-    async updateSession(session) {
+    async updateSession(_session) {
         throw new Error("updateSession not implemented");
     }
 
-    async updateAgent(agent) {
+    async updateAgent(_agent) {
         throw new Error("updateAgent not implemented");
     }
 }

@@ -96,12 +96,12 @@ export class SubmitAnswerInteractor extends SubmitAnswerInputBoundary {
             status: session.status,
             stageId: session.stageId,
             customerMood: session.customerMood,
-            customerResponse: this.customerResponse,
-            answerOptions: this.answerOptions,
+            customerResponse,
+            answerOptions,
         });
 
         // return output data and pass it to output boundary.
-        return this.outputBoundary.present(outputSata);
+        return this.outputBoundary.present(outputData);
     }
 
     // Validate ownership, session status, and the submitted stage.

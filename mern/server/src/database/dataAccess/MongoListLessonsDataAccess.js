@@ -1,5 +1,5 @@
-import db from "../connection.js";
 import { ListLessonsDataAccess } from "../../application/use_cases/ListLessons/ListLessonsDataAccess.js";
+import db from "../connection.js";
 
 export class MongoListLessonsDataAccess extends ListLessonsDataAccess {
     async findModuleById(moduleId) {

@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
-import db from "../connection.js";
 import { StartSessionDataAccess } from "../../application/use_cases/StartSession/StartSessionDataAccess.js";
 import { Lesson } from "../../enterprise/entities/lesson.js";
+import db from "../connection.js";
 
 export class MongoStartSessionDataAccess extends StartSessionDataAccess {
     async getUserById(agentId) {

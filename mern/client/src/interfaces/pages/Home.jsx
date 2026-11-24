@@ -1,8 +1,8 @@
-import { useModules } from "../hooks/useModules";
-import { useCurrentUser } from "../hooks/useUsers";
+import pipWave from "../../assets/pip/waving.png";
 import ModuleItem from "../components/home/ModuleItem";
 import StreakBadge from "../components/home/StreakBadge";
-import pipWave from "../../assets/pip/waving.png";
+import { useModules } from "../hooks/useModules";
+import { useCurrentUser } from "../hooks/useUsers";
 
 export default function Home() {
   const { user } = useCurrentUser();

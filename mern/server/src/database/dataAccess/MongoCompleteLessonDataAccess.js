@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
-import db from "../connection.js";
 import { CompleteLessonDataAccess } from "../../application/use_cases/CompleteLesson/CompleteLessonDataAccess.js";
+import db from "../connection.js";
 
 export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
     async findSessionById(sessionId) {

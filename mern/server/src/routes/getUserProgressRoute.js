@@ -1,12 +1,10 @@
 //Just reference code for routing, not accurate for file name
 
 import express from "express";
-
-// This will help us connect to the database
-import db from "../../../database/connection.js";
-
 // This help convert the id from string to ObjectId for the _id.
 import { ObjectId } from "mongodb";
+// This will help us connect to the database
+import db from "../../../database/connection.js";
 
 // router is an instance of the express router.
 // We use it to define our routes.
@@ -14,22 +12,22 @@ import { ObjectId } from "mongodb";
 const router = express.Router();
 
 // This section will help you get a list of all the lessons.
-router.get("/", async (req, res) => {
-    let collection = await db.collection("lessons");
-    let results = await collection.find({}).toArray();
+router.get("/", async (_req, res) => {
+    const collection = await db.collection("lessons");
+    const results = await collection.find({}).toArray();
     res.send(results).status(200);
 });
 
 // This section will help you get a single lesson by id
 router.get("/:id", async (req, res) => {
-    let collection = db.collection("lessons");
+    const collection = db.collection("lessons");
 
     if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ error: "Invalid lesson ID" });
     }
 
-    let query = { _id: new ObjectId(req.params.id) };
-    let result = await collection.findOne(query);
+    const query = { _id: new ObjectId(req.params.id) };
+    const result = await collection.findOne(query);
 
     if (!result) res.status(404).send("Not found");
     else res.status(200).send(result);
@@ -38,14 +36,14 @@ router.get("/:id", async (req, res) => {
 // This section will help you create a new lesson.
 router.post("/", async (req, res) => {
     try {
-        let newDocument = {
+        const newDocument = {
             name: req.body.name,
             position: req.body.position,
             level: req.body.level,
         };
 
-        let collection = db.collection("lessons");
-        let result = await collection.insertOne(newDocument);
+        const collection = db.collection("lessons");
+        const result = await collection.insertOne(newDocument);
 
         res.status(201).json({
             _id: result.insertedId,
@@ -73,8 +71,8 @@ router.patch("/:id", async (req, res) => {
             },
         };
 
-        let collection = await db.collection("lessons");
-        let result = await collection.updateOne(query, updates);
+        const collection = await db.collection("lessons");
+        const result = await collection.updateOne(query, updates);
         res.send(result).status(200);
     } catch (err) {
         console.error(err);
@@ -92,7 +90,7 @@ router.delete("/:id", async (req, res) => {
         const query = { _id: new ObjectId(req.params.id) };
 
         const collection = db.collection("lessons");
-        let result = await collection.deleteOne(query);
+        const result = await collection.deleteOne(query);
 
         res.send(result).status(200);
     } catch (err) {

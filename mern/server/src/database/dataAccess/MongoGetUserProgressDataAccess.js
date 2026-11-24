@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
-import db from "../connection.js";
 import { GetUserProgressDataAccess } from "../../application/use_cases/GetUserProgress/GetUserProgressDataAccess.js";
+import db from "../connection.js";
 
 export class MongoGetUserProgressDataAccess extends GetUserProgressDataAccess {
     async getUserById(agentId) {

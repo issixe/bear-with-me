@@ -7,7 +7,7 @@
 // 5. Do not award points or record a new completion.
 
 export class GetUserProgressOutputBoundary {
-    async present(outputData) {
+    async present(_outputData) {
         throw new Error("Present not implemented");
     }
 }

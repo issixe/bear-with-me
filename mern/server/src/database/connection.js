@@ -1,4 +1,5 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
+
 const URI = process.env.ATLAS_URI || "";
 const client = new MongoClient(URI, {
     serverApi: {
@@ -19,5 +20,5 @@ try {
 } catch (err) {
     console.error(err);
 }
-let db = client.db("bear_db");
+const db = client.db("bear_db");
 export default db;

@@ -31,7 +31,7 @@ export class ListModulesInteractor extends ListModulesInputBoundary {
             });
 
             this.outputBoundary.prepareSuccessView(outputData);
-        } catch (error) {
+        } catch (_error) {
             this.outputBoundary.prepareFailView("Could not load modules.");
         }
     }

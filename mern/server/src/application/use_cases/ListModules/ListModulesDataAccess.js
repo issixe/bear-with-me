@@ -8,7 +8,7 @@ export class ListModulesDataAccess {
         throw new Error("findAll not implemented");
     }
 
-    findModuleById(moduleId) {
+    findModuleById(_moduleId) {
         throw new Error("findModuleById not implemented");
     }
 }

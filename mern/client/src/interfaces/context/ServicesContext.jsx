@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo } from "react";
-import { moduleService } from "../../application/services/moduleService";
 import { lessonService } from "../../application/services/lessonService";
+import { moduleService } from "../../application/services/moduleService";
 import { sessionService } from "../../application/services/sessionService";
 import { userService } from "../../application/services/userService";
 

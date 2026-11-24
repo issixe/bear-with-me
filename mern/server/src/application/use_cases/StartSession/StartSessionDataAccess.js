@@ -11,15 +11,15 @@
 //    and available answer options without their scores.
 
 export class StartSessionDataAccess {
-    async getUserById(agentId) {
+    async getUserById(_agentId) {
         throw new Error("getUserById not implemented");
     }
 
-    async getLessonById(lessonId) {
+    async getLessonById(_lessonId) {
         throw new Error("getLessonById not implemented");
     }
 
-    async saveNewSession(session) {
+    async saveNewSession(_session) {
         throw new Error("saveNewSession not implemented");
     }
 }

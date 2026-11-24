@@ -1,4 +1,3 @@
-import { GetUserProgressInputBoundary } from "../../application/use_cases/GetUserProgress/GetUserProgressInputBoundary.js";
 import { GetUserProgressInputData } from "../../application/use_cases/GetUserProgress/GetUserProgressInputData.js";
 
 export function createGetUserProgressController({ getUserProgress }) {

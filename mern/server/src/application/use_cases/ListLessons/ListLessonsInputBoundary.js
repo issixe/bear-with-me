@@ -4,7 +4,7 @@
 // The interactor must extend this class and override execute.
 
 export class ListLessonsInputBoundary {
-    async execute(inputData) {
+    async execute(_inputData) {
         throw new Error("Execute not implemented");
     }
 }

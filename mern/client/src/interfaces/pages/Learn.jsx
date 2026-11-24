@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import {
-  exampleModules,
   exampleLessons,
+  exampleModules,
 } from "../../../../server/src/database/seeds/seedData.js";
 import pip from "../../assets/pip/thumbs-up.png";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
-import { useCurrentUser } from "../hooks/useUsers";
 import { useOpenLesson } from "../hooks/useSessions";
+import { useCurrentUser } from "../hooks/useUsers";
 
 const Learn = () => {
   const [params] = useSearchParams();
