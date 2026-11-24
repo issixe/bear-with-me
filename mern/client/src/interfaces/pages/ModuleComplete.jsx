@@ -3,7 +3,7 @@ import pipCelebrate from "../../assets/pip/celebrate.png";
 import streakIcon from "../../assets/streakIcon.png";
 
 const streakDays = 3;
-const weekDays = [1, 2, 3, 4, 5, 6, 7];
+const totalDays = 7;
 
 //Lesson passed these in when it was completed
 export default function ModuleComplete({
@@ -42,21 +42,22 @@ export default function ModuleComplete({
           <div className="rounded-2xl bg-[var(--streak-light)] p-4">
             <h2 className="font-bold">{streakDays}-day streak maintained!</h2>
             <div className="mt-2 flex gap-2">
-              {weekDays.map((day) =>
-                day <= streakDays ? (
+              {Array.from({ length: totalDays }, (_, index) => {
+                const day = index + 1;
+                return day <= streakDays ? (
                   <span
-                    key={day}
+                    key={`day-${day}`}
                     className="grid size-7 place-items-center rounded-full bg-[#9b5325] font-bold text-white"
                   >
                     ✓
                   </span>
                 ) : (
                   <span
-                    key={day}
+                    key={`day-${day}`}
                     className="size-7 rounded-full border-2 border-[#9b5325]"
                   ></span>
-                ),
-              )}
+                );
+              })}
             </div>
           </div>
           <div className="rounded-2xl bg-white p-4">
