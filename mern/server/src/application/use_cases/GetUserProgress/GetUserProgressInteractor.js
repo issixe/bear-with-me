@@ -5,20 +5,19 @@
 // 4. Return overall points, current streak,
 //    and completed-lesson progress.
 // 5. Do not award points or record a new completion.
-import { GetUserProgressInputBoundary } from './GetUserProgressInputBoundary.js';
-import { GetUserProgressOutputData } from './GetUserProgressOutputData.js';
-
+import { GetUserProgressInputBoundary } from "./GetUserProgressInputBoundary.js";
+import { GetUserProgressOutputData } from "./GetUserProgressOutputData.js";
 
 export class GetUserProgressInteractor extends GetUserProgressInputBoundary {
-    constructor ({ dataAccess, presenter }) {
+    constructor({ dataAccess, presenter }) {
         super();
         this.dataAccess = dataAccess;
         this.presenter = presenter;
     }
 
-    async execute ({ agentId }) {
+    async execute({ agentId }) {
         if (!agentId) {
-            throw new Error('Agent ID is required');
+            throw new Error("Agent ID is required");
         }
 
         const userProfile = await this.dataAccess.getUserById(agentId);
@@ -31,7 +30,7 @@ export class GetUserProgressInteractor extends GetUserProgressInputBoundary {
             agentId: userProfile.agentId,
             streak: userProfile.streak,
             totalPoints: userProfile.totalPoints,
-            completedModules: userProfile.completedModules
+            completedModules: userProfile.completedModules,
         });
 
         return this.presenter.present(outputData);

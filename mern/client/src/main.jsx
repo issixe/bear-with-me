@@ -9,7 +9,6 @@ import ModuleComplete from "./interfaces/pages/ModuleComplete";
 import "./styles/index.css";
 import { ServicesProvider } from "./interfaces/context/ServicesContext";
 
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -29,5 +28,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <ServicesProvider>
       <RouterProvider router={router} />
     </ServicesProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

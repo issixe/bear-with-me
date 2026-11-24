@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
-import { useServices } from "../context/ServicesContext";
 import { useNavigate } from "react-router-dom";
+import { useServices } from "../context/ServicesContext";
 
 export function useStartSession() {
   const { sessionService } = useServices();
