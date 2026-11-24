@@ -55,6 +55,7 @@ function Lesson({ lesson, session }) {
   const customer = sessionProgress?.customerResponse ?? "";
   const options = sessionProgress?.answerOptions ?? [];
   const complete = sessionProgress?.isFinished ?? false;
+  const pipWords = sessionProgress?.pipWords;
 
   // Visual indicator based on the mood returned by the backend.
   const cScore = sessionProgress?.cScore ?? 0;
@@ -208,6 +209,15 @@ function Lesson({ lesson, session }) {
             </div>
           ))}
           <div ref={latest} aria-live="polite">
+            {typeof pipWords === "string" && pipWords.trim() && (
+              <div className="mb-6 flex items-center gap-3">
+                <img src={pip} alt="" className="h-16 w-16 shrink-0 object-contain" />
+                <div className="min-w-0 rounded-2xl border border-[#287F6E] bg-white p-4">
+                  <p className="mb-1 text-sm font-bold">Pip</p>
+                  <p className="whitespace-pre-line">{pipWords}</p>
+                </div>
+              </div>
+            )}
             {complete ? (
               <div className="rounded-2xl border border-stone-200 bg-white p-6 text-center">
                 <h2 className="text-2xl font-bold">Lesson complete!</h2>
