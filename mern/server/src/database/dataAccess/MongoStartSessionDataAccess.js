@@ -1,16 +1,16 @@
 import { ObjectId } from "mongodb";
 import db from "../connection.js";
 import { StartSessionDataAccess } from "../../application/use_cases/StartSession/StartSessionDataAccess.js";
+import { Lesson } from "../../enterprise/entities/Lesson.js";
 
 export class MongoStartSessionDataAccess extends StartSessionDataAccess {
   async getUserById(agentId) {
     if (!ObjectId.isValid(agentId)) {
       return null;
     }
-    const user = await db.collection("users").findOne(
-      { _id: new ObjectId(agentId) },
-      //TODO: define projection to match existing user profile structure
-    );
+    const user = await db
+      .collection("users")
+      .findOne({ _id: new ObjectId(agentId) });
 
     if (!user) {
       return null;
@@ -21,20 +21,31 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
   }
 
   async getLessonById(lessonId) {
-    if (!ObjectId.isValid(lessonId)) {
-      return null;
-    }
-    const lesson = await db.collection("lessons").findOne(
-      { _id: new ObjectId(agentId) },
-      //TODO: define projection to match existing lesson structure
-    );
+    const lesson = await db
+      .collection("lessons")
+      .findOne({ lesson_id: lessonId });
 
     if (!lesson) {
       return null;
     }
-    return {
-      lesson,
-    };
+
+    const stages = Object.fromEntries(
+      Object.entries(lesson.stages).map(([stageId, stage]) => [
+        stageId,
+        {
+          customerResponses: stage["customer responses"],
+          answers: stage.answers,
+          nextStage: stage.next_stage,
+        },
+      ]),
+    );
+
+    return new Lesson({
+      lessonId: lesson.lesson_id,
+      title: lesson.title,
+      startingStage: lesson.starting_stage,
+      stages,
+    });
   }
 
   async saveNewSession(session) {

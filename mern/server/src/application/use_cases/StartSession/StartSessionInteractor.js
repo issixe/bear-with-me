@@ -11,8 +11,8 @@
 //    and available answer options without their scores.
 
 import { StartSessionInputBoundary } from "./StartSessionInputBoundary.js";
-import { startSessionOutputData } from "./StartSessionOutputData.js";
-import { Session } from "../../enterprise/entities/session.js";
+import { StartSessionOutputData } from "./StartSessionOutputData.js";
+import { Session } from "../../../enterprise/entities/Session.js";
 
 export class StartSessionInteractor extends StartSessionInputBoundary {
   constructor({ dataAccess, presenter }) {
@@ -23,19 +23,21 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
 
   async execute({ agentId, lessonId }) {
     // Check that the agent and lesson referenced actually exist
-    if (!agentId) {
-      throw new Error("Agent ID is required");
-    }
+    // TODO: restore once users are seeded
+
+    // if (!agentId) {
+    //   throw new Error("Agent ID is required");
+    // }
 
     if (!lessonId) {
       throw new Error("Lesson ID is required");
     }
 
-    const userProfile = await this.dataAccess.getUserById(agentId);
+    // const userProfile = await this.dataAccess.getUserById(agentId);
 
-    if (!userProfile) {
-      throw new Error(`User with ID ${agentId} not found`);
-    }
+    // if (!userProfile) {
+    //   throw new Error(`User with ID ${agentId} not found`);
+    // }
 
     const lesson = await this.dataAccess.getLessonById(lessonId);
 
@@ -43,17 +45,29 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
       throw new Error(`Lesson with ID ${lessonId} not found`);
     }
 
-    const session = new Session(
-      agentId,
-      lessonId,
+    const stage = lesson.startingStage;
+    const customerMood = "angry";
+
+    const session = new Session({ agentId, lessonId, stage, customerMood });
+
+    const sessionId = await this.dataAccess.saveNewSession(session);
+
+    const customerResponse = lesson.getCustomerResponses(
       lesson.startingStage,
-      lesson.initialMood,
+      customerMood,
     );
 
-    const sessionId = await this.sessionAccess.saveNewSession(session);
+    const options = lesson.getAgentResponses(lesson.startingStage);
 
-    const outputData = new StartSessionOutputData({ sessionId });
+    const outputData = new StartSessionOutputData({
+      sessionId,
+      lessonId,
+      stage,
+      customerMood,
+      customerResponse,
+      options,
+    });
 
-    return this.presenter.present(outputData);
+    return this.presenter.prepareSuccessView(outputData);
   }
 }
