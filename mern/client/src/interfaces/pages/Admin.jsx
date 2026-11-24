@@ -119,8 +119,8 @@ export default function Admin({ leaderboard = sampleLeaderboard }) {
           </section>
           {!isHomepage && (
             <section>
-              <h2 className="text-xl font-extrabold">Profile</h2>
-              <p className="mt-2 text-sm text-stone-600">No profile details available yet.</p>
+              <h2 className="text-xl font-extrabold">Coming soon</h2>
+              <p className="mt-2 text-sm text-stone-600">No details available yet.</p>
             </section>
           )}
         </div>
