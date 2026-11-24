@@ -9,10 +9,14 @@ export function createGetLeaderboardController({ GetLeaderboard }) {
                     ? Number(rawTopCount)
                     : 5;
 
+            const viewModel = {};
+            const presenter = new GetLeaderboardPresenter(viewModel);
             const inputData = new GetLeaderboardInputData({ topCount });
-            const responseData = await GetLeaderboard.execute(inputData);
 
-            return res.status(200).json(responseData);
+            await GetLeaderboard.execute(inputData, presenter);
+
+            const status = viewModel.httpStatus ?? 200;
+            return res.status(status).json(viewModel.body);
         } catch (error) {
             return next(error);
         }

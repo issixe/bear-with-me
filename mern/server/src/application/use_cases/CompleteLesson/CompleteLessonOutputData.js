@@ -1,6 +1,6 @@
 export class CompleteLessonOutputData {
-    constructor({ agentId, sessionId, streak, sessionScore, totalPoints }) {
-        this.agentId = agentId;
+    constructor({ userId, sessionId, streak, sessionScore, totalPoints }) {
+        this.userId = userId;
         this.sessionId = sessionId;
         this.streak = streak;
         this.sessionScore = sessionScore;

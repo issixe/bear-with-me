@@ -16,7 +16,7 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
         }
 
         return {
-            agentId: session.agentId?.toString(),
+            userId: session.userId?.toString(),
             sessionId: session._id.toString(),
             lessonId: session.lessonId.toString(),
             cScore: session.cScore,
@@ -24,8 +24,8 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
         };
     }
 
-    async findAgentById(agentId) {
-        if (!ObjectId.isValid(agentId)) {
+    async findUserById(userId) {
+        if (!ObjectId.isValid(userId)) {
             return null;
         }
         const user = await db.collection('users').findOne(
@@ -37,7 +37,7 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
         }
 
         return {
-            agentId: user._id.toString(),
+            userId: user._id.toString(),
             totalPoints: user.totalPoints,
             streak: user.streak,
             lastActivity: user.lastActivity,
@@ -57,16 +57,15 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
         );
     }
 
-    async updateAgent(agent) {
-        await db.collection("users").updateOne(
-            { _id: new ObjectId(agent.agentId) },
-            {
-                $set: {
-                    totalPoints: agent.totalPoints,
-                    streak: agent.streak,
-                    lastActivity: agent.lastActivity,
-                    lessonScores: agent.lessonScores,
-                    pointsWeekStart: agent.pointsWeekStart
+    async updateUser(user) {
+        await db.collection('users').updateOne(
+            { _id: new ObjectId(user.userId) },
+            { $set: {
+                    totalPoints: user.totalPoints,
+                    streak: user.streak,
+                    lastActivity: user.lastActivity,
+                    lessonScores: user.lessonScores,
+                    pointsWeekStart: user.pointsWeekStart
             }}
         );
     }

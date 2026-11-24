@@ -1,6 +1,6 @@
 export class CompleteLessonInputData {
-    constructor(agentId, sessionId) {
-        this.agentId = agentId;
-        this.sessionId = sessionId;
-    }
+  constructor(userId, sessionId) {
+    this.userId = userId;
+    this.sessionId = sessionId;
+  }
 }

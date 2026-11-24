@@ -22,29 +22,29 @@ export class GetLeaderboardInteractor extends GetLeaderboardInputBoundary {
             const safeTopCount = Math.max(1, Number(topCount) || 5);
             const currentWeekStart = getMondayOfWeek(new Date());
 
-            const agents = await this.dataAccess.getTopUsers({
+            const user = await this.dataAccess.getTopUsers({
                 weekStart: currentWeekStart,
                 topCount: safeTopCount
             });
 
-            const activeThisWeek = agents.filter(
-                (agent) => agent.pointsWeekStart === currentWeekStart
+            const activeThisWeek = user.filter(
+                (user) => user.pointsWeekStart === currentWeekStart
             );
 
-            const sortedAgents = [...activeThisWeek].sort(
+            const sortedUsers = [...activeThisWeek].sort(
                 (a, b) => (b.totalPoints || 0) - (a.totalPoints || 0)
             );
 
             /* Return format:
             [
-                [agentId, name, totalPoints],
-                [agentId, name, totalPoints], and so on
+                [userId, name, totalPoints],
+                [userId, name, totalPoints], and so on
             ]
             */
-            const leaderboard = sortedAgents.slice(0, safeTopCount).map((agent) => [
-                agent.agentId,
-                agent.username || 'Unknown Agent',
-                agent.totalPoints || 0
+            const leaderboard = sortedUsers.slice(0, safeTopCount).map((user) => [
+                user.userId,
+                user.username || 'Unknown User',
+                user.totalPoints || 0
             ]);
             
             const outputData = new GetLeaderboardOutputData({ leaderboard });

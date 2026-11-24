@@ -8,7 +8,7 @@ import { createCompleteLessonController } from "../interface_adapters/controller
 export function createCompleteLessonRoute({ dataAccess }) {
     const router = express.Router({ mergeParams: true });
 
-    router.post("/:agentId/sessions/:sessionId/complete", async (req, res, next) => {
+    router.post("/:userId/sessions/:sessionId/complete", async (req, res, next) => {
         try {
             const viewModel = new CompleteLessonViewModel();
             const presenter = new CompleteLessonPresenter(viewModel);

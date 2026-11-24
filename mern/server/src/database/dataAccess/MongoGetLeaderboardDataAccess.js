@@ -16,7 +16,7 @@ export class MongoGetLeaderboardDataAccess extends GetLeaderboardDataAccess {
         const users = await cursor.toArray();
 
         return users.map((user) => ({
-            agentId: user._id.toString(),
+            userId: user._id.toString(),
             username: user.username,
             totalPoints: user.totalPoints ?? 0,
             pointsWeekStart: user.pointsWeekStart

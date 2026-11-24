@@ -11,16 +11,16 @@ export function getMondayOfWeek(dateInput = new Date()) {
 }
 
 export class CompleteLessonInteractor extends CompleteLessonInputBoundary {
-    constructor({ dataAccess, presenter }) {
+    constructor({ dataAccess, outputBoundary }){
         super();
         this.dataAccess = dataAccess;
-        this.presenter = presenter;
+        this.outputBoundary = outputBoundary;
     }
 
-    async execute ({ agentId, sessionId }) {
+    async execute ({ userId, sessionId }) {
         try{
-            if (!agentId || !sessionId) {
-                throw new Error('agentId and sessionId are required');
+            if (!userId || !sessionId) {
+                throw new Error('userId and sessionId are required');
             }
 
             // load session
@@ -28,60 +28,60 @@ export class CompleteLessonInteractor extends CompleteLessonInputBoundary {
             if (!session) {
                 throw new Error('session not found');
             }
-            if (session.agentId != agentId) {
-                throw new Error('session does not belong to this agent');
+            if (session.userId != userId) {
+                throw new Error('session does not belong to this user');
             }
             const sessionScore = session.cScore;
 
-            // load agent
-            const agent = await this.dataAccess.findAgentById(agentId);
-            if (!agent) {
-                throw new Error('agent not found');
+            // load user
+            const user = await this.dataAccess.findUserById(userId);
+            if (!user) {
+                throw new Error('user not found');
             }
 
             // update streak and points
-            let streak = agent.streak || 0;
+            let streak = user.streak || 0;
             const now = new Date();
             const today = now.toLocaleDateString('en-CA'); // date in YYYY-MM-DD format
             const yesterdayDate = new Date(now);
             yesterdayDate.setDate(yesterdayDate.getDate() - 1); // calendar day subtract 1
             const yesterday = yesterdayDate.toLocaleDateString('en-CA');
             
-            if (agent.lastActivity == yesterday) {
+            if (user.lastActivity == yesterday) {
                 streak += 1;
             }
-            else if (agent.lastActivity != today){
+            else if (user.lastActivity != today){
                 streak = 1;
             }
-            agent.streak = streak;
+            user.streak = streak;
 
             // reset weekly points every Monday
             // pointsWeekStart is a "YYYY-MM-DD" string storing the Monday date of the week that the user's current totalPoints belongs to
             const currentWeekStart = getMondayOfWeek(now);
-            if (agent.pointsWeekStart !== currentWeekStart) {
-                agent.totalPoints = 0;
-                agent.lessonScores = {};
-                agent.pointsWeekStart = currentWeekStart;
+            if (user.pointsWeekStart !== currentWeekStart) {
+                user.totalPoints = 0;
+                user.lessonScores = {};
+                user.pointsWeekStart = currentWeekStart;
             }
-            if (!agent.lessonScores) {
-                agent.lessonScores = {};
+            if (!user.lessonScores) {
+                user.lessonScores = {};
             }
 
-            const prevScore = agent.lessonScores[session.sessionId] ?? 0;
-            agent.totalPoints += (session.cScore - prevScore);
-            agent.lessonScores[session.sessionId] = session.cScore;
-            agent.lastActivity = today;
+            const prevScore = user.lessonScores[session.sessionId] ?? 0;
+            user.totalPoints += (session.cScore - prevScore);
+            user.lessonScores[session.sessionId] = session.cScore;
+            user.lastActivity = today;
             session.completed = true;
 
             await this.dataAccess.updateSession(session);
-            await this.dataAccess.updateAgent(agent);
+            await this.dataAccess.updateUser(user);
 
             const outputData = new CompleteLessonOutputData({
-                agentId: agent.agentId,
+                userId: user.userId,
                 sessionId: session.sessionId,
-                streak: agent.streak,
+                streak: user.streak,
                 sessionScore: session.cScore,
-                totalPoints: agent.totalPoints
+                totalPoints: user.totalPoints
             });
 
             return await this.outputBoundary.prepareSuccessView(outputData);

@@ -25,7 +25,7 @@ export class CompleteLessonPresenter extends CompleteLessonOutputBoundary {
     prepareSuccessView(out) {
         this.viewModel.httpStatus = 200;
         this.viewModel.body = {
-            agentId: out.agentId,
+            userId: out.userId,
             sessionId: out.sessionId,
             streak: out.streak,
             totalPoints: out.totalPoints,
