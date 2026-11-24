@@ -36,7 +36,9 @@ export default function Home() {
         {!modulesLoading && !modulesError && (
           <div className="flex flex-col gap-3">
             {modules.map((m) => (
-              <ModuleItem key={m.id} module={m} completedLessonIds={user?.completedLessonIds} />
+              <ModuleItem key={m.id} module={m} completedLessonIds={user?.completedLessonIds} 
+              agentId={user?.id}
+              />
             ))}
           </div>
         )}
