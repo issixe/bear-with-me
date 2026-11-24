@@ -24,7 +24,7 @@ export class FindWorstCallsInteractor extends FindWorstCallsInputBoundary {
 
     for (let i = 0; i < calls.length; i++) {
         const call = calls[i];
-        
+
         if (!call || typeof call !== 'object' || Array.isArray(call)) {
             this.outputBoundary.prepareFailView(`Invalid call data at index ${i}.`);
             return;
@@ -47,7 +47,7 @@ export class FindWorstCallsInteractor extends FindWorstCallsInputBoundary {
 
     }
     const outputData = new FindWorstCallsOutputData({
-        calls: worstCalls,
+        calls: worstCalls.map((call) => call.sourceCall),
         receivedCount: calls.length,
         unscoredCount: unscoredCount,
     });

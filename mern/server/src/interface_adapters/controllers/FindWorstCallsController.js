@@ -23,11 +23,10 @@ export class FindWorstCallsController {
             }
 
             return {
-                id: call.id,
                 customerPartnerRating: parsePartnerRating(
                 call.source_fields?.customer_survey_response?.partner_rating,
             ),
-                sourceCall: call,
+            sourceCall: call,
             };
     })
     : conversations;
