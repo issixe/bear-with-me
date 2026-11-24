@@ -21,8 +21,6 @@ const Learn = () => {
   return <Lesson key={session?.sessionId ?? id} lesson={lesson} session={session} />;
 };
 
-const MOOD_TENSION = { angry: 70, frustrated: 50, calm: 20 };
-
 function Lesson({ lesson, session }) {
     const module = exampleModules.find((item) =>
     item.lessons.includes(lesson.lesson_id),
@@ -59,7 +57,8 @@ function Lesson({ lesson, session }) {
   const complete = sessionProgress?.isFinished ?? false;
 
   // Visual indicator based on the mood returned by the backend.
-  const tension = MOOD_TENSION[mood] ?? 70;
+  const cScore = sessionProgress?.cScore ?? 0;
+  const maxScore = Object.keys(lesson.stages).length * 100;
 
   const progress = Math.round(
     (history.length / Object.keys(lesson.stages).length) * 100,
@@ -179,8 +178,18 @@ function Lesson({ lesson, session }) {
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200 bg-white p-5">
           <h1 className="text-xl font-extrabold">{lesson.title}</h1>
           <div className="flex items-center gap-2 text-sm">
-            <label htmlFor="tension">Tension {tension}%</label>
-            <meter id="tension" min="0" max="100" low="35" high="65" optimum="0" value={tension} className="w-28">{tension}%</meter>
+            <label htmlFor="score">
+              Customer Satisfication Score: {cScore.toFixed(0)} points
+            </label>
+            <meter
+              id="score"
+              min={0}
+              max={maxScore}
+              value={cScore}
+              className="h-3 w-28"
+            >
+              {cScore.toFixed(0)} / {maxScore}
+            </meter>
           </div>
           <div className="w-full text-sm">
             <label htmlFor="lesson-progress">Lesson progress: {progress}%</label>
@@ -202,8 +211,10 @@ function Lesson({ lesson, session }) {
             {complete ? (
               <div className="rounded-2xl border border-stone-200 bg-white p-6 text-center">
                 <h2 className="text-2xl font-bold">Lesson complete!</h2>
-                <p className="my-3">You finished all {history.length} stages. Final customer tension: {tension}%.</p>
-                <p className="mb-4 text-sm text-stone-500">This is a sample lesson. Progress is not saved yet.</p>
+                <p className="my-3">
+                  You finished all {history.length} stages.
+                  Final score: {cScore.toFixed(0)} points.
+                </p>
                 <Link to="/" className="inline-block rounded-lg bg-[#287F6E] px-4 py-2 text-white">Back to modules</Link>
               </div>
             ) : (

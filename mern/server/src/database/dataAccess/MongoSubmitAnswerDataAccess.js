@@ -2,7 +2,7 @@ import db from "../connection.js";
 import { ObjectId } from "mongodb";
 import { SubmitAnswerDataAccess } from "../../application/use_cases/SubmitAnswer/SubmitAnswerDataAccess.js";
 import { Session } from "../../enterprise/entities/session.js";
-import { Lesson } from "../../enterprise/entities/lesson.js";
+import { Lesson } from "../../enterprise/entities/Lesson.js";
 import { Module } from "../../enterprise/entities/module.js";
 
 export class MongoSubmitAnswerDataAccess extends SubmitAnswerDataAccess {
