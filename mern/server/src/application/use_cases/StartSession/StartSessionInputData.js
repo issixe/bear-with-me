@@ -11,8 +11,8 @@
 //    and available answer options without their scores.
 
 export class StartSessionInputData {
-  constructor({ agentId, lessonId }) {
-    this.agentId = agentId;
-    this.lessonId = lessonId;
-  }
+    constructor({ agentId, lessonId }) {
+        this.agentId = agentId;
+        this.lessonId = lessonId;
+    }
 }
