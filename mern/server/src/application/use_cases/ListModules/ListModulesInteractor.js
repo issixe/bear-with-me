@@ -7,8 +7,8 @@
 //  - moduleData: loads modules
 //  - outputBoundary: receives the result
 
-import { ListModulesInputBoundary } from './ListModulesInputBoundary.js';
-import { ListModulesOutputData } from './ListModulesOutputData.js';
+import { ListModulesInputBoundary } from "./ListModulesInputBoundary.js";
+import { ListModulesOutputData } from "./ListModulesOutputData.js";
 export class ListModulesInteractor extends ListModulesInputBoundary {
     constructor({ dataAccess, outputBoundary }) {
         super();
@@ -26,12 +26,12 @@ export class ListModulesInteractor extends ListModulesInputBoundary {
                     id: module.id,
                     title: module.title,
                     description: module.description,
-                    lessonIds: module.lessonIds
-                }))
+                    lessonIds: module.lessonIds,
+                })),
             });
 
             this.outputBoundary.prepareSuccessView(outputData);
-        } catch (error) {
+        } catch (_error) {
             this.outputBoundary.prepareFailView("Could not load modules.");
         }
     }

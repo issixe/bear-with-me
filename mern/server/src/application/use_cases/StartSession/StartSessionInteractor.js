@@ -10,9 +10,9 @@
 // 5. Return the session ID, opening customer response,
 //    and available answer options without their scores.
 
+import { Session } from "../../../enterprise/entities/session.js";
 import { StartSessionInputBoundary } from "./StartSessionInputBoundary.js";
 import { StartSessionOutputData } from "./StartSessionOutputData.js";
-import { Session } from "../../../enterprise/entities/session.js";
 
 export class StartSessionInteractor extends StartSessionInputBoundary {
   constructor({ dataAccess, presenter }) {
@@ -33,12 +33,6 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
       this.presenter.prepareFailView("Lesson ID is required");
       return;
     }
-
-    // const userProfile = await this.dataAccess.getUserById(agentId);
-
-    // if (!userProfile) {
-    //   throw new Error(`User with ID ${agentId} not found`);
-    // }
 
     const lesson = await this.dataAccess.getLessonById(lessonId);
 
