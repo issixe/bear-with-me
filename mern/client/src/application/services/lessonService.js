@@ -4,4 +4,6 @@ export const lessonService = {
   listByModule: async (moduleId) =>
     (await apiClient.get(`/modules/${encodeURIComponent(moduleId)}/lessons`))
       .lessons,
+
+  create: (lesson) => apiClient.post("/lessons", lesson),
 };
