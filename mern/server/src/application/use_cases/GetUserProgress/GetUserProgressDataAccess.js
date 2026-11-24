@@ -7,7 +7,7 @@
 // 5. Do not award points or record a new completion.
 
 export class GetUserProgressDataAccess {
-    async getUserById(agentId) {
-        throw new Error('getUserById not implemented');
+    async getUserById(_agentId) {
+        throw new Error("getUserById not implemented");
     }
- }
+}

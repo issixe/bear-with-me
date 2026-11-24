@@ -1,15 +1,15 @@
-import { ObjectId } from 'mongodb';
-import db from '../connection.js';
-import { CompleteLessonDataAccess } from '../../application/use_cases/CompleteLesson/CompleteLessonDataAccess.js';
+import { ObjectId } from "mongodb";
+import { CompleteLessonDataAccess } from "../../application/use_cases/CompleteLesson/CompleteLessonDataAccess.js";
+import db from "../connection.js";
 
 export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
     async findSessionById(sessionId) {
         if (!ObjectId.isValid(sessionId)) {
             return null;
         }
-        const session = await db.collection('sessions').findone(
-            { _id: new ObjectId(sessionId) }
-        );
+        const session = await db
+            .collection("sessions")
+            .findone({ _id: new ObjectId(sessionId) });
 
         if (!session) {
             return null;
@@ -20,7 +20,7 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
             sessionId: session._id.toString(),
             lessonId: session.lessonId.toString(),
             cScore: session.cScore,
-            completed: session.completed
+            completed: session.completed,
         };
     }
 
@@ -28,9 +28,9 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
         if (!ObjectId.isValid(agentId)) {
             return null;
         }
-        const user = await db.collection('users').findone(
-            { _id: new ObjectId(userId) }
-        );
+        const user = await db
+            .collection("users")
+            .findone({ _id: new ObjectId(userId) });
 
         if (!user) {
             return null;
@@ -41,28 +41,32 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
             totalPoints: user.totalPoints,
             streak: user.streak,
             lastActivity: user.lastActivity,
-            lessonScores: user.lessonScores
+            lessonScores: user.lessonScores,
         };
     }
 
     async updateSession(session) {
-        await db.collection('sessions').updateOne(
+        await db.collection("sessions").updateOne(
             { _id: new ObjectId(session.sessionId) },
-            { $set: {
-                completed: session.completed
-            }}
+            {
+                $set: {
+                    completed: session.completed,
+                },
+            },
         );
     }
 
     async updateAgent(agent) {
-        await db.collection('users').updateOne(
+        await db.collection("users").updateOne(
             { _id: new ObjectId(agent.agentId) },
-            { $set: {
+            {
+                $set: {
                     totalPoints: agent.totalPoints,
                     streak: agent.streak,
                     lastActivity: agent.lastActivity,
-                    lessonScores: agent.lessonScores
-            }}
+                    lessonScores: agent.lessonScores,
+                },
+            },
         );
     }
 }
