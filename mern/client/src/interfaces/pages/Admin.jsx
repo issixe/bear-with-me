@@ -12,7 +12,9 @@ const sampleEmployees = [
   { name: "Dorian", streak: 1, avatarColor: "bg-[#e6daf8]" },
 ];
 
-const employeeAvatarColors = new Map(sampleEmployees.map(({ name, avatarColor }) => [name, avatarColor]));
+const employeeAvatarColors = new Map(
+  sampleEmployees.map(({ name, avatarColor }) => [name, avatarColor]),
+);
 
 const sampleLeaderboard = [
   ["agent-dave", "Dave", 420],
@@ -44,9 +46,11 @@ export default function Admin({ leaderboard = sampleLeaderboard }) {
               key={label}
               type="button"
               onClick={() => setActiveTab(label)}
-              className={`rounded-lg px-3 py-2 text-left ${activeTab === label
-                ? "bg-[var(--selection)] font-bold text-[var(--selection-text)]"
-                : "hover:bg-[var(--selection)]"}`}
+              className={`rounded-lg px-3 py-2 text-left ${
+                activeTab === label
+                  ? "bg-[var(--selection)] font-bold text-[var(--selection-text)]"
+                  : "hover:bg-[var(--selection)]"
+              }`}
             >
               {label}
             </button>
@@ -57,17 +61,35 @@ export default function Admin({ leaderboard = sampleLeaderboard }) {
       <div className="min-w-0 flex-1 bg-[var(--background)]">
         <div className="mx-auto max-w-3xl px-10 py-8">
           <h1 className="mb-8 text-3xl font-extrabold">Admin Page</h1>
-          <div className={isHomepage ? "grid items-start gap-6 grid-cols-[minmax(0,1fr)_220px]" : "hidden"}>
+          <div
+            className={
+              isHomepage
+                ? "grid items-start gap-6 grid-cols-[minmax(0,1fr)_220px]"
+                : "hidden"
+            }
+          >
             <section id="employee-overview">
               <h2 className="mb-3 text-xl font-extrabold">Employee Overview</h2>
               <ul className="grid grid-cols-2 gap-x-3 gap-y-2.5">
                 {sampleEmployees.map(({ name, streak, avatarColor }) => (
-                  <li key={name} className="flex items-center gap-2 text-sm text-[#242824]">
-                    <span className={`grid size-7 shrink-0 place-items-center rounded-full text-xs font-bold text-[#24413B] ${avatarColor}`}>
+                  <li
+                    key={name}
+                    className="flex items-center gap-2 text-sm text-[#242824]"
+                  >
+                    <span
+                      className={`grid size-7 shrink-0 place-items-center rounded-full text-xs font-bold text-[#24413B] ${avatarColor}`}
+                    >
                       {name[0]}
                     </span>
-                    <span className="flex items-center gap-0.5 font-bold text-[var(--streak-dark)]" title={`${streak}-day streak`}>
-                      <img src={streakIcon} alt="" className="size-4 object-contain" />
+                    <span
+                      className="flex items-center gap-0.5 font-bold text-[var(--streak-dark)]"
+                      title={`${streak}-day streak`}
+                    >
+                      <img
+                        src={streakIcon}
+                        alt=""
+                        className="size-4 object-contain"
+                      />
                       {streak}
                     </span>
                     {name}
@@ -81,21 +103,40 @@ export default function Admin({ leaderboard = sampleLeaderboard }) {
               {topAgents.length ? (
                 <ol className="space-y-2 rounded-lg bg-[#e2e6dc] px-4 py-2.5">
                   {topAgents.map(([agentId, name, totalPoints], index) => (
-                    <li key={agentId} className="flex items-center gap-2 text-xs text-[#242824]">
-                      <span className={`w-3 shrink-0 font-bold ${rankColors[index] ?? "text-[#287f6e]"}`}>{index + 1}</span>
-                      <span className={`grid size-7 shrink-0 place-items-center rounded-full font-bold text-[#24413B] ${employeeAvatarColors.get(name) ?? "bg-[var(--selection)]"}`}>{name[0]}</span>
+                    <li
+                      key={agentId}
+                      className="flex items-center gap-2 text-xs text-[#242824]"
+                    >
+                      <span
+                        className={`w-3 shrink-0 font-bold ${rankColors[index] ?? "text-[#287f6e]"}`}
+                      >
+                        {index + 1}
+                      </span>
+                      <span
+                        className={`grid size-7 shrink-0 place-items-center rounded-full font-bold text-[#24413B] ${employeeAvatarColors.get(name) ?? "bg-[var(--selection)]"}`}
+                      >
+                        {name[0]}
+                      </span>
                       <span className="min-w-0 flex-1 break-words">{name}</span>
-                      <span className="shrink-0 font-semibold tabular-nums">{totalPoints} pts</span>
+                      <span className="shrink-0 font-semibold tabular-nums">
+                        {totalPoints} pts
+                      </span>
                     </li>
                   ))}
                 </ol>
               ) : (
-                <p className="rounded-lg bg-[#e2e6dc] px-4 py-2.5 text-sm">No users on the leaderboard yet.</p>
+                <p className="rounded-lg bg-[#e2e6dc] px-4 py-2.5 text-sm">
+                  No users on the leaderboard yet.
+                </p>
               )}
             </section>
           </div>
 
-          <section id="custom-lesson" hidden={!isHomepage} className="mt-14 space-y-4">
+          <section
+            id="custom-lesson"
+            hidden={!isHomepage}
+            className="mt-14 space-y-4"
+          >
             <h2 className="text-xl font-extrabold">Add Custom Lesson</h2>
             {fileInputs.map(({ id, label }) => (
               <label
@@ -114,13 +155,17 @@ export default function Admin({ leaderboard = sampleLeaderboard }) {
                 Returned worst conversations
                 <span className="mr-1 size-2.5 shrink-0 rotate-45 border-b-2 border-r-2 group-open:rotate-[225deg]" />
               </summary>
-              <p className="px-3 pb-3 text-sm text-stone-600">No results available yet.</p>
+              <p className="px-3 pb-3 text-sm text-stone-600">
+                No results available yet.
+              </p>
             </details>
           </section>
           {!isHomepage && (
             <section>
               <h2 className="text-xl font-extrabold">Coming soon</h2>
-              <p className="mt-2 text-sm text-stone-600">No details available yet.</p>
+              <p className="mt-2 text-sm text-stone-600">
+                No details available yet.
+              </p>
             </section>
           )}
         </div>
