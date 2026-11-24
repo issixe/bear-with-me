@@ -43,6 +43,8 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
             return;
         }
 
+        const module = await this.dataAccess.findModuleForLesson(lessonId);
+
         const stage = lesson.startingStage;
         const customerMood = "angry";
 
@@ -60,6 +62,10 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
         const outputData = new StartSessionOutputData({
             sessionId,
             lessonId,
+            title: lesson.title,
+            moduleId: module?.moduleId ?? null,
+            moduleTitle: module?.title ?? null,
+            stageCount: Object.keys(lesson.stages).length,
             stage,
             customerMood,
             customerResponse,

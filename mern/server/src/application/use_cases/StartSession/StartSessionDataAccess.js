@@ -22,4 +22,8 @@ export class StartSessionDataAccess {
     async saveNewSession(_session) {
         throw new Error("saveNewSession not implemented");
     }
+
+    async findModuleForLesson(_lessonId) {
+        throw new Error("findModuleForLesson not implemented");
+    }
 }

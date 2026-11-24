@@ -60,4 +60,17 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
         });
         return result.insertedId.toString();
     }
+
+    async findModuleForLesson(lessonId) {
+        const module = await db
+            .collection("modules")
+            .findOne(
+                { lessons: lessonId },
+                { projection: { module_id: 1, title: 1 } },
+            );
+
+        return module
+            ? { moduleId: module.module_id, title: module.title }
+            : null;
+    }
 }
