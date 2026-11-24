@@ -15,7 +15,9 @@ export class Lesson {
         const stage = this.stages[stageId];
 
         if (!stage) {
-            throw new Error(`Stage with ID ${stageId} not found in lesson ${this.lessonId}`);
+            throw new Error(
+                `Stage with ID ${stageId} not found in lesson ${this.lessonId}`,
+            );
         }
 
         return stage;
@@ -24,8 +26,10 @@ export class Lesson {
     getCustomerResponses(stageId, mood) {
         const stage = this.getStage(stageId);
         const responses = stage.customerResponses?.[mood];
-        if (typeof responses !==  "string") {
-            throw new Error(`Customer responses for mood "${mood}" not found in stage ${stageId} of lesson ${this.lessonId}`);
+        if (typeof responses !== "string") {
+            throw new Error(
+                `Customer responses for mood "${mood}" not found in stage ${stageId} of lesson ${this.lessonId}`,
+            );
         }
 
         return responses;
@@ -36,13 +40,15 @@ export class Lesson {
         const responses = stage.answers;
 
         if (!responses || typeof responses !== "object") {
-            throw new Error(`Agent responses not found in stage ${stageId} of lesson ${this.lessonId}`);
+            throw new Error(
+                `Agent responses not found in stage ${stageId} of lesson ${this.lessonId}`,
+            );
         }
 
         return Object.entries(responses).map(([answerId, answer]) => ({
-      answerId,
-      text: answer.text,
-    }));
+            answerId,
+            text: answer.text,
+        }));
     }
 
     /** Get the full response to use in backend score/mood calculation for a given answer in a given stage */
@@ -52,7 +58,9 @@ export class Lesson {
         const answer = stage.answers?.[answerId];
 
         if (!answer) {
-            throw new Error(`Answer with ID ${answerId} not found in stage ${stageId} of lesson ${this.lessonId}`);
+            throw new Error(
+                `Answer with ID ${answerId} not found in stage ${stageId} of lesson ${this.lessonId}`,
+            );
         }
         return { answerId, text: answer.text, scores: { ...answer.scores } };
     }
