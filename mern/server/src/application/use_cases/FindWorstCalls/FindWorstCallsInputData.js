@@ -1,7 +1,7 @@
 // FindWorstCallsInputData.js
 
 export class FindWorstCallsInputData {
-	constructor({ calls }) {
-		this.calls = calls;
-	}
+    constructor({ calls }) {
+        this.calls = calls;
+    }
 }
