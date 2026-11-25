@@ -2,7 +2,7 @@ import { useLeaderboard } from "../../hooks/useLeaderboard";
 
 const styles = {
   section: {
-    minWidth: "280px",
+    minWidth: 0,
     maxWidth: "340px",
   },
   heading: {

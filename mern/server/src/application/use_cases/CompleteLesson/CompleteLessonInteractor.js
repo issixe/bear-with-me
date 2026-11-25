@@ -8,56 +8,43 @@ export class CompleteLessonInteractor extends CompleteLessonInputBoundary {
         this.presenter = presenter;
     }
 
-    async execute({ agentId, sessionId }) {
-        if (!agentId || !sessionId) {
-            throw new Error("agentId and sessionId are required");
+    async execute({ userId, sessionId, username, sessionScore }) {
+        if (!userId || !sessionId) {
+            throw new Error("userId and sessionId are required");
+        }
+        if (!Number.isFinite(sessionScore) || sessionScore < 0) {
+            throw new RangeError("Session score must be a non-negative number");
         }
 
-        // load session
         const session = await this.dataAccess.findSessionById(sessionId);
         if (!session) {
             throw new Error("session not found");
         }
-        if (session.agentId !== agentId) {
-            throw new Error("session does not belong to this agent");
+        if (session.userId !== userId) {
+            throw new Error("session does not belong to this user");
         }
 
-        // load agent
-        const agent = await this.dataAccess.findAgentById(agentId);
-        if (!agent) {
-            throw new Error("agent not found");
+        const user = await this.dataAccess.findOrCreateUser(userId, username);
+        if (!user) {
+            throw new Error("user not found");
         }
 
-        // update streak and points
-        let streak = agent.streak || 0;
-        const now = new Date();
-        const today = now.toLocaleDateString("en-CA"); // date in YYYY-MM-DD format
-        const yesterdayDate = new Date(now);
-        yesterdayDate.setDate(yesterdayDate.getDate() - 1); // calendar day subtract 1
-        const yesterday = yesterdayDate.toLocaleDateString("en-CA");
-
-        if (agent.lastActivity === yesterday) {
-            streak += 1;
-        } else if (agent.lastActivity !== today) {
-            streak = 1;
-        }
-        agent.streak = streak;
-
-        const prevScore = agent.lessonScores[session.sessionId] ?? 0;
-        agent.totalPoints += session.cScore - prevScore;
-        agent.lessonScores[session.sessionId] = session.cScore;
-        agent.lastActivity = today;
+        session.cScore = sessionScore;
+        user.recordLessonCompletion({
+            sessionId: session.sessionId,
+            sessionScore: session.cScore,
+        });
         session.completed = true;
 
         await this.dataAccess.updateSession(session);
-        await this.dataAccess.updateAgent(agent);
+        await this.dataAccess.updateUser(user);
 
         const outputData = new CompleteLessonOutputData({
-            agentId: agent.agentId,
+            userId: user.userId,
             sessionId: session.sessionId,
-            streak: agent.streak,
+            streak: user.streak,
             sessionScore: session.cScore,
-            totalPoints: agent.totalPoints,
+            totalPoints: user.totalPoints,
         });
 
         return this.presenter.present(outputData);

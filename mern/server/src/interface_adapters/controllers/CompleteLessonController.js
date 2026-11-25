@@ -2,18 +2,21 @@ import { CompleteLessonInputData } from "../../application/use_cases/CompleteLes
 
 export function createCompleteLessonController({ CompleteLesson }) {
     return async function CompleteLessonController(req, res, next) {
-        const { agentId, sessionId } = req.params;
+        const { sessionId } = req.params;
+        const { userId, username, sessionScore } = req.body;
 
-        if (!agentId || !sessionId) {
+        if (!userId || !sessionId || !Number.isFinite(sessionScore)) {
             return res
                 .status(400)
-                .json({ error: "agentId and sessionId are required" });
+                .json({ error: "userId, sessionId, and a valid sessionScore are required" });
         }
 
         try {
             const inputData = new CompleteLessonInputData({
-                agentId,
+                userId,
                 sessionId,
+                username,
+                sessionScore,
             });
             const responseData = await CompleteLesson.execute(inputData);
             return res.status(200).json(responseData);
