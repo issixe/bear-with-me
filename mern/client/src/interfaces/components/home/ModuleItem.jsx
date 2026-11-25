@@ -1,13 +1,19 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useLessons } from "../../hooks/useLessons";
+import { useOpenLesson } from "../../hooks/useSessions";
 
-export default function ModuleItem({ module, completedLessonIds = [] }) {
+export default function ModuleItem({
+  module,
+  completedLessonIds = [],
+  agentId,
+}) {
   const [open, setOpen] = useState(false);
-  
+
   // Only fetch lessons (ListLessons) once the module is opened
   const { lessons, loading, error } = useLessons(open ? module.id : null);
   const panelId = `module-${module.id}-lessons`;
+
+  const { openLesson, opening, error: startError } = useOpenLesson(agentId);
 
   return (
     <div className="rounded-2xl border border-stone-200 bg-white">
@@ -19,7 +25,9 @@ export default function ModuleItem({ module, completedLessonIds = [] }) {
         className="flex w-full items-center justify-between gap-4 px-6 py-4 text-left"
       >
         <span>
-          <span className="block text-xl font-bold text-[#24413B]">{module.title}</span>
+          <span className="block text-xl font-bold text-[#24413B]">
+            {module.title}
+          </span>
           {module.description && (
             <span className="block text-stone-600">{module.description}</span>
           )}
@@ -52,21 +60,30 @@ export default function ModuleItem({ module, completedLessonIds = [] }) {
                 const done = completedLessonIds.includes(lesson.id);
                 return (
                   <li key={lesson.id}>
-                    <Link
-                      to={`/learn?lesson=${encodeURIComponent(lesson.id)}`}
-                      className="flex items-center justify-between rounded-xl px-4 py-3 text-[#24413B] hover:bg-[var(--selection)] hover:text-[var(--selection-text)]"
+                    <button
+                      type="button"
+                      onClick={() => openLesson(lesson.id)}
+                      disabled={opening}
+                      className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-[#24413B] hover:bg-[var(--selection)] hover:text-[var(--selection-text)] disabled:cursor-wait disabled:opacity-60"
                     >
                       <span>{lesson.title}</span>
                       {done && (
                         <span className="text-sm font-semibold text-[var(--selection-text)]">
-                          ✓ Done
+                          Done
                         </span>
                       )}
-                    </Link>
+                    </button>
                   </li>
                 );
               })}
             </ul>
+          )}
+
+          {startError && (
+            <p role="alert" className="mt-2 text-red-700">
+              Couldn't start this lesson. Check that the server is running and
+              try again.
+            </p>
           )}
         </div>
       )}

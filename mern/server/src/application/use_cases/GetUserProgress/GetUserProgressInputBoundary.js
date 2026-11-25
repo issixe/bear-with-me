@@ -7,7 +7,7 @@
 // 5. Do not award points or record a new completion.
 
 export class GetUserProgressInputBoundary {
-    async execute(inputData) {
-        throw new Error('Execute not implemented');
+    async execute(_inputData) {
+        throw new Error("Execute not implemented");
     }
 }

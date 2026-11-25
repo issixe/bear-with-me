@@ -1,4 +1,4 @@
-import { ListLessonsInputData } from '../../application/use_cases/listLessons/listLessonsInputData.js';
+import { ListLessonsInputData } from "../../application/use_cases/listLessons/listLessonsInputData.js";
 
 export class ListLessonsController {
     constructor(inputBoundary) {
@@ -6,6 +6,8 @@ export class ListLessonsController {
     }
 
     execute(moduleId) {
-        return this.inputBoundary.execute(new ListLessonsInputData({ moduleId }));
+        return this.inputBoundary.execute(
+            new ListLessonsInputData({ moduleId }),
+        );
     }
 }
