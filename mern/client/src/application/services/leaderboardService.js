@@ -6,7 +6,8 @@ export const leaderboardService = {
       topCount !== undefined && topCount !== null
         ? `?topCount=${encodeURIComponent(topCount)}`
         : "";
-    const entries = (await apiClient.get(`/leaderboard${query}`)).leaderboard ?? [];
+    const entries =
+      (await apiClient.get(`/leaderboard${query}`)).leaderboard ?? [];
 
     return entries.map(([userId, username, totalPoints], index) => ({
       rank: index + 1,

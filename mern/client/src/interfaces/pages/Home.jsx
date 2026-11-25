@@ -1,7 +1,7 @@
 import pipWave from "../../assets/pip/waving.png";
+import { LeaderboardCard } from "../components/home/LeaderboardCard";
 import ModuleItem from "../components/home/ModuleItem";
 import StreakBadge from "../components/home/StreakBadge";
-import { LeaderboardCard } from "../components/home/LeaderboardCard";
 import { useModules } from "../hooks/useModules";
 import { useCurrentUser } from "../hooks/useUsers";
 

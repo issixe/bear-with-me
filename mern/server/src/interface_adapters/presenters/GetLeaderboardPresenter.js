@@ -1,5 +1,4 @@
-import { GetLeaderboardOutputBoundary } from
-    "../../application/use_cases/GetLeaderboard/GetLeaderboardOutputBoundary.js";
+import { GetLeaderboardOutputBoundary } from "../../application/use_cases/GetLeaderboard/GetLeaderboardOutputBoundary.js";
 
 export class GetLeaderboardPresenter extends GetLeaderboardOutputBoundary {
     constructor(viewModel) {

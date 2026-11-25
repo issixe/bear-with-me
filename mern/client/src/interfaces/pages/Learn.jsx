@@ -5,10 +5,10 @@ import {
   exampleModules,
 } from "../../../../server/src/database/seeds/seedData.js";
 import pip from "../../assets/pip/thumbs-up.png";
-import ModuleComplete from "./ModuleComplete";
 import { useServices } from "../context/ServicesContext";
 import { useOpenLesson } from "../hooks/useSessions";
 import { useCurrentUser } from "../hooks/useUsers";
+import ModuleComplete from "./ModuleComplete";
 
 //Figuring out which lesson to show from the URL that the user clicks
 const Learn = () => {

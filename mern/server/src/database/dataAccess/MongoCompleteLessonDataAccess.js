@@ -12,9 +12,9 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
         if (!ObjectId.isValid(sessionId)) {
             return null;
         }
-        const session = await db.collection('sessions').findOne(
-            { _id: new ObjectId(sessionId) }
-        );
+        const session = await db
+            .collection("sessions")
+            .findOne({ _id: new ObjectId(sessionId) });
 
         if (!session) {
             return null;

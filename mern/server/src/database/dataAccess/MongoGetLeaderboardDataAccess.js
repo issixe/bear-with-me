@@ -1,11 +1,11 @@
-import db from '../connection.js';
-import { GetLeaderboardDataAccess } from '../../application/use_cases/GetLeaderboard/GetLeaderboardDataAccess.js';
+import { GetLeaderboardDataAccess } from "../../application/use_cases/GetLeaderboard/GetLeaderboardDataAccess.js";
+import db from "../connection.js";
 
 export class MongoGetLeaderboardDataAccess extends GetLeaderboardDataAccess {
     async getTopUsers({ weekStart, topCount }) {
         const query = { pointsWeekStart: weekStart };
         const cursor = db
-            .collection('users')
+            .collection("users")
             .find(query)
             .sort({ totalPoints: -1 });
 
@@ -19,7 +19,7 @@ export class MongoGetLeaderboardDataAccess extends GetLeaderboardDataAccess {
             userId: user._id.toString(),
             username: user.username,
             totalPoints: user.totalPoints ?? 0,
-            pointsWeekStart: user.pointsWeekStart
+            pointsWeekStart: user.pointsWeekStart,
         }));
     }
 }

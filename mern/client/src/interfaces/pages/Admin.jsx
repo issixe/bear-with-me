@@ -106,27 +106,31 @@ export default function Admin() {
                 </p>
               ) : entries.length ? (
                 <ol className="space-y-2 rounded-lg bg-[#e2e6dc] px-4 py-2.5">
-                  {entries.map(({ userId, username, totalPoints, rank }, index) => (
-                    <li
-                      key={userId}
-                      className="flex items-center gap-2 text-xs text-[#242824]"
-                    >
-                      <span
-                        className={`w-3 shrink-0 font-bold ${rankColors[index] ?? "text-[#287f6e]"}`}
+                  {entries.map(
+                    ({ userId, username, totalPoints, rank }, index) => (
+                      <li
+                        key={userId}
+                        className="flex items-center gap-2 text-xs text-[#242824]"
                       >
-                        {rank ?? index + 1}
-                      </span>
-                      <span
-                        className={`grid size-7 shrink-0 place-items-center rounded-full font-bold text-[#24413B] ${employeeAvatarColors.get(username) ?? "bg-[var(--selection)]"}`}
-                      >
-                        {username[0]}
-                      </span>
-                      <span className="min-w-0 flex-1 break-words">{username}</span>
-                      <span className="shrink-0 font-semibold tabular-nums">
-                        {totalPoints} pts
-                      </span>
-                    </li>
-                  ))}
+                        <span
+                          className={`w-3 shrink-0 font-bold ${rankColors[index] ?? "text-[#287f6e]"}`}
+                        >
+                          {rank ?? index + 1}
+                        </span>
+                        <span
+                          className={`grid size-7 shrink-0 place-items-center rounded-full font-bold text-[#24413B] ${employeeAvatarColors.get(username) ?? "bg-[var(--selection)]"}`}
+                        >
+                          {username[0]}
+                        </span>
+                        <span className="min-w-0 flex-1 break-words">
+                          {username}
+                        </span>
+                        <span className="shrink-0 font-semibold tabular-nums">
+                          {totalPoints} pts
+                        </span>
+                      </li>
+                    ),
+                  )}
                 </ol>
               ) : (
                 <p className="rounded-lg bg-[#e2e6dc] px-4 py-2.5 text-sm">

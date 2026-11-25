@@ -8,7 +8,10 @@ export function createCompleteLessonRoute({ dataAccess }) {
 
     router.post("/:sessionId/complete", async (req, res, next) => {
         const presenter = new CompleteLessonPresenter();
-        const interactor = new CompleteLessonInteractor({ dataAccess, presenter });
+        const interactor = new CompleteLessonInteractor({
+            dataAccess,
+            presenter,
+        });
         const controller = createCompleteLessonController({
             CompleteLesson: interactor,
         });

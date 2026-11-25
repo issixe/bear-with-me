@@ -1,9 +1,8 @@
 import express from "express";
-
-import { GetLeaderboardViewModel } from "../interface_adapters/viewModels/GetLeaderboardViewModel.js";
-import { GetLeaderboardPresenter } from "../interface_adapters/presenters/GetLeaderboardPresenter.js";
 import { GetLeaderboardInteractor } from "../application/use_cases/GetLeaderboard/GetLeaderboardInteractor.js";
 import { createGetLeaderboardController } from "../interface_adapters/controllers/GetLeaderboardController.js";
+import { GetLeaderboardPresenter } from "../interface_adapters/presenters/GetLeaderboardPresenter.js";
+import { GetLeaderboardViewModel } from "../interface_adapters/viewModels/GetLeaderboardViewModel.js";
 
 export function createGetLeaderboardRoute({ dataAccess }) {
     const router = express.Router({ mergeParams: true });
@@ -14,10 +13,10 @@ export function createGetLeaderboardRoute({ dataAccess }) {
             const presenter = new GetLeaderboardPresenter(viewModel);
             const interactor = new GetLeaderboardInteractor({
                 dataAccess,
-                outputBoundary: presenter
+                outputBoundary: presenter,
             });
             const controller = createGetLeaderboardController({
-                GetLeaderboard: interactor
+                GetLeaderboard: interactor,
             });
 
             await controller(req, res, next);
