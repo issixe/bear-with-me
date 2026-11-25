@@ -3,6 +3,7 @@ import ModuleItem from "../components/home/ModuleItem";
 import StreakBadge from "../components/home/StreakBadge";
 import { useModules } from "../hooks/useModules";
 import { useCurrentUser } from "../hooks/useUsers";
+import { LeaderboardCard } from "../components/home/LeaderboardCard";
 
 export default function Home() {
   const { user } = useCurrentUser();
@@ -26,7 +27,11 @@ export default function Home() {
         )}
       </header>
 
-      <section>
+      <div className="mb-8">
+        <LeaderboardCard title="Leaderboard" topCount={4} />
+      </div>
+
+      <section aria-labelledby="modules-heading">
         <h2
           id="modules-heading"
           className="mb-4 text-3xl font-extrabold text-[#24413B]"
