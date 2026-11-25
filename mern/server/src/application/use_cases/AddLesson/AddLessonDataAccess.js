@@ -1,15 +1,15 @@
 // Data access interface for adding a lesson.
 
 export class AddLessonDataAccess {
-    async lessonExists(lessonId) {
+    async lessonExists(_lessonId) {
         throw new Error("lessonExists not implemented");
     }
 
-    async saveLesson(lesson) {
+    async saveLesson(_lesson) {
         throw new Error("saveLesson not implemented");
     }
 
-    async addLessonToModule(module, lessonId) {
+    async addLessonToModule(_module, _lessonId) {
         throw new Error("addLessonToModule not implemented");
     }
 }

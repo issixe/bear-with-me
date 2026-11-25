@@ -15,7 +15,7 @@ export class LessonValidator {
     }
 
     // Subclasses override this. Return an error message string, or null if OK.
-    check(lesson) {
+    check(_lesson) {
         throw new Error("check not implemented");
     }
 }

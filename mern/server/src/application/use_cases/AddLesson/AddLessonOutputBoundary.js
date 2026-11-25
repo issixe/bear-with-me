@@ -1,11 +1,11 @@
 // AddLessonOutputBoundary.js
 
 export class AddLessonOutputBoundary {
-    prepareSuccessView(outputData) {
+    prepareSuccessView(_outputData) {
         throw new Error("Not implemented");
     }
 
-    prepareFailView(errorMessage) {
+    prepareFailView(_errorMessage) {
         throw new Error("Not implemented");
     }
 }
