@@ -4,7 +4,6 @@ import StreakBadge from "../components/home/StreakBadge";
 import { LeaderboardCard } from "../components/home/LeaderboardCard";
 import { useModules } from "../hooks/useModules";
 import { useCurrentUser } from "../hooks/useUsers";
-import { LeaderboardCard } from "../components/home/LeaderboardCard";
 
 export default function Home() {
   const { user } = useCurrentUser();

@@ -4,7 +4,6 @@ import { leaderboardService } from "../../application/services/leaderboardServic
 import { moduleService } from "../../application/services/moduleService";
 import { sessionService } from "../../application/services/sessionService";
 import { userService } from "../../application/services/userService";
-import { leaderboardService } from "../../application/services/leaderboardService";
 
 const ServicesContext = createContext(null);
 

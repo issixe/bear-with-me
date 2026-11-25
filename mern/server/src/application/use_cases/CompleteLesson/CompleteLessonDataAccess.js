@@ -5,8 +5,8 @@ export class CompleteLessonDataAccess {
         throw new Error("findSessionById not implemented");
     }
 
-    async findUserById(userId) {
-        throw new Error('findUserById not implemented');
+    async findOrCreateUser(_userId, _username) {
+        throw new Error("findOrCreateUser not implemented");
     }
 
     async updateSession(_session) {

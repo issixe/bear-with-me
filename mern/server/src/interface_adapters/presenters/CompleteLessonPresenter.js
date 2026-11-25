@@ -1,4 +1,3 @@
-import { CompleteLessonOutputBoundary } from "../../application/use_cases/CompleteLesson/CompleteLessonOutputBoundary.js";
 import { CompleteLessonOutputBoundary } from
     "../../application/use_cases/CompleteLesson/CompleteLessonOutputBoundary.js";
 

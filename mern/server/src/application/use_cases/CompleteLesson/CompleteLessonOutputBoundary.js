@@ -1,9 +1,5 @@
 export class CompleteLessonOutputBoundary {
-    async prepareSuccessView(_outputData) {
-        throw new Error('prepareSuccessView() must be implemented');
-    }
-
-    async prepareFailView(_message) {
-        throw new Error('prepareFailView() must be implemented');
+    async present(_outputData) {
+        throw new Error("present() not implemented");
     }
 }

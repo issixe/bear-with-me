@@ -7,6 +7,8 @@ import { createListModulesRoute } from "./src/routes/ListModulesRoute.js";
 import { createListLessonsRoute } from "./src/routes/ListLessonsRoute.js";
 import { MongoStartSessionDataAccess } from "./src/database/dataAccess/MongoStartSessionDataAccess.js";
 import { createStartSessionRoute } from "./src/routes/StartSessionRoute.js";
+import { MongoCompleteLessonDataAccess } from "./src/database/dataAccess/MongoCompleteLessonDataAccess.js";
+import { createCompleteLessonRoute } from "./src/routes/CompleteLessonRoute.js";
 import { MongoGetLeaderboardDataAccess } from './src/database/dataAccess/MongoGetLeaderboardDataAccess.js';
 import { createGetLeaderboardRoute } from './src/routes/GetLeaderboardRoute.js';
 
@@ -34,6 +36,13 @@ app.use(
   "/sessions",
   createStartSessionRoute({
     dataAccess: new MongoStartSessionDataAccess(),
+  }),
+);
+
+app.use(
+  "/sessions",
+  createCompleteLessonRoute({
+    dataAccess: new MongoCompleteLessonDataAccess(),
   }),
 );
 

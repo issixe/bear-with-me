@@ -3,42 +3,44 @@ import { useServices } from "../context/ServicesContext";
 
 export function useLeaderboard(topCount = 5) {
   const { leaderboardService } = useServices();
-  const [entries, setEntries] = useState(null);
-  const [error, setError] = useState(null);
+  const [result, setResult] = useState({
+    requestKey: null,
+    entries: [],
+    loading: true,
+    error: null,
+  });
   const [reloadToken, setReloadToken] = useState(0);
+  const requestKey = `${topCount}:${reloadToken}`;
 
   useEffect(() => {
     let cancelled = false;
-    setEntries(null);
-    setError(null);
 
     leaderboardService
       .getWeeklyLeaderboard(topCount)
-      .then((data) => {
+      .then((entries) => {
         if (!cancelled) {
-          setEntries(data);
-          setError(null);
+          setResult({ requestKey, entries, loading: false, error: null });
         }
       })
-      .catch((err) => {
+      .catch((error) => {
         if (!cancelled) {
-          setError(err);
+          setResult({ requestKey, entries: [], loading: false, error });
         }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [topCount, leaderboardService, reloadToken]);
+  }, [topCount, leaderboardService, requestKey]);
 
   const refetch = useCallback(() => {
     setReloadToken((n) => n + 1);
   }, []);
 
   return {
-    entries: entries ?? [],
-    loading: entries === null && !error,
-    error,
+    entries: result.requestKey === requestKey ? result.entries : [],
+    loading: result.requestKey !== requestKey || result.loading,
+    error: result.requestKey === requestKey ? result.error : null,
     refetch,
   };
 }

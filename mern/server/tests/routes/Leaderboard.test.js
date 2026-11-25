@@ -23,7 +23,12 @@ test("completing a session makes its points available on the weekly leaderboard"
         updateUser: async () => {},
         getTopUsers: async ({ weekStart, topCount }) =>
             user.pointsWeekStart === weekStart && user.totalPoints > 0
-                ? [[user.userId, user.username, user.totalPoints]].slice(0, topCount)
+                ? [{
+                    userId: user.userId,
+                    username: user.username,
+                    totalPoints: user.totalPoints,
+                    pointsWeekStart: user.pointsWeekStart,
+                }].slice(0, topCount)
                 : [],
     };
     const app = express();
