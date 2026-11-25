@@ -11,7 +11,7 @@ export const leaderboardService = {
     return entries.map(([userId, username, totalPoints], index) => ({
       rank: index + 1,
       userId,
-      username: username ?? "Unknown Agent",
+      username: username ?? "Unknown User",
       totalPoints: totalPoints ?? 0,
     }));
   },

@@ -87,7 +87,7 @@ export function LeaderboardCard({ title = "Leaderboard", topCount = 4 }) {
         {!loading && !error && entries.length > 0 && (
           <ul style={styles.list}>
             {entries.map((entry, idx) => (
-              <li key={entry.agentId} style={styles.row}>
+              <li key={entry.userId} style={styles.row}>
                 <span style={styles.rank}>{entry.rank ?? idx + 1}</span>
                 <span style={styles.username}>{entry.username}</span>
                 <span style={styles.points}>{entry.totalPoints} pts</span>

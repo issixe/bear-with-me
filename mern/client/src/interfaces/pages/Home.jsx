@@ -1,6 +1,7 @@
 import pipWave from "../../assets/pip/waving.png";
 import ModuleItem from "../components/home/ModuleItem";
 import StreakBadge from "../components/home/StreakBadge";
+import { LeaderboardCard } from "../components/home/LeaderboardCard";
 import { useModules } from "../hooks/useModules";
 import { useCurrentUser } from "../hooks/useUsers";
 import { LeaderboardCard } from "../components/home/LeaderboardCard";
@@ -52,7 +53,7 @@ export default function Home() {
                 key={m.id}
                 module={m}
                 completedLessonIds={user?.completedLessonIds}
-                agentId={user?.id}
+                userId={user?.id}
               />
             ))}
           </div>

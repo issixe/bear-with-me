@@ -6,7 +6,7 @@
 export class Session {
     constructor({
         id = null, // null until saved
-        agentId,
+        userId,
         lessonId,
         stage,
         customerMood,
@@ -15,7 +15,7 @@ export class Session {
         status = "in_progress",
     }) {
         this.id = id;
-        this.agentId = agentId;
+        this.userId = userId;
         this.lessonId = lessonId;
         this.stage = stage;
         this.customerMood = customerMood;

@@ -17,7 +17,7 @@ export function createStartSessionRoute({ dataAccess }) {
             });
             const controller = new StartSessionController(interactor);
 
-            await controller.execute(req.body.agentId, req.body.lessonId);
+            await controller.execute(req.body.userId, req.body.lessonId);
 
             res.status(viewModel.httpStatus).json(viewModel.body);
         } catch (error) {
