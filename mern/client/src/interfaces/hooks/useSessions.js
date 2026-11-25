@@ -8,11 +8,11 @@ export function useStartSession() {
   const [error, setError] = useState(null);
 
   const start = useCallback(
-    async (agentId, lessonId) => {
+    async (userId, lessonId) => {
       setStarting(true);
       setError(null);
       try {
-        return await sessionService.start({ agentId, lessonId });
+        return await sessionService.start({ userId, lessonId });
       } catch (e) {
         setError(e);
         throw e;
@@ -26,14 +26,14 @@ export function useStartSession() {
   return { start, starting, error };
 }
 
-export function useOpenLesson(agentId) {
+export function useOpenLesson(userId) {
   const navigate = useNavigate();
   const { start, starting, error } = useStartSession();
 
   const openLesson = useCallback(
     async (lessonId) => {
       try {
-        const session = await start(agentId, lessonId);
+        const session = await start(userId, lessonId);
         navigate(`/learn?lesson=${encodeURIComponent(lessonId)}`, {
           state: { session },
         });
@@ -41,7 +41,7 @@ export function useOpenLesson(agentId) {
         // error is already stored by useStartSession
       }
     },
-    [agentId, start, navigate],
+    [userId, start, navigate],
   );
 
   return { openLesson, opening: starting, error };

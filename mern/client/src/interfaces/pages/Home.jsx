@@ -47,7 +47,7 @@ export default function Home() {
                 key={m.id}
                 module={m}
                 completedLessonIds={user?.completedLessonIds}
-                agentId={user?.id}
+                userId={user?.id}
               />
             ))}
           </div>

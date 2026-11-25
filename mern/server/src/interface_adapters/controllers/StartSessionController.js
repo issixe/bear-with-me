@@ -5,9 +5,9 @@ export class StartSessionController {
         this.inputBoundary = inputBoundary;
     }
 
-    execute(agentId, lessonId) {
+    execute(userId, lessonId) {
         return this.inputBoundary.execute(
-            new StartSessionInputData({ agentId, lessonId }),
+            new StartSessionInputData({ userId, lessonId }),
         );
     }
 }

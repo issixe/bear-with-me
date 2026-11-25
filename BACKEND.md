@@ -91,13 +91,13 @@ runtime wiring are not yet aligned.
 |Concept|Definition|
 |----|----|
 | Module | A training module can contain several lessons, listed by lesson ID.|
-| Lesson |One lesson is one conversation of agent & customer |
-| Answer | Agent’s answer among different given option to reply to the customer |
-| Customer Response | Customer’s response / text to the agent (aka player) |
-| Stage | One step in a lesson’s conversation, containing customer dialogue and available agent answers.|
-| Session | One agent’s attempt at a lesson, tracking their current stage, selected answers, score, mood, and status.|
-| Agent | The person who completing the training module |
-| Agent profile | Information about an agent, including their identity and training progress: overall points, daily streak, and completed lessons.|
+| Lesson | One lesson is one conversation between a user and a customer. |
+| Answer | A user's selected response to the customer. |
+| Customer Response | The customer's response to the user. |
+| Stage | One step in a lesson's conversation, containing customer dialogue and available user answers. |
+| Session | One user's attempt at a lesson, tracking their current stage, selected answers, score, mood, and status. |
+| User | The person completing the training module. |
+| User profile | Information about a user, including their identity and training progress: overall points, daily streak, and completed lessons.|
 
 ## Use case files present
 
@@ -113,8 +113,8 @@ connected to the Express server.
 |---|---|
 |Module|`module_id`, title, description, `lessons` (lesson ID list)|
 |Lesson|`lesson_id`, title, starting stage, stages, customer responses, answer options and their scores|
-|Session|Agent ID, lesson ID, current stage, mood, cScore, answer history, status|
-|AgentProfile|Agent identity, overall points, completed lessons, streak information| 
+|Session|User ID, lesson ID, current stage, mood, cScore, answer history, status|
+|User|User identity, overall points, completed lessons, streak information|
 
 ## Seed data
 
