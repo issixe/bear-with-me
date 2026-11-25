@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, Navigate, useLocation} from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import pip from "../../assets/pip/thumbs-up.png";
+import { useLessons } from "../hooks/useLessons";
 import { useOpenLesson } from "../hooks/useSessions";
 import { useCurrentUser } from "../hooks/useUsers";
-import { useLessons } from "../hooks/useLessons";
 import ModuleComplete from "./ModuleComplete";
 
 //Figuring out which lesson to show from the URL that the user clicks
@@ -23,7 +23,9 @@ const MOOD_TENSION = { angry: 70, frustrated: 50, calm: 20 };
 
 function Lesson({ session }) {
   const { lessons: moduleLessons } = useLessons(session.moduleId);
-  const currentIndex = moduleLessons.findIndex((item) => item.id === session.lessonId);
+  const currentIndex = moduleLessons.findIndex(
+    (item) => item.id === session.lessonId,
+  );
   const nextLessonId = moduleLessons[currentIndex + 1]?.id ?? null;
   const [stageId, setStageId] = useState(session.stage);
   const [tension, setTension] = useState(
@@ -32,9 +34,7 @@ function Lesson({ session }) {
   const [history, setHistory] = useState([]);
   const [complete, setComplete] = useState(false);
   const latest = useRef(null);
-  const progress = Math.round(
-    (history.length / session.stageCount) * 100,
-  );
+  const progress = Math.round((history.length / session.stageCount) * 100);
   const isFirstRound = history.length === 0 && session !== null;
 
   const { user } = useCurrentUser();
@@ -60,9 +60,9 @@ function Lesson({ session }) {
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
 
   function choose(answerId) {
-  const answer = options.find((o) => o.answerId === answerId);
-  setHistory([...history, { stageId, customer, mood, answer: answer.text }]);
-  // TODO: call next-round use case (teammate) → update stage, customer, options, tension
+    const answer = options.find((o) => o.answerId === answerId);
+    setHistory([...history, { stageId, customer, mood, answer: answer.text }]);
+    // TODO: call next-round use case (teammate) → update stage, customer, options, tension
   }
 
   //Draws the chat bubble, emoji based on mood
@@ -94,21 +94,21 @@ function Lesson({ session }) {
         <p className="mt-6 mb-3 font-bold">{session.moduleTitle}</p>
         <nav className="flex flex-col gap-2 overflow-x-auto">
           {moduleLessons.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => openLesson(item.id)}
-            disabled={opening}
-            aria-current={item.id === session.lessonId ? "page" : undefined}
-            className={`min-w-40 shrink-0 rounded-lg p-3 text-left text-sm md:min-w-0 disabled:cursor-wait disabled:opacity-60 ${
-              item.id === session.lessonId
-                ? "bg-[var(--selection)] font-bold text-[var(--selection-text)]"
-                : "hover:bg-stone-100"
-            }`}
-          >
-            {item.title}
-          </button>
-        ))}
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => openLesson(item.id)}
+              disabled={opening}
+              aria-current={item.id === session.lessonId ? "page" : undefined}
+              className={`min-w-40 shrink-0 rounded-lg p-3 text-left text-sm md:min-w-0 disabled:cursor-wait disabled:opacity-60 ${
+                item.id === session.lessonId
+                  ? "bg-[var(--selection)] font-bold text-[var(--selection-text)]"
+                  : "hover:bg-stone-100"
+              }`}
+            >
+              {item.title}
+            </button>
+          ))}
         </nav>
         <img
           src={pip}
