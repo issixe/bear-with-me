@@ -12,44 +12,47 @@ import { ListLessonsInputBoundary } from "./ListLessonsInputBoundary.js";
 import { ListLessonsOutputData } from "./ListLessonsOutputData.js";
 
 export class ListLessonsInteractor extends ListLessonsInputBoundary {
-  constructor({ dataAccess, outputBoundary }) {
-    super();
+    constructor({ dataAccess, outputBoundary }) {
+        super();
 
-    this.dataAccess = dataAccess;
-    this.outputBoundary = outputBoundary;
-  }
-
-  async execute({ moduleId }) {
-    if (!moduleId) {
-      this.outputBoundary.prepareFailView("Module ID is required");
-      return;
+        this.dataAccess = dataAccess;
+        this.outputBoundary = outputBoundary;
     }
 
-    const module = await this.dataAccess.findModuleById(moduleId);
+    async execute({ moduleId }) {
+        if (!moduleId) {
+            this.outputBoundary.prepareFailView("Module ID is required");
+            return;
+        }
 
-    if (!module) {
-      this.outputBoundary.prepareFailView(`Module "${moduleId}" not found.`);
-      return;
-    }
+        const module = await this.dataAccess.findModuleById(moduleId);
 
-    try {
-      const lessons = await this.dataAccess.findLessonsByModuleId(moduleId);
-      if (!module) {
-        this.outputBoundary.prepareFailView("Module not found.");
-        return;
-      }
-      const outputData = new ListLessonsOutputData({
-        moduleId,
-        lessons: lessons.map((lesson) => ({
-          id: lesson.id,
-          title: lesson.title,
-        })),
-      });
-      this.outputBoundary.prepareSuccessView(outputData);
-    } catch (_error) {
-      this.outputBoundary.prepareFailView(
-        `Could not load lessons for module ${moduleId}.`,
-      );
+        if (!module) {
+            this.outputBoundary.prepareFailView(
+                `Module "${moduleId}" not found.`,
+            );
+            return;
+        }
+
+        try {
+            const lessons =
+                await this.dataAccess.findLessonsByModuleId(moduleId);
+            if (!module) {
+                this.outputBoundary.prepareFailView("Module not found.");
+                return;
+            }
+            const outputData = new ListLessonsOutputData({
+                moduleId,
+                lessons: lessons.map((lesson) => ({
+                    id: lesson.id,
+                    title: lesson.title,
+                })),
+            });
+            this.outputBoundary.prepareSuccessView(outputData);
+        } catch (_error) {
+            this.outputBoundary.prepareFailView(
+                `Could not load lessons for module ${moduleId}.`,
+            );
+        }
     }
-  }
 }
