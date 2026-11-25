@@ -3,11 +3,11 @@
 // Defines how the interactor sends output data to the view.
 // The view must extend this class and override the methods.
 export class FindWorstCallsOutputBoundary {
-  prepareSuccessView(outputData) {
-    throw new Error("prepareSuccessView not implemented");
-  }
+	prepareSuccessView(_outputData) {
+		throw new Error("prepareSuccessView not implemented");
+	}
 
-  prepareFailView(errorMessage) {
-    throw new Error("prepareFailView not implemented");
-  }
+	prepareFailView(_errorMessage) {
+		throw new Error("prepareFailView not implemented");
+	}
 }
