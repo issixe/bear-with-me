@@ -18,6 +18,7 @@ export class StartSessionPresenter extends StartSessionOutputBoundary {
             stage: out.stage,
             customerMood: out.customerMood,
             customerResponse: out.customerResponse,
+            pipWords: out.pipWords,
             options: out.options,
         };
     }

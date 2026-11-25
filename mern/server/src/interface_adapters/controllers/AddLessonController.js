@@ -13,6 +13,7 @@ export class AddLessonController {
                     customerResponses: stage?.["customer responses"],
                     answers: stage?.answers,
                     nextStage: stage?.next_stage,
+                    pipWords: stage?.pipWords,
                 },
             ]),
         );

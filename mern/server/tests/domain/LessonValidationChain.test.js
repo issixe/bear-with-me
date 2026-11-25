@@ -3,6 +3,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createLessonValidationChain } from "../../src/enterprise/services/CreateLessonValidationChain.js";
+import { PipWordsValidator } from "../../src/enterprise/services/PipWordsValidator.js";
 import { RequiredFieldsValidator } from "../../src/enterprise/services/RequiredFieldsValidator.js";
 import { StartingStageValidator } from "../../src/enterprise/services/StartingStageValidator.js";
 import { validLessonInput } from "./LessonFixture.js";
@@ -69,6 +70,66 @@ test("stage missing one mood is rejected", () => {
     validate(lesson),
     /"resolution" is missing the "calm" customer response/,
   );
+});
+
+// PipWordsValidator
+test("empty pipWords on every stage is accepted", () => {
+  // the fixture uses "" for every stage
+  assert.equal(validate(validLessonInput()), null);
+});
+
+test("pipWords with text is accepted", () => {
+  const lesson = validLessonInput();
+  lesson.stages.opening.pipWords = "You got this!";
+  assert.equal(validate(lesson), null);
+});
+
+test("missing pipWords is rejected", () => {
+  const lesson = validLessonInput();
+  delete lesson.stages.opening.pipWords;
+  assert.match(validate(lesson), /"opening" is missing pipWords/);
+});
+
+test("null pipWords is rejected", () => {
+  const lesson = validLessonInput();
+  lesson.stages.investigation.pipWords = null;
+  assert.match(validate(lesson), /"investigation" is missing pipWords/);
+});
+
+test("non-string pipWords is rejected", () => {
+  const lesson = validLessonInput();
+  lesson.stages.resolution.pipWords = 123;
+  assert.match(validate(lesson), /"resolution" is missing pipWords/);
+});
+
+test("pipWords error message tells the user they can use an empty string", () => {
+  const lesson = validLessonInput();
+  delete lesson.stages.opening.pipWords;
+  assert.match(validate(lesson), /use "" if Pip has nothing to say/);
+});
+
+test("PipWordsValidator works on its own outside the chain", () => {
+  const lesson = validLessonInput();
+  assert.equal(new PipWordsValidator().validate(lesson), null);
+  delete lesson.stages.resolution.pipWords;
+  assert.match(
+    new PipWordsValidator().validate(lesson),
+    /"resolution" is missing pipWords/,
+  );
+});
+
+test("chain order: customer responses are checked before pipWords", () => {
+  const lesson = validLessonInput();
+  delete lesson.stages.opening.customerResponses.angry; // CustomerResponsesValidator
+  delete lesson.stages.opening.pipWords; // PipWordsValidator
+  assert.match(validate(lesson), /missing the "angry" customer response/);
+});
+
+test("chain order: pipWords is checked before answers", () => {
+  const lesson = validLessonInput();
+  delete lesson.stages.opening.pipWords; // PipWordsValidator
+  lesson.stages.opening.answers.A.text = ""; // AnswersValidator
+  assert.match(validate(lesson), /"opening" is missing pipWords/);
 });
 
 // AnswersValidator

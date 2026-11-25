@@ -22,6 +22,7 @@ const stage = (nextStage) => ({
     B: answer("Okay answer", 50),
     C: answer("Bad answer", 10),
   },
+  pipWords: "",
   nextStage,
 });
 

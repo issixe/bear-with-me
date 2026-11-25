@@ -21,6 +21,7 @@ export class StartSessionOutputData {
         stage,
         customerMood,
         customerResponse,
+        pipWords,
         options,
     }) {
         this.sessionId = sessionId;
@@ -32,6 +33,7 @@ export class StartSessionOutputData {
         this.stage = stage;
         this.customerMood = customerMood;
         this.customerResponse = customerResponse;
+        this.pipWords = pipWords;
         this.options = options;
     }
 }

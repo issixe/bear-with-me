@@ -59,6 +59,8 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
 
         const options = lesson.getAgentResponses(lesson.startingStage);
 
+        const pipWords = lesson.getPipWords(lesson.startingStage);
+
         const outputData = new StartSessionOutputData({
             sessionId,
             lessonId,
@@ -69,6 +71,7 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
             stage,
             customerMood,
             customerResponse,
+            pipWords,
             options,
         });
 

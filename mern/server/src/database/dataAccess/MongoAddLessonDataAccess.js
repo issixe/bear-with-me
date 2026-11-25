@@ -22,6 +22,7 @@ export class MongoAddLessonDataAccess extends AddLessonDataAccess {
                         "customer responses": stage.customerResponses,
                         answers: stage.answers,
                         next_stage: stage.nextStage,
+                        pipWords: stage.pipWords,
                     },
                 ]),
             ),
