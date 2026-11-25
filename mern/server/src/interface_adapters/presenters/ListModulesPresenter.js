@@ -5,9 +5,9 @@ export class ListModulesPresenter extends ListModulesOutputBoundary {
         this.viewModel = viewModel;
     }
 
-    prepareSuccessView(out) {
+    prepareSuccessView(outputData) {
         this.viewModel.httpStatus = 200;
-        this.viewModel.body = { modules: out.modules };
+        this.viewModel.body = { modules: outputData.modules };
     }
 
     prepareFailView(msg) {

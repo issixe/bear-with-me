@@ -1,12 +1,23 @@
 import { GetUserProgressOutputBoundary } from "../../application/use_cases/GetUserProgress/GetUserProgressOutputBoundary.js";
 
 export class GetUserProgressPresenter extends GetUserProgressOutputBoundary {
-    async present(outputData) {
-        return {
+    constructor(viewModel) {
+        super();
+        this.viewModel = viewModel;
+    }
+
+    prepareSuccessView(outputData) {
+        this.viewModel.httpStatus = 200;
+        this.viewModel.body = {
             agentId: outputData.agentId,
             streak: outputData.streak,
             totalPoints: outputData.totalPoints,
             completedModules: outputData.completedModules,
         };
+    }
+
+    prepareFailView(msg) {
+        this.viewModel.httpStatus = 400;
+        this.viewModel.body = { error: msg };
     }
 }

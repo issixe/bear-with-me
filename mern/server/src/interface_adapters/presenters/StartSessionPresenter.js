@@ -6,15 +6,15 @@ export class StartSessionPresenter extends StartSessionOutputBoundary {
         this.viewModel = viewModel;
     }
 
-    prepareSuccessView(out) {
+    prepareSuccessView(outputData) {
         this.viewModel.httpStatus = 200;
         this.viewModel.body = {
-            sessionId: out.sessionId,
-            lessonId: out.lessonId,
-            stage: out.stage,
-            customerMood: out.customerMood,
-            customerResponse: out.customerResponse,
-            options: out.options,
+            sessionId: outputData.sessionId,
+            lessonId: outputData.lessonId,
+            stage: outputData.stage,
+            customerMood: outputData.customerMood,
+            customerResponse: outputData.customerResponse,
+            options: outputData.options,
         };
     }
 

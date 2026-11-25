@@ -26,6 +26,13 @@ app.use(
 	}),
 );
 
+app.use(
+    "/users",
+    createGetUserProgressRoute({
+        dataAccess: new MongoGetUserProgressDataAccess(),
+    }),
+);
+
 app.use("/admin/calls", createFindWorstCallsRoute());
 
 app.listen(PORT, () => {
