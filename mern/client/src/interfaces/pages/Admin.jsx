@@ -1,5 +1,6 @@
 import { useState } from "react";
 import streakIcon from "../../assets/streakIcon.png";
+import { useLeaderboard } from "../hooks/useLeaderboard";
 
 const sampleEmployees = [
   { name: "Edward", streak: 5, avatarColor: "bg-[#e6daf8]" },
@@ -16,13 +17,6 @@ const employeeAvatarColors = new Map(
   sampleEmployees.map(({ name, avatarColor }) => [name, avatarColor]),
 );
 
-const sampleLeaderboard = [
-  ["agent-dave", "Dave", 420],
-  ["agent-amber", "Amber", 365],
-  ["agent-steve", "Steve", 310],
-  ["agent-dorian", "Dorian", 245],
-];
-
 const rankColors = ["text-[#956000]", "text-[#62685f]", "text-[#925d36]"];
 const tabs = ["Homepage", "Settings", "Profile"];
 
@@ -31,11 +25,10 @@ const fileInputs = [
   { id: "past-conversations", label: "Upload past conversations" },
 ];
 
-//imports leaderboard, right now it's a sample
-export default function Admin({ leaderboard = sampleLeaderboard }) {
+export default function Admin() {
   const [activeTab, setActiveTab] = useState("Homepage");
+  const { entries, loading, error } = useLeaderboard(5);
   const isHomepage = activeTab === "Homepage";
-  const topAgents = [...leaderboard].sort((a, b) => b[2] - a[2]).slice(0, 5);
 
   return (
     <main className="flex min-h-dvh w-full text-[#24413B]">
@@ -100,24 +93,35 @@ export default function Admin({ leaderboard = sampleLeaderboard }) {
 
             <section>
               <h2 className="mb-3 text-xl font-extrabold">Leaderboard</h2>
-              {topAgents.length ? (
+              {loading ? (
+                <p className="rounded-lg bg-[#e2e6dc] px-4 py-2.5 text-sm">
+                  Loading leaderboard...
+                </p>
+              ) : error ? (
+                <p
+                  className="rounded-lg bg-[#e2e6dc] px-4 py-2.5 text-sm text-red-700"
+                  role="alert"
+                >
+                  {error.message || "Could not load leaderboard"}
+                </p>
+              ) : entries.length ? (
                 <ol className="space-y-2 rounded-lg bg-[#e2e6dc] px-4 py-2.5">
-                  {topAgents.map(([agentId, name, totalPoints], index) => (
+                  {entries.map(({ userId, username, totalPoints, rank }, index) => (
                     <li
-                      key={agentId}
+                      key={userId}
                       className="flex items-center gap-2 text-xs text-[#242824]"
                     >
                       <span
                         className={`w-3 shrink-0 font-bold ${rankColors[index] ?? "text-[#287f6e]"}`}
                       >
-                        {index + 1}
+                        {rank ?? index + 1}
                       </span>
                       <span
-                        className={`grid size-7 shrink-0 place-items-center rounded-full font-bold text-[#24413B] ${employeeAvatarColors.get(name) ?? "bg-[var(--selection)]"}`}
+                        className={`grid size-7 shrink-0 place-items-center rounded-full font-bold text-[#24413B] ${employeeAvatarColors.get(username) ?? "bg-[var(--selection)]"}`}
                       >
-                        {name[0]}
+                        {username[0]}
                       </span>
-                      <span className="min-w-0 flex-1 break-words">{name}</span>
+                      <span className="min-w-0 flex-1 break-words">{username}</span>
                       <span className="shrink-0 font-semibold tabular-nums">
                         {totalPoints} pts
                       </span>
@@ -126,7 +130,7 @@ export default function Admin({ leaderboard = sampleLeaderboard }) {
                 </ol>
               ) : (
                 <p className="rounded-lg bg-[#e2e6dc] px-4 py-2.5 text-sm">
-                  No users on the leaderboard yet.
+                  No points recorded this week yet.
                 </p>
               )}
             </section>
