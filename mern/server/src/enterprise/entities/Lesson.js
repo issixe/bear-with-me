@@ -34,14 +34,14 @@ export class Lesson {
 
         return responses;
     }
-    /** Get all possible agent responses for a given stage, along with text to display */
-    getAgentResponses(stageId) {
+    /** Get all possible user responses for a given stage, along with text to display */
+    getUserResponses(stageId) {
         const stage = this.getStage(stageId);
         const responses = stage.answers;
 
         if (!responses || typeof responses !== "object") {
             throw new Error(
-                `Agent responses not found in stage ${stageId} of lesson ${this.lessonId}`,
+                `User responses not found in stage ${stageId} of lesson ${this.lessonId}`,
             );
         }
 
@@ -63,5 +63,10 @@ export class Lesson {
             );
         }
         return { answerId, text: answer.text, scores: { ...answer.scores } };
+    }
+
+    /** Return Pip's tip for a stage */
+    getPipWords(stageId) {
+        return this.getStage(stageId).pipWords ?? "";
     }
 }

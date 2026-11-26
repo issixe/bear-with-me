@@ -5,8 +5,8 @@ export class GetUserProgressController {
         this.inputBoundary = inputBoundary;
     }
 
-    execute(agentId) {
-        const inputData = new GetUserProgressInputData({ agentId });
+    execute(userId) {
+        const inputData = new GetUserProgressInputData({ userId });
         return this.inputBoundary.execute(inputData);
     }
 }

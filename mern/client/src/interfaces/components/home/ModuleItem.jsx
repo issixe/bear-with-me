@@ -5,7 +5,7 @@ import { useOpenLesson } from "../../hooks/useSessions";
 export default function ModuleItem({
   module,
   completedLessonIds = [],
-  agentId,
+  userId,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -13,7 +13,7 @@ export default function ModuleItem({
   const { lessons, loading, error } = useLessons(open ? module.id : null);
   const panelId = `module-${module.id}-lessons`;
 
-  const { openLesson, opening, error: startError } = useOpenLesson(agentId);
+  const { openLesson, opening, error: startError } = useOpenLesson(userId);
 
   return (
     <div className="rounded-2xl border border-stone-200 bg-white">

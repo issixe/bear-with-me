@@ -4,13 +4,13 @@ import { Lesson } from "../../enterprise/entities/lesson.js";
 import db from "../connection.js";
 
 export class MongoStartSessionDataAccess extends StartSessionDataAccess {
-    async getUserById(agentId) {
-        if (!ObjectId.isValid(agentId)) {
+    async getUserById(userId) {
+        if (!ObjectId.isValid(userId)) {
             return null;
         }
         const user = await db
             .collection("users")
-            .findOne({ _id: new ObjectId(agentId) });
+            .findOne({ _id: new ObjectId(userId) });
 
         if (!user) {
             return null;
@@ -36,6 +36,7 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
                     customerResponses: stage["customer responses"],
                     answers: stage.answers,
                     nextStage: stage.next_stage,
+                    pipWords: stage.pipWords ?? "",
                 },
             ]),
         );
@@ -50,7 +51,7 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
 
     async saveNewSession(session) {
         const result = await db.collection("sessions").insertOne({
-            agentId: session.agentId,
+            userId: session.userId,
             lessonId: session.lessonId,
             cScore: session.cScore,
             stage: session.stage,
@@ -59,5 +60,18 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
             status: session.status,
         });
         return result.insertedId.toString();
+    }
+
+    async findModuleForLesson(lessonId) {
+        const module = await db
+            .collection("modules")
+            .findOne(
+                { lessons: lessonId },
+                { projection: { module_id: 1, title: 1 } },
+            );
+
+        return module
+            ? { moduleId: module.module_id, title: module.title }
+            : null;
     }
 }

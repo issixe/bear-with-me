@@ -11,9 +11,14 @@ export class StartSessionPresenter extends StartSessionOutputBoundary {
         this.viewModel.body = {
             sessionId: outputData.sessionId,
             lessonId: outputData.lessonId,
+            title: outputData.title,
+            moduleId: outputData.moduleId,
+            moduleTitle: outputData.moduleTitle,
+            stageCount: outputData.stageCount,
             stage: outputData.stage,
             customerMood: outputData.customerMood,
             customerResponse: outputData.customerResponse,
+            pipWords: outputData.pipWords,
             options: outputData.options,
         };
     }

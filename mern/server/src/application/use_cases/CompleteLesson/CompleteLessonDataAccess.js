@@ -5,15 +5,15 @@ export class CompleteLessonDataAccess {
         throw new Error("findSessionById not implemented");
     }
 
-    async findAgentById(_agentId) {
-        throw new Error("findAgentById not implemented");
+    async findOrCreateUser(_userId, _username) {
+        throw new Error("findOrCreateUser not implemented");
     }
 
     async updateSession(_session) {
         throw new Error("updateSession not implemented");
     }
 
-    async updateAgent(_agent) {
-        throw new Error("updateAgent not implemented");
+    async updateUser(user) {
+        throw new Error("updateUser not implemented");
     }
 }

@@ -8,8 +8,8 @@
 //  - dataAccess: looks up modules and lessons
 //  - outputBoundary: receives the result
 
-import { ListLessonsInputBoundary } from "./listLessonsInputBoundary.js";
-import { ListLessonsOutputData } from "./listLessonsOutputData.js";
+import { ListLessonsInputBoundary } from "./ListLessonsInputBoundary.js";
+import { ListLessonsOutputData } from "./ListLessonsOutputData.js";
 
 export class ListLessonsInteractor extends ListLessonsInputBoundary {
     constructor({ dataAccess, outputBoundary }) {

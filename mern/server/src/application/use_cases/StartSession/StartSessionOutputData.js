@@ -1,4 +1,4 @@
-// 1. Receive the agent ID and selected lesson ID.
+// 1. Receive the user ID and selected lesson ID.
 // 2. Load the lesson and check that it exists.
 // 3. Use domain logic to create a session with:
 //    - cScore: 0
@@ -14,16 +14,26 @@ export class StartSessionOutputData {
     constructor({
         sessionId,
         lessonId,
+        title,
+        moduleId,
+        moduleTitle,
+        stageCount,
         stage,
         customerMood,
         customerResponse,
+        pipWords,
         options,
     }) {
         this.sessionId = sessionId;
         this.lessonId = lessonId;
+        this.title = title;
+        this.moduleId = moduleId;
+        this.moduleTitle = moduleTitle;
+        this.stageCount = stageCount;
         this.stage = stage;
         this.customerMood = customerMood;
         this.customerResponse = customerResponse;
+        this.pipWords = pipWords;
         this.options = options;
     }
 }

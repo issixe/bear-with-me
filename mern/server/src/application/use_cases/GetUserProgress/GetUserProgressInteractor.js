@@ -1,5 +1,5 @@
-// 1. Receive the agent ID.
-// 2. Load the agent's recorded training progress (in the agent profile).
+// 1. Receive the user ID.
+// 2. Load the user's recorded training progress.
 // 3. Determine the current streak using domain rules
 //    and the current date in the agreed timezone.
 // 4. Return overall points, current streak,
@@ -15,23 +15,23 @@ export class GetUserProgressInteractor extends GetUserProgressInputBoundary {
         this.outputBoundary = outputBoundary;
     }
 
-    async execute({ agentId }) {
-        if (!agentId) {
-            this.outputBoundary.prepareFailView("agentId is required");
+    async execute({ userId }) {
+        if (!userId) {
+            this.outputBoundary.prepareFailView("userId is required");
             return;
         }
 
-        const userProfile = await this.dataAccess.getUserById(agentId);
+        const userProfile = await this.dataAccess.getUserById(userId);
 
         if (!userProfile) {
             this.outputBoundary.prepareFailView(
-                `User with ID ${agentId} not found`,
+                `User with ID ${userId} not found`,
             );
             return;
         }
 
         const outputData = new GetUserProgressOutputData({
-            agentId: userProfile.agentId,
+            userId: userProfile.userId,
             streak: userProfile.streak,
             totalPoints: userProfile.totalPoints,
             completedModules: userProfile.completedModules,

@@ -1,6 +1,11 @@
 import { ObjectId } from "mongodb";
 import { CompleteLessonDataAccess } from "../../application/use_cases/CompleteLesson/CompleteLessonDataAccess.js";
+import { User } from "../../enterprise/entities/User.js";
 import db from "../connection.js";
+
+function getMongoUserId(userId) {
+    return ObjectId.isValid(userId) ? new ObjectId(userId) : userId;
+}
 
 export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
     async findSessionById(sessionId) {
@@ -9,14 +14,14 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
         }
         const session = await db
             .collection("sessions")
-            .findone({ _id: new ObjectId(sessionId) });
+            .findOne({ _id: new ObjectId(sessionId) });
 
         if (!session) {
             return null;
         }
 
         return {
-            agentId: session.agentId?.toString(),
+            userId: session.userId?.toString(),
             sessionId: session._id.toString(),
             lessonId: session.lessonId.toString(),
             cScore: session.cScore,
@@ -24,25 +29,45 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
         };
     }
 
-    async findAgentById(agentId) {
-        if (!ObjectId.isValid(agentId)) {
+    async findOrCreateUser(userId, username) {
+        if (typeof userId !== "string" || !userId.trim()) {
             return null;
         }
-        const user = await db
-            .collection("users")
-            .findone({ _id: new ObjectId(userId) });
 
+        const userDocumentId = getMongoUserId(userId);
+        const users = db.collection("users");
+        await users.updateOne(
+            { _id: userDocumentId },
+            {
+                $setOnInsert: {
+                    username:
+                        (typeof username === "string" && username.trim()) ||
+                        "Unknown User",
+                    totalPoints: 0,
+                    completedModules: [],
+                    streak: 0,
+                    lastActivity: null,
+                    lessonScores: {},
+                    pointsWeekStart: null,
+                },
+            },
+            { upsert: true },
+        );
+        const user = await users.findOne({ _id: userDocumentId });
         if (!user) {
-            return null;
+            throw new Error("User could not be loaded after creation");
         }
 
-        return {
-            agentId: user._id.toString(),
-            totalPoints: user.totalPoints,
-            streak: user.streak,
-            lastActivity: user.lastActivity,
-            lessonScores: user.lessonScores,
-        };
+        return new User({
+            userId: user._id.toString(),
+            username: user.username,
+            totalPoints: user.totalPoints ?? 0,
+            completedModules: user.completedModules ?? [],
+            streak: user.streak ?? 0,
+            lastActivity: user.lastActivity ?? null,
+            lessonScores: user.lessonScores ?? {},
+            pointsWeekStart: user.pointsWeekStart ?? null,
+        });
     }
 
     async updateSession(session) {
@@ -51,20 +76,22 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
             {
                 $set: {
                     completed: session.completed,
+                    cScore: session.cScore,
                 },
             },
         );
     }
 
-    async updateAgent(agent) {
+    async updateUser(user) {
         await db.collection("users").updateOne(
-            { _id: new ObjectId(agent.agentId) },
+            { _id: getMongoUserId(user.userId) },
             {
                 $set: {
-                    totalPoints: agent.totalPoints,
-                    streak: agent.streak,
-                    lastActivity: agent.lastActivity,
-                    lessonScores: agent.lessonScores,
+                    totalPoints: user.totalPoints,
+                    streak: user.streak,
+                    lastActivity: user.lastActivity,
+                    lessonScores: user.lessonScores,
+                    pointsWeekStart: user.pointsWeekStart,
                 },
             },
         );

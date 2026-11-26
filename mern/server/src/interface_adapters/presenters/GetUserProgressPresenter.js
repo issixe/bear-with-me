@@ -9,7 +9,7 @@ export class GetUserProgressPresenter extends GetUserProgressOutputBoundary {
     prepareSuccessView(outputData) {
         this.viewModel.httpStatus = 200;
         this.viewModel.body = {
-            agentId: outputData.agentId,
+            userId: outputData.userId,
             streak: outputData.streak,
             totalPoints: outputData.totalPoints,
             completedModules: outputData.completedModules,

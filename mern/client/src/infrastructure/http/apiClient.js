@@ -5,7 +5,19 @@ async function request(path, options = {}) {
     ...options,
     headers: { "Content-Type": "application/json", ...options.headers },
   });
-  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  if (!res.ok) {
+    let message = `Request failed: ${res.status}`;
+    try {
+      const body = await res.json();
+      if (body?.error) message = body.error;
+    } catch {
+      // body wasn't a JSON file; keep the generic message
+    }
+    const error = new Error(message);
+    error.status = res.status;
+    throw error;
+  }
+
   return res.status === 204 ? null : res.json();
 }
 

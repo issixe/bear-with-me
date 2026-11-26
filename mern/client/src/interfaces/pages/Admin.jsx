@@ -1,5 +1,7 @@
 import { useState } from "react";
 import streakIcon from "../../assets/streakIcon.png";
+import { useAddLesson } from "../hooks/useAddLesson";
+import { useLeaderboard } from "../hooks/useLeaderboard";
 
 const sampleEmployees = [
   { name: "Edward", streak: 5, avatarColor: "bg-[#e6daf8]" },
@@ -16,26 +18,26 @@ const employeeAvatarColors = new Map(
   sampleEmployees.map(({ name, avatarColor }) => [name, avatarColor]),
 );
 
-const sampleLeaderboard = [
-  ["agent-dave", "Dave", 420],
-  ["agent-amber", "Amber", 365],
-  ["agent-steve", "Steve", 310],
-  ["agent-dorian", "Dorian", 245],
-];
-
 const rankColors = ["text-[#956000]", "text-[#62685f]", "text-[#925d36]"];
 const tabs = ["Homepage", "Settings", "Profile"];
 
 const fileInputs = [
-  { id: "custom-lesson", label: "Submit custom lesson" },
   { id: "past-conversations", label: "Upload past conversations" },
 ];
 
-//imports leaderboard, right now it's a sample
-export default function Admin({ leaderboard = sampleLeaderboard }) {
+export default function Admin() {
   const [activeTab, setActiveTab] = useState("Homepage");
+  const { entries, loading, error } = useLeaderboard(5);
   const isHomepage = activeTab === "Homepage";
-  const topAgents = [...leaderboard].sort((a, b) => b[2] - a[2]).slice(0, 5);
+  const { status, message, uploading, uploadLessonFile, reset } =
+    useAddLesson();
+
+  function handleLessonFile(event) {
+    const file = event.target.files?.[0];
+    event.target.value = ""; // so choosing the same file again still fires onChange
+    reset();
+    uploadLessonFile(file);
+  }
 
   return (
     <main className="flex min-h-dvh w-full text-[#24413B]">
@@ -100,33 +102,48 @@ export default function Admin({ leaderboard = sampleLeaderboard }) {
 
             <section>
               <h2 className="mb-3 text-xl font-extrabold">Leaderboard</h2>
-              {topAgents.length ? (
+              {loading ? (
+                <p className="rounded-lg bg-[#e2e6dc] px-4 py-2.5 text-sm">
+                  Loading leaderboard...
+                </p>
+              ) : error ? (
+                <p
+                  className="rounded-lg bg-[#e2e6dc] px-4 py-2.5 text-sm text-red-700"
+                  role="alert"
+                >
+                  {error.message || "Could not load leaderboard"}
+                </p>
+              ) : entries.length ? (
                 <ol className="space-y-2 rounded-lg bg-[#e2e6dc] px-4 py-2.5">
-                  {topAgents.map(([agentId, name, totalPoints], index) => (
-                    <li
-                      key={agentId}
-                      className="flex items-center gap-2 text-xs text-[#242824]"
-                    >
-                      <span
-                        className={`w-3 shrink-0 font-bold ${rankColors[index] ?? "text-[#287f6e]"}`}
+                  {entries.map(
+                    ({ userId, username, totalPoints, rank }, index) => (
+                      <li
+                        key={userId}
+                        className="flex items-center gap-2 text-xs text-[#242824]"
                       >
-                        {index + 1}
-                      </span>
-                      <span
-                        className={`grid size-7 shrink-0 place-items-center rounded-full font-bold text-[#24413B] ${employeeAvatarColors.get(name) ?? "bg-[var(--selection)]"}`}
-                      >
-                        {name[0]}
-                      </span>
-                      <span className="min-w-0 flex-1 break-words">{name}</span>
-                      <span className="shrink-0 font-semibold tabular-nums">
-                        {totalPoints} pts
-                      </span>
-                    </li>
-                  ))}
+                        <span
+                          className={`w-3 shrink-0 font-bold ${rankColors[index] ?? "text-[#287f6e]"}`}
+                        >
+                          {rank ?? index + 1}
+                        </span>
+                        <span
+                          className={`grid size-7 shrink-0 place-items-center rounded-full font-bold text-[#24413B] ${employeeAvatarColors.get(username) ?? "bg-[var(--selection)]"}`}
+                        >
+                          {username[0]}
+                        </span>
+                        <span className="min-w-0 flex-1 break-words">
+                          {username}
+                        </span>
+                        <span className="shrink-0 font-semibold tabular-nums">
+                          {totalPoints} pts
+                        </span>
+                      </li>
+                    ),
+                  )}
                 </ol>
               ) : (
                 <p className="rounded-lg bg-[#e2e6dc] px-4 py-2.5 text-sm">
-                  No users on the leaderboard yet.
+                  No points recorded this week yet.
                 </p>
               )}
             </section>
@@ -138,6 +155,31 @@ export default function Admin({ leaderboard = sampleLeaderboard }) {
             className="mt-14 space-y-4"
           >
             <h2 className="text-xl font-extrabold">Add Custom Lesson</h2>
+            <label className="flex min-h-16 flex-wrap items-center justify-between gap-3 rounded-lg border border-[#ccd5ce] bg-[var(--selection)] px-3 py-3 text-[#242824]">
+              <span className="text-xl">Submit custom lesson</span>
+              <input
+                type="file"
+                accept=".json,application/json"
+                onChange={handleLessonFile}
+                disabled={uploading}
+                className="ml-auto block w-60 max-w-full cursor-pointer text-sm file:mr-3 file:cursor-pointer file:rounded-lg file:bg-white file:px-3 file:py-2 file:font-semibold disabled:cursor-wait disabled:opacity-60"
+              />
+            </label>
+
+            {status !== "idle" && (
+              <p
+                role={status === "error" ? "alert" : "status"}
+                className={`text-sm ${
+                  status === "error"
+                    ? "text-red-700"
+                    : status === "success"
+                      ? "font-semibold text-[var(--selection-text)]"
+                      : "text-stone-500"
+                }`}
+              >
+                {message}
+              </p>
+            )}
             {fileInputs.map(({ id, label }) => (
               <label
                 key={id}
