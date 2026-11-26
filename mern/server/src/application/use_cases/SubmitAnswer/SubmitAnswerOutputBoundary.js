@@ -1,9 +1,9 @@
 export class SubmitAnswerOutputBoundary {
-  prepareSuccessView(outputData) {
-    throw new Error("prepareSuccessView not implemented");
-  }
+    prepareSuccessView(_outputData) {
+        throw new Error("prepareSuccessView not implemented");
+    }
 
-  prepareFailView(errorMessage, errorCode) {
-    throw new Error("prepareFailView not implemented");
-  }
+    prepareFailView(_errorMessage, _errorCode) {
+        throw new Error("prepareFailView not implemented");
+    }
 }

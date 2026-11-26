@@ -26,13 +26,17 @@ export class Lesson {
     /** Get the next stage of the lesson for given current stage */
     getNextStage(stageId) {
         const stage = this.getStage(stageId);
-        return Object.hasOwn(stage, "nextStage") ? stage.nextStage : stage.next_stage;
+        return Object.hasOwn(stage, "nextStage")
+            ? stage.nextStage
+            : stage.next_stage;
     }
 
     /** Get all possible customer responses for a given stage and mood */
     getCustomerResponses(stageId, mood) {
         const stage = this.getStage(stageId);
-        const responses = (stage.customerResponses ?? stage["customer responses"] ?? stage["customer response"])?.[mood];
+        const responses = (stage.customerResponses ??
+            stage["customer responses"] ??
+            stage["customer response"])?.[mood];
         if (typeof responses !== "string") {
             throw new Error(
                 `Customer responses for mood "${mood}" not found in stage ${stageId} of lesson ${this.lessonId}`,

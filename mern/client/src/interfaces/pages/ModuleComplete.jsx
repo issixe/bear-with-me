@@ -16,7 +16,9 @@ export default function ModuleComplete({
 }) {
   //To display the satisfaction score
   const satisfaction = Math.round(
-    scores.length ? scores.reduce((total, score) => total + score, 0) / scores.length : 0,
+    scores.length
+      ? scores.reduce((total, score) => total + score, 0) / scores.length
+      : 0,
   );
 
   //Streak, pip's messages are hardcoded.
@@ -74,11 +76,21 @@ export default function ModuleComplete({
 
         <div className="mt-8 grid gap-3 text-center">
           {onContinue ? (
-            <button type="button" onClick={onContinue} disabled={opening} className="rounded-xl bg-[#267a6b] p-3 font-bold text-white">
+            <button
+              type="button"
+              onClick={onContinue}
+              disabled={opening}
+              className="rounded-xl bg-[#267a6b] p-3 font-bold text-white"
+            >
               {opening ? "Opening..." : "Continue learning →"}
             </button>
           ) : (
-            <Link to="/" className="rounded-xl bg-[#267a6b] p-3 font-bold text-white">Back to homepage</Link>
+            <Link
+              to="/"
+              className="rounded-xl bg-[#267a6b] p-3 font-bold text-white"
+            >
+              Back to homepage
+            </Link>
           )}
           {onContinue && (
             <Link to="/" className="font-bold hover:underline">

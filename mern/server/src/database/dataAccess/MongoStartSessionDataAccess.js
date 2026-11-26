@@ -33,7 +33,10 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
             Object.entries(lesson.stages).map(([stageId, stage]) => [
                 stageId,
                 {
-                    customerResponses: stage.customerResponses ?? stage["customer responses"] ?? stage["customer response"],
+                    customerResponses:
+                        stage.customerResponses ??
+                        stage["customer responses"] ??
+                        stage["customer response"],
                     answers: stage.answers,
                     nextStage: stage.next_stage,
                     pipWords: stage.pipWords ?? "",

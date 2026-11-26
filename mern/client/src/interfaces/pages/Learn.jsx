@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { useLessons } from "../hooks/useLessons";
-import ModuleComplete from "./ModuleComplete";
-import pip from "../../assets/pip/thumbs-up.png";
 import { Link, Navigate, useLocation } from "react-router-dom";
-import { useCurrentUser } from "../hooks/useUsers";
-import { useOpenLesson } from "../hooks/useSessions";
+import pip from "../../assets/pip/thumbs-up.png";
 import { useServices } from "../context/ServicesContext";
+import { useLessons } from "../hooks/useLessons";
+import { useOpenLesson } from "../hooks/useSessions";
+import { useCurrentUser } from "../hooks/useUsers";
+import ModuleComplete from "./ModuleComplete";
 
 const Learn = () => {
   const location = useLocation();
@@ -17,8 +17,11 @@ const Learn = () => {
 
 function Lesson({ session }) {
   const { lessons: moduleLessons } = useLessons(session.moduleId);
-  const currentIndex = moduleLessons.findIndex(item => item.id === session.lessonId);
-  const nextLessonId = currentIndex >= 0 ? moduleLessons[currentIndex + 1]?.id : null;
+  const currentIndex = moduleLessons.findIndex(
+    (item) => item.id === session.lessonId,
+  );
+  const nextLessonId =
+    currentIndex >= 0 ? moduleLessons[currentIndex + 1]?.id : null;
   const { sessionService } = useServices();
   const { user } = useCurrentUser();
   const { openLesson, opening, error: startError } = useOpenLesson(user?.id);
@@ -54,24 +57,19 @@ function Lesson({ session }) {
   const cScore = sessionProgress?.cScore ?? 0;
   const maxScore = session.stageCount * 100;
 
-  const progress = Math.round(
-    (history.length / session.stageCount) * 100,
-  );
-  
+  const progress = Math.round((history.length / session.stageCount) * 100);
+
   useEffect(() => {
-    if (history.length) latest.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    if (history.length)
+      latest.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [history.length]);
 
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
 
-    async function choose(answerId) {
+  async function choose(answerId) {
     if (submittingRef.current || complete) return;
 
-    if (
-      !sessionProgress?.sessionId ||
-      !user?.id ||
-      !session.moduleId
-    ) {
+    if (!sessionProgress?.sessionId || !user?.id || !session.moduleId) {
       setSubmitError("Open the lesson from the module list first.");
       return;
     }
@@ -124,15 +122,30 @@ function Lesson({ session }) {
   function customerMessage(text, customerMood) {
     return (
       <div className="flex items-start gap-3">
-        <span className="text-3xl" role="img" aria-label={`${customerMood} customer`}>
-          {customerMood === "angry" ? "😠" : customerMood === "frustrated" ? "😐" : "🙂"}
+        <span
+          className="text-3xl"
+          role="img"
+          aria-label={`${customerMood} customer`}
+        >
+          {customerMood === "angry"
+            ? "😠"
+            : customerMood === "frustrated"
+              ? "😐"
+              : "🙂"}
         </span>
         <div className="min-w-0 flex-1 rounded-2xl border border-stone-200 bg-white p-4">
           <p className="mb-2 text-sm font-bold">Customer</p>
           <p>{text}</p>
         </div>
         {"speechSynthesis" in window && (
-          <button type="button" onClick={() => speak(text)} aria-label="Read customer message aloud" className="rounded-full border border-stone-300 p-2 hover:bg-white">🔊</button>
+          <button
+            type="button"
+            onClick={() => speak(text)}
+            aria-label="Read customer message aloud"
+            className="rounded-full border border-stone-300 p-2 hover:bg-white"
+          >
+            🔊
+          </button>
         )}
       </div>
     );
@@ -158,14 +171,29 @@ function Lesson({ session }) {
             </meter>
           </div>
           <div className="w-full text-sm">
-            <label htmlFor="lesson-progress">Lesson progress: {progress}%</label>
-            <progress id="lesson-progress" max="100" value={progress} className="mt-1 block h-2 w-full accent-[#287F6E]">{progress}%</progress>
+            <label htmlFor="lesson-progress">
+              Lesson progress: {progress}%
+            </label>
+            <progress
+              id="lesson-progress"
+              max="100"
+              value={progress}
+              className="mt-1 block h-2 w-full accent-[#287F6E]"
+            >
+              {progress}%
+            </progress>
           </div>
         </header>
 
         <div className="space-y-6 p-4 md:p-6">
-          {(submitError || startError) && <p role="alert" className="text-red-700">{submitError || startError.message}</p>}
-          <Link to="/" className="font-bold hover:underline">← My Progress</Link>
+          {(submitError || startError) && (
+            <p role="alert" className="text-red-700">
+              {submitError || startError.message}
+            </p>
+          )}
+          <Link to="/" className="font-bold hover:underline">
+            ← My Progress
+          </Link>
           {history.map((turn) => (
             <div key={turn.stageId} className="space-y-4">
               {customerMessage(turn.customer, turn.mood)}
@@ -178,7 +206,11 @@ function Lesson({ session }) {
           <div ref={latest} aria-live="polite">
             {typeof pipWords === "string" && pipWords.trim() && (
               <div className="mb-6 flex items-center gap-3">
-                <img src={pip} alt="" className="h-16 w-16 shrink-0 object-contain" />
+                <img
+                  src={pip}
+                  alt=""
+                  className="h-16 w-16 shrink-0 object-contain"
+                />
                 <div className="min-w-0 rounded-2xl border border-[#287F6E] bg-white p-4">
                   <p className="mb-1 text-sm font-bold">Pip</p>
                   <p className="whitespace-pre-line">{pipWords}</p>
@@ -189,9 +221,11 @@ function Lesson({ session }) {
               <ModuleComplete
                 lessonTitle={session.title}
                 moduleTitle={session.moduleTitle}
-                scores={history.map(turn => turn.score)}
+                scores={history.map((turn) => turn.score)}
                 cScore={cScore}
-                onContinue={nextLessonId ? () => openLesson(nextLessonId) : null}
+                onContinue={
+                  nextLessonId ? () => openLesson(nextLessonId) : null
+                }
                 opening={opening}
               />
             ) : (
@@ -201,16 +235,16 @@ function Lesson({ session }) {
                   <legend className="px-2 font-bold">Your response</legend>
                   <div className="space-y-3">
                     {options.map((option) => (
-                    <button
-                      key={option.answerId}
-                      type="button"
-                      onClick={() => choose(option.answerId)}
-                      disabled={submitting}
-                      className="w-full rounded-xl border border-stone-200 p-3 text-left hover:border-[#287F6E] hover:bg-[var(--selection)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#287F6E]"
-                    >
-                      {option.text}
-                    </button>
-                  ))}
+                      <button
+                        key={option.answerId}
+                        type="button"
+                        onClick={() => choose(option.answerId)}
+                        disabled={submitting}
+                        className="w-full rounded-xl border border-stone-200 p-3 text-left hover:border-[#287F6E] hover:bg-[var(--selection)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#287F6E]"
+                      >
+                        {option.text}
+                      </button>
+                    ))}
                   </div>
                 </fieldset>
               </div>
