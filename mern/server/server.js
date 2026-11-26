@@ -24,6 +24,13 @@ app.use(express.json());
 
 app.use(
   "/sessions",
+  createStartSessionRoute({
+    dataAccess: new MongoStartSessionDataAccess(),
+  }),
+);
+
+app.use(
+  "/sessions",
   createSubmitAnswerRoute({
     dataAccess: new MongoSubmitAnswerDataAccess(),
   }),
