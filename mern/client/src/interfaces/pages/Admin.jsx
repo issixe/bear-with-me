@@ -1,7 +1,7 @@
 import { useState } from "react";
 import streakIcon from "../../assets/streakIcon.png";
-import { useLeaderboard } from "../hooks/useLeaderboard";
 import { useAddLesson } from "../hooks/useAddLesson";
+import { useLeaderboard } from "../hooks/useLeaderboard";
 
 const sampleEmployees = [
   { name: "Edward", streak: 5, avatarColor: "bg-[#e6daf8]" },
