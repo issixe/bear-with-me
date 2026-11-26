@@ -29,7 +29,6 @@ export default function Admin() {
   const [activeTab, setActiveTab] = useState("Homepage");
   const { entries, loading, error } = useLeaderboard(5);
   const isHomepage = activeTab === "Homepage";
-  const topAgents = [...leaderboard].sort((a, b) => b[2] - a[2]).slice(0, 5);
   const { status, message, uploading, uploadLessonFile, reset } =
     useAddLesson();
 
