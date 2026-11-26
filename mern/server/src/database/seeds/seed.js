@@ -1,15 +1,14 @@
 import dotenv from "dotenv";
 import { MongoClient } from "mongodb";
-import { exampleLessons, exampleModules } from "../seeds/seedData.js";
+import { exampleLessons, exampleModules } from "./seedData.js";
 
-// Load Atlas environment variable manually since this runs standalone
 dotenv.config({ path: "./config.env" });
 
-const uri = process.env.ATLAS_URI || "";
-
 async function seedDatabase() {
+    const uri = process.env.ATLAS_URI;
+
     if (!uri) {
-        console.error("Error: ATLAS_URI not found in config.env");
+        console.error("ATLAS_URI not found in config.env");
         process.exitCode = 1;
         return;
     }
@@ -17,28 +16,32 @@ async function seedDatabase() {
     const client = new MongoClient(uri);
 
     try {
-        console.log("Connecting to MongoDB Atlas...");
         await client.connect();
 
-        // Target database
         const db = client.db("bear_db");
-        const modulesCollection = db.collection("modules");
-        const lessonsCollection = db.collection("lessons");
 
-        // Clears existing data to reduce duplicates
-        console.log("Clearing old module and lesson data...");
-        await modulesCollection.deleteMany({});
-        await lessonsCollection.deleteMany({});
+        for (const module of exampleModules) {
+            await db
+                .collection("modules")
+                .updateOne(
+                    { module_id: module.module_id },
+                    { $set: module },
+                    { upsert: true },
+                );
+        }
 
-        // Insert example modules array
-        console.log(`Inserting ${exampleModules.length} default modules...`);
-        const moduleResult = await modulesCollection.insertMany(exampleModules);
-        // Insert example lessons array
-        console.log(`Inserting ${exampleLessons.length} default lessons...`);
-        const lessonResult = await lessonsCollection.insertMany(exampleLessons);
+        for (const lesson of exampleLessons) {
+            await db
+                .collection("lessons")
+                .updateOne(
+                    { lesson_id: lesson.lesson_id },
+                    { $set: lesson },
+                    { upsert: true },
+                );
+        }
 
         console.log(
-            `Success! Successfully seeded ${moduleResult.insertedCount} modules and ${lessonResult.insertedCount} lessons into Atlas.`,
+            `Seeded ${exampleModules.length} modules and ${exampleLessons.length} lessons.`,
         );
     } catch (error) {
         console.error("Seeding failed:", error);

@@ -1,62 +1,68 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import pip from "../../assets/pip/thumbs-up.png";
+import { useServices } from "../context/ServicesContext";
 import { useLessons } from "../hooks/useLessons";
 import { useOpenLesson } from "../hooks/useSessions";
 import { useCurrentUser } from "../hooks/useUsers";
 import ModuleComplete from "./ModuleComplete";
 
-//Figuring out which lesson to show from the URL that the user clicks
 const Learn = () => {
   const location = useLocation();
   const session = location.state?.session ?? null;
 
-  //No lesson was found
-  if (!session) {
-    return <Navigate to="/" replace />;
-  }
-
+  if (!session) return <Navigate to="/" replace />;
   return <Lesson key={session.sessionId} session={session} />;
 };
-
-const MOOD_TENSION = { angry: 70, frustrated: 50, calm: 20 };
 
 function Lesson({ session }) {
   const { lessons: moduleLessons } = useLessons(session.moduleId);
   const currentIndex = moduleLessons.findIndex(
     (item) => item.id === session.lessonId,
   );
-  const nextLessonId = moduleLessons[currentIndex + 1]?.id ?? null;
-  const [stageId, setStageId] = useState(session.stage);
-  const [tension, setTension] = useState(
-    MOOD_TENSION[session?.customerMood] ?? 70,
-  );
-  const [history, setHistory] = useState([]);
-  const [sessionScore, setSessionScore] = useState(session?.cScore ?? 0);
-  const [complete, setComplete] = useState(false);
-  const [completionScore, setCompletionScore] = useState(null);
-  const [savingCompletion, setSavingCompletion] = useState(false);
-  const [completionError, setCompletionError] = useState(null);
-  const latest = useRef(null);
-  const progress = Math.round((history.length / session.stageCount) * 100);
-  const isFirstRound = history.length === 0 && session !== null;
-
-  const { user } = useCurrentUser();
+  const nextLessonId =
+    currentIndex >= 0 ? moduleLessons[currentIndex + 1]?.id : null;
   const { sessionService } = useServices();
+  const { user } = useCurrentUser();
   const { openLesson, opening, error: startError } = useOpenLesson(user?.id);
 
-  const mood = isFirstRound
-    ? session.customerMood
-    : tension > 65
-      ? "angry"
-      : tension > 35
-        ? "frustrated"
-        : "calm";
+  // StartSession currently returns stage/options.
+  // SubmitAnswer returns stageId/answerOptions.
+  const [sessionProgress, setSessionProgress] = useState(() =>
+    session
+      ? {
+          ...session,
+          stageId: session.stageId ?? session.stage,
+          answerOptions: session.answerOptions ?? session.options ?? [],
+          isFinished: session.isFinished ?? false,
+        }
+      : null,
+  );
 
-  const customer = session.customerResponse;
-  const options = session.options;
+  const [history, setHistory] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
-  //Scrolling to the newest message in the chat
+  const [savingCompletion, setSavingCompletion] = useState(false);
+  const [completionError, setCompletionError] = useState(null);
+  const [completionSaved, setCompletionSaved] = useState(false);
+  const completionSavingRef = useRef(false);
+  const submittingRef = useRef(false);
+  const latest = useRef(null);
+
+  const stageId = sessionProgress?.stageId;
+  const mood = sessionProgress?.customerMood;
+  const customer = sessionProgress?.customerResponse ?? "";
+  const options = sessionProgress?.answerOptions ?? [];
+  const complete = sessionProgress?.isFinished ?? false;
+  const pipWords = sessionProgress?.pipWords;
+
+  // Visual indicator based on the mood returned by the backend.
+  const cScore = sessionProgress?.cScore ?? 0;
+  const maxScore = session.stageCount * 100;
+
+  const progress = Math.round((history.length / session.stageCount) * 100);
+
   useEffect(() => {
     if (history.length)
       latest.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -65,13 +71,14 @@ function Lesson({ session }) {
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
 
   async function saveCompletion(score) {
-    if (!session?.sessionId || !user?.id) {
+    if (completionSavingRef.current || completionSaved) return;
+    if (!session.sessionId || !user?.id) {
       setCompletionError(
         new Error("Open this lesson from the homepage to save your score."),
       );
       return;
     }
-
+    completionSavingRef.current = true;
     setSavingCompletion(true);
     setCompletionError(null);
     try {
@@ -81,25 +88,77 @@ function Lesson({ session }) {
         username: user.name,
         sessionScore: score,
       });
-      setComplete(true);
+      setCompletionSaved(true);
     } catch (error) {
       setCompletionError(error);
     } finally {
+      completionSavingRef.current = false;
       setSavingCompletion(false);
     }
   }
 
-  function choose(answerId) {
-    const answer = options.find((o) => o.answerId === answerId);
-    setHistory([...history, { stageId, customer, mood, answer: answer.text }]);
-    // TODO: call next-round use case (teammate) → update stage, customer, options, tension
+  async function choose(answerId) {
+    if (submittingRef.current || complete) return;
+
+    if (!sessionProgress?.sessionId || !user?.id || !session.moduleId) {
+      setSubmitError("Open the lesson from the module list first.");
+      return;
+    }
+
+    const selectedAnswer = options.find(
+      (option) => option.answerId === answerId,
+    );
+
+    if (!selectedAnswer) return;
+
+    submittingRef.current = true;
+    setSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const result = await sessionService.submitAnswer({
+        sessionId: sessionProgress.sessionId,
+        userId: user.id,
+        moduleId: session.moduleId,
+        stageId,
+        answerId,
+      });
+
+      setHistory((previous) => [
+        ...previous,
+        {
+          stageId,
+          customer,
+          mood,
+          answer: selectedAnswer.text,
+          score: result.earnedScore,
+        },
+      ]);
+
+      // The backend supplies the next stage, mood, and options.
+      setSessionProgress(result);
+      if (result.isFinished) await saveCompletion(result.cScore);
+    } catch (error) {
+      setSubmitError(error.message || "Could not submit your answer.");
+    } finally {
+      submittingRef.current = false;
+      setSubmitting(false);
+    }
   }
 
-  //Draws the chat bubble, emoji based on mood
+  function speak(text) {
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+  }
+
   function customerMessage(text, customerMood) {
     return (
       <div className="flex items-start gap-3">
-        <span className="text-3xl">
+        <span
+          className="text-3xl"
+          role="img"
+          aria-label={`${customerMood} customer`}
+        >
           {customerMood === "angry"
             ? "😠"
             : customerMood === "frustrated"
@@ -110,124 +169,117 @@ function Lesson({ session }) {
           <p className="mb-2 text-sm font-bold">Customer</p>
           <p>{text}</p>
         </div>
+        {"speechSynthesis" in window && (
+          <button
+            type="button"
+            onClick={() => speak(text)}
+            aria-label="Read customer message aloud"
+            className="rounded-full border border-stone-300 p-2 hover:bg-white"
+          >
+            🔊
+          </button>
+        )}
       </div>
     );
   }
 
-  //Actual page. Sidebar, complete gets info for ModuleComplete screen
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl text-[#24413B]">
-      <aside className="sticky top-6 max-h-[calc(100dvh-3rem)] w-56 shrink-0 self-start overflow-y-auto border-r border-stone-200 bg-white p-4">
-        <Link to="/" className="font-bold hover:underline">
-          ← My Progress
-        </Link>
-        <p className="mt-6 mb-3 font-bold">{session.moduleTitle}</p>
-        <nav className="flex flex-col gap-2 overflow-x-auto">
-          {moduleLessons.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => openLesson(item.id)}
-              disabled={opening}
-              aria-current={item.id === session.lessonId ? "page" : undefined}
-              className={`min-w-40 shrink-0 rounded-lg p-3 text-left text-sm md:min-w-0 disabled:cursor-wait disabled:opacity-60 ${
-                item.id === session.lessonId
-                  ? "bg-[var(--selection)] font-bold text-[var(--selection-text)]"
-                  : "hover:bg-stone-100"
-              }`}
+    <main className="mx-auto min-h-screen max-w-6xl text-[#24413B] md:flex">
+      <section className="min-w-0 flex-1 bg-[var(--background)]">
+        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200 bg-white p-5">
+          <h1 className="text-xl font-extrabold">{session.title}</h1>
+          <div className="flex items-center gap-2 text-sm">
+            <label htmlFor="score">
+              Customer Satisfaction Score: {cScore.toFixed(0)} points
+            </label>
+            <meter
+              id="score"
+              min={0}
+              max={maxScore}
+              value={cScore}
+              className="h-3 w-28"
             >
-              {item.title}
-            </button>
-          ))}
-        </nav>
-        <img
-          src={pip}
-          alt="Pip cheering you on"
-          className="mx-auto mt-8 hidden w-32 md:block"
-        />
-        {startError && (
-          <p role="alert" className="mt-2 text-sm text-red-700">
-            Couldn't start that lesson. Try again.
-          </p>
-        )}
-      </aside>
-      {complete ? (
-        <ModuleComplete
-          lessonTitle={session.title}
-          moduleTitle={session.moduleTitle}
-          onContinue={nextLessonId ? () => openLesson(nextLessonId) : null}
-          scores={history.map((turn) => turn.score)}
-        />
-      ) : (
-        <section className="min-w-0 flex-1 bg-[var(--background)]">
-          <header className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200 bg-white p-5">
-            <h1 className="text-xl font-extrabold">{session.title}</h1>
-            <div className="flex items-center gap-2 text-sm">
-              <label htmlFor="tension">Tension {tension}%</label>
-              <meter
-                id="tension"
-                min="0"
-                max="100"
-                low="35"
-                high="65"
-                optimum="0"
-                value={tension}
-                className="w-28"
-              >
-                {tension}%
-              </meter>
-            </div>
-            <div className="w-full text-sm">
-              <label htmlFor="lesson-progress">
-                Lesson progress: {progress}%
-              </label>
-              <progress
-                id="lesson-progress"
-                max="100"
-                value={progress}
-                className="mt-1 block h-2 w-full accent-[#287F6E]"
-              >
-                {progress}%
-              </progress>
-            </div>
-          </header>
+              {cScore.toFixed(0)} / {maxScore}
+            </meter>
+          </div>
+          <div className="w-full text-sm">
+            <label htmlFor="lesson-progress">
+              Lesson progress: {progress}%
+            </label>
+            <progress
+              id="lesson-progress"
+              max="100"
+              value={progress}
+              className="mt-1 block h-2 w-full accent-[#287F6E]"
+            >
+              {progress}%
+            </progress>
+          </div>
+        </header>
 
-          {savingCompletion && (
-            <p className="px-6 pt-4 text-sm text-stone-600">
-              Saving your score...
-            </p>
-          )}
+        <div className="space-y-6 p-4 md:p-6">
+          {savingCompletion && <p role="status">Saving your score...</p>}
           {completionError && (
-            <div className="flex items-center gap-3 px-6 pt-4">
-              <p role="alert" className="text-sm text-red-700">
+            <div className="flex items-center gap-3">
+              <p role="alert" className="text-red-700">
                 {completionError.message || "Could not save your score."}
               </p>
               <button
                 type="button"
-                onClick={() => void saveCompletion(completionScore)}
+                onClick={() => void saveCompletion(cScore)}
                 disabled={savingCompletion}
-                className="text-sm font-bold underline disabled:opacity-60"
+                className="font-bold underline"
               >
-                Retry
+                Retry saving score
               </button>
             </div>
           )}
-
-          <div className="space-y-6 p-6">
-            {history.map((turn) => (
-              <div key={turn.stageId} className="space-y-4">
-                {customerMessage(turn.customer, turn.mood)}
-                <div className="ml-24 rounded-2xl border border-[#287F6E] bg-white p-4">
-                  <p className="mb-2 text-sm font-bold">Your response</p>
-                  <p>{turn.answer}</p>
+          {(submitError || startError) && (
+            <p role="alert" className="text-red-700">
+              {submitError || startError.message}
+            </p>
+          )}
+          <Link to="/" className="font-bold hover:underline">
+            ← My Progress
+          </Link>
+          {history.map((turn) => (
+            <div key={turn.stageId} className="space-y-4">
+              {customerMessage(turn.customer, turn.mood)}
+              <div className="ml-8 rounded-2xl border border-[#287F6E] bg-white p-4 md:ml-24">
+                <p className="mb-2 text-sm font-bold">Your response</p>
+                <p>{turn.answer}</p>
+              </div>
+            </div>
+          ))}
+          <div ref={latest} aria-live="polite">
+            {typeof pipWords === "string" && pipWords.trim() && (
+              <div className="mb-6 flex items-center gap-3">
+                <img
+                  src={pip}
+                  alt=""
+                  className="h-16 w-16 shrink-0 object-contain"
+                />
+                <div className="min-w-0 rounded-2xl border border-[#287F6E] bg-white p-4">
+                  <p className="mb-1 text-sm font-bold">Pip</p>
+                  <p className="whitespace-pre-line">{pipWords}</p>
                 </div>
               </div>
-            ))}
-
-            <div ref={latest}>
+            )}
+            {complete ? (
+              <ModuleComplete
+                lessonTitle={session.title}
+                moduleTitle={session.moduleTitle}
+                scores={history.map((turn) => turn.score)}
+                cScore={cScore}
+                onContinue={
+                  nextLessonId ? () => openLesson(nextLessonId) : null
+                }
+                opening={opening || savingCompletion || !completionSaved}
+              />
+            ) : (
               <div className="space-y-4">
                 {customerMessage(customer, mood)}
-                <fieldset className="ml-24 min-w-0 rounded-2xl border border-stone-200 bg-white p-4">
+                <fieldset className="ml-8 min-w-0 rounded-2xl border border-stone-200 bg-white p-4 md:ml-24">
                   <legend className="px-2 font-bold">Your response</legend>
                   <div className="space-y-3">
                     {options.map((option) => (
@@ -235,7 +287,7 @@ function Lesson({ session }) {
                         key={option.answerId}
                         type="button"
                         onClick={() => choose(option.answerId)}
-                        disabled={savingCompletion || completionScore !== null}
+                        disabled={submitting || savingCompletion || complete}
                         className="w-full rounded-xl border border-stone-200 p-3 text-left hover:border-[#287F6E] hover:bg-[var(--selection)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#287F6E]"
                       >
                         {option.text}
@@ -244,10 +296,10 @@ function Lesson({ session }) {
                   </div>
                 </fieldset>
               </div>
-            </div>
+            )}
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </main>
   );
 }

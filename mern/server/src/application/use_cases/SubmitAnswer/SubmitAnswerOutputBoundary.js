@@ -1,5 +1,9 @@
 export class SubmitAnswerOutputBoundary {
-    present(_outputData) {
-        throw new Error("present() must be implemented");
+    prepareSuccessView(_outputData) {
+        throw new Error("prepareSuccessView not implemented");
+    }
+
+    prepareFailView(_errorMessage, _errorCode) {
+        throw new Error("prepareFailView not implemented");
     }
 }

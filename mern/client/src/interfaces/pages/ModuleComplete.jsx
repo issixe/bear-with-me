@@ -9,12 +9,16 @@ const totalDays = 7;
 export default function ModuleComplete({
   lessonTitle,
   moduleTitle,
-  nextLessonId,
-  scores,
+  onContinue,
+  opening = false,
+  scores = [],
+  cScore = 0,
 }) {
   //To display the satisfaction score
   const satisfaction = Math.round(
-    scores.reduce((total, score) => total + score, 0) / scores.length,
+    scores.length
+      ? scores.reduce((total, score) => total + score, 0) / scores.length
+      : 0,
   );
 
   //Streak, pip's messages are hardcoded.
@@ -34,7 +38,8 @@ export default function ModuleComplete({
           </p>
           <div className="rounded-2xl bg-white p-4">
             <p className="font-bold">Customer satisfaction</p>
-            <p className="text-2xl font-bold">{satisfaction}%</p>
+            <p className="text-2xl font-bold">{cScore.toFixed(0)} points</p>
+            <p>Average answer score: {satisfaction}%</p>
           </div>
         </div>
 
@@ -70,17 +75,24 @@ export default function ModuleComplete({
         </div>
 
         <div className="mt-8 grid gap-3 text-center">
-          <Link
-            to={
-              nextLessonId
-                ? `/learn?lesson=${encodeURIComponent(nextLessonId)}`
-                : "/"
-            }
-            className="rounded-xl bg-[#267a6b] p-3 font-bold text-white"
-          >
-            {nextLessonId ? "Continue learning →" : "Back to homepage"}
-          </Link>
-          {nextLessonId && (
+          {onContinue ? (
+            <button
+              type="button"
+              onClick={onContinue}
+              disabled={opening}
+              className="rounded-xl bg-[#267a6b] p-3 font-bold text-white"
+            >
+              {opening ? "Opening..." : "Continue learning →"}
+            </button>
+          ) : (
+            <Link
+              to="/"
+              className="rounded-xl bg-[#267a6b] p-3 font-bold text-white"
+            >
+              Back to homepage
+            </Link>
+          )}
+          {onContinue && (
             <Link to="/" className="font-bold hover:underline">
               Back to homepage
             </Link>

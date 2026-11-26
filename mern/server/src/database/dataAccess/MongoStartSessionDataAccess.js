@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { StartSessionDataAccess } from "../../application/use_cases/StartSession/StartSessionDataAccess.js";
-import { Lesson } from "../../enterprise/entities/lesson.js";
+import { Lesson } from "../../enterprise/entities/Lesson.js";
 import db from "../connection.js";
 
 export class MongoStartSessionDataAccess extends StartSessionDataAccess {
@@ -33,7 +33,10 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
             Object.entries(lesson.stages).map(([stageId, stage]) => [
                 stageId,
                 {
-                    customerResponses: stage["customer responses"],
+                    customerResponses:
+                        stage.customerResponses ??
+                        stage["customer responses"] ??
+                        stage["customer response"],
                     answers: stage.answers,
                     nextStage: stage.next_stage,
                     pipWords: stage.pipWords ?? "",
