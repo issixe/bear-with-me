@@ -1,4 +1,5 @@
 import { createContext, useContext, useMemo } from "react";
+import { leaderboardService } from "../../application/services/leaderboardService";
 import { lessonService } from "../../application/services/lessonService";
 import { moduleService } from "../../application/services/moduleService";
 import { sessionService } from "../../application/services/sessionService";
@@ -8,7 +9,13 @@ const ServicesContext = createContext(null);
 
 export function ServicesProvider({ children }) {
   const services = useMemo(
-    () => ({ moduleService, lessonService, sessionService, userService }),
+    () => ({
+      moduleService,
+      lessonService,
+      sessionService,
+      userService,
+      leaderboardService,
+    }),
     [],
   );
   return (

@@ -6,6 +6,10 @@ import { createFindWorstCallsRoute } from "./src/routes/FindWorstCallsRoute.js";
 import { createListLessonsRoute } from "./src/routes/ListLessonsRoute.js";
 import { MongoStartSessionDataAccess } from "./src/database/dataAccess/MongoStartSessionDataAccess.js";
 import { createStartSessionRoute } from "./src/routes/StartSessionRoute.js";
+import { MongoCompleteLessonDataAccess } from "./src/database/dataAccess/MongoCompleteLessonDataAccess.js";
+import { createCompleteLessonRoute } from "./src/routes/CompleteLessonRoute.js";
+import { MongoGetLeaderboardDataAccess } from './src/database/dataAccess/MongoGetLeaderboardDataAccess.js';
+import { createGetLeaderboardRoute } from './src/routes/GetLeaderboardRoute.js';
 import { MongoAddLessonDataAccess } from "./src/database/dataAccess/MongoAddLessonDataAccess.js";
 import { createAddLessonRoute } from "./src/routes/AddLessonRoute.js";
 import { createListModulesRoute } from "./src/routes/ListModulesRoute.js";
@@ -33,15 +37,22 @@ app.use(
 app.use("/admin/calls", createFindWorstCallsRoute());
 
 app.use(
-  "/lessons",
-  createAddLessonRoute({ dataAccess: new MongoAddLessonDataAccess() }),
+  "/sessions",
+  createCompleteLessonRoute({
+    dataAccess: new MongoCompleteLessonDataAccess(),
+  }),
 );
 
 app.use(
-  "/sessions",
-  createStartSessionRoute({
-    dataAccess: new MongoStartSessionDataAccess(),
+  "/leaderboard",
+  createGetLeaderboardRoute({
+    dataAccess: new MongoGetLeaderboardDataAccess(),
   }),
+);
+ 
+ app.use(
+  "/lessons",
+  createAddLessonRoute({ dataAccess: new MongoAddLessonDataAccess() }),
 );
 
 app.listen(PORT, () => {

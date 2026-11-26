@@ -1,4 +1,5 @@
 import pipWave from "../../assets/pip/waving.png";
+import { LeaderboardCard } from "../components/home/LeaderboardCard";
 import ModuleItem from "../components/home/ModuleItem";
 import StreakBadge from "../components/home/StreakBadge";
 import { useModules } from "../hooks/useModules";
@@ -26,7 +27,11 @@ export default function Home() {
         )}
       </header>
 
-      <section>
+      <div className="mb-8">
+        <LeaderboardCard title="Leaderboard" topCount={4} />
+      </div>
+
+      <section aria-labelledby="modules-heading">
         <h2
           id="modules-heading"
           className="mb-4 text-3xl font-extrabold text-[#24413B]"
@@ -47,7 +52,7 @@ export default function Home() {
                 key={m.id}
                 module={m}
                 completedLessonIds={user?.completedLessonIds}
-                agentId={user?.id}
+                userId={user?.id}
               />
             ))}
           </div>

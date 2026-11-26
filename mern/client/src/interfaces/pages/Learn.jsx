@@ -32,12 +32,17 @@ function Lesson({ session }) {
     MOOD_TENSION[session?.customerMood] ?? 70,
   );
   const [history, setHistory] = useState([]);
+  const [sessionScore, setSessionScore] = useState(session?.cScore ?? 0);
   const [complete, setComplete] = useState(false);
+  const [completionScore, setCompletionScore] = useState(null);
+  const [savingCompletion, setSavingCompletion] = useState(false);
+  const [completionError, setCompletionError] = useState(null);
   const latest = useRef(null);
   const progress = Math.round((history.length / session.stageCount) * 100);
   const isFirstRound = history.length === 0 && session !== null;
 
   const { user } = useCurrentUser();
+  const { sessionService } = useServices();
   const { openLesson, opening, error: startError } = useOpenLesson(user?.id);
 
   const mood = isFirstRound
@@ -58,6 +63,31 @@ function Lesson({ session }) {
   }, [history.length]);
 
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
+
+  async function saveCompletion(score) {
+    if (!session?.sessionId || !user?.id) {
+      setCompletionError(
+        new Error("Open this lesson from the homepage to save your score."),
+      );
+      return;
+    }
+
+    setSavingCompletion(true);
+    setCompletionError(null);
+    try {
+      await sessionService.complete({
+        sessionId: session.sessionId,
+        userId: user.id,
+        username: user.name,
+        sessionScore: score,
+      });
+      setComplete(true);
+    } catch (error) {
+      setCompletionError(error);
+    } finally {
+      setSavingCompletion(false);
+    }
+  }
 
   function choose(answerId) {
     const answer = options.find((o) => o.answerId === answerId);
@@ -162,6 +192,27 @@ function Lesson({ session }) {
             </div>
           </header>
 
+          {savingCompletion && (
+            <p className="px-6 pt-4 text-sm text-stone-600">
+              Saving your score...
+            </p>
+          )}
+          {completionError && (
+            <div className="flex items-center gap-3 px-6 pt-4">
+              <p role="alert" className="text-sm text-red-700">
+                {completionError.message || "Could not save your score."}
+              </p>
+              <button
+                type="button"
+                onClick={() => void saveCompletion(completionScore)}
+                disabled={savingCompletion}
+                className="text-sm font-bold underline disabled:opacity-60"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
           <div className="space-y-6 p-6">
             {history.map((turn) => (
               <div key={turn.stageId} className="space-y-4">
@@ -184,6 +235,7 @@ function Lesson({ session }) {
                         key={option.answerId}
                         type="button"
                         onClick={() => choose(option.answerId)}
+                        disabled={savingCompletion || completionScore !== null}
                         className="w-full rounded-xl border border-stone-200 p-3 text-left hover:border-[#287F6E] hover:bg-[var(--selection)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#287F6E]"
                       >
                         {option.text}

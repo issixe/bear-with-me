@@ -1,13 +1,13 @@
 import { CompleteLessonOutputBoundary } from "../../application/use_cases/CompleteLesson/CompleteLessonOutputBoundary.js";
 
 export class CompleteLessonPresenter extends CompleteLessonOutputBoundary {
-    async present(outputData) {
+    async present(out) {
         return {
-            agentId: outputData.agentId,
-            sessionId: outputData.sessionId,
-            streak: outputData.streak,
-            totalPoints: outputData.totalPoints,
-            completedModules: outputData.completedModules, // not sure about this one, too many properties of similar names...
+            userId: out.userId,
+            sessionId: out.sessionId,
+            streak: out.streak,
+            sessionScore: out.sessionScore,
+            totalPoints: out.totalPoints,
         };
     }
 }

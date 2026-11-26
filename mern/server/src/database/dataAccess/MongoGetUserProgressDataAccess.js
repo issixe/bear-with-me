@@ -3,12 +3,12 @@ import { GetUserProgressDataAccess } from "../../application/use_cases/GetUserPr
 import db from "../connection.js";
 
 export class MongoGetUserProgressDataAccess extends GetUserProgressDataAccess {
-    async getUserById(agentId) {
-        if (!ObjectId.isValid(agentId)) {
+    async getUserById(userId) {
+        if (!ObjectId.isValid(userId)) {
             return null;
         }
         const user = await db.collection("users").findOne(
-            { _id: new ObjectId(agentId) },
+            { _id: new ObjectId(userId) },
             //TODO: define projection to match existing user profile structure
         );
 
@@ -16,7 +16,7 @@ export class MongoGetUserProgressDataAccess extends GetUserProgressDataAccess {
             return null;
         }
         return {
-            agentId: user._id.toString(),
+            userId: user._id.toString(),
             totalPoints: user.totalPoints,
             completedModules: user.completedModules,
             streak: user.streak,
