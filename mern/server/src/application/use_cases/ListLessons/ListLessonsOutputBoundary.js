@@ -4,11 +4,11 @@
 // The presenter must extend this class and override present.
 
 export class ListLessonsOutputBoundary {
-    prepareSuccessView(outputData) {
+    prepareSuccessView(_outputData) {
         throw new Error("Not implemented");
     }
 
-    prepareFailView(errorMessage) {
+    prepareFailView(_errorMessage) {
         throw new Error("Not implemented");
     }
 }

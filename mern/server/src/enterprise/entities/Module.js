@@ -18,7 +18,9 @@ export class Module {
             throw new Error("Invalid lesson ID");
         }
         if (this.lessons.includes(lessonId)) {
-            throw new Error(`Lesson with ID ${lessonId} already exists in module ${this.moduleId}`);
+            throw new Error(
+                `Lesson with ID ${lessonId} already exists in module ${this.moduleId}`,
+            );
         }
         this.lessons.push(lessonId);
     }
@@ -27,7 +29,9 @@ export class Module {
     removeLesson(lessonId) {
         const lessonIndex = this.lessons.indexOf(lessonId);
         if (lessonIndex === -1) {
-            throw new Error(`Lesson with ID ${lessonId} not found in module ${this.moduleId}`);
+            throw new Error(
+                `Lesson with ID ${lessonId} not found in module ${this.moduleId}`,
+            );
         }
         this.lessons.splice(lessonIndex, 1);
     }

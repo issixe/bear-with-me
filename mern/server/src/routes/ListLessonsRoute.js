@@ -1,9 +1,8 @@
 import express from "express";
-
-import { ListLessonsViewModel } from "../interface_adapters/viewModels/ListLessonsViewModel.js";
-import { ListLessonsPresenter } from "../interface_adapters/presenters/ListLessonsPresenter.js";
 import { ListLessonsInteractor } from "../application/use_cases/ListLessons/ListLessonsInteractor.js";
 import { ListLessonsController } from "../interface_adapters/controllers/ListLessonsController.js";
+import { ListLessonsPresenter } from "../interface_adapters/presenters/ListLessonsPresenter.js";
+import { ListLessonsViewModel } from "../interface_adapters/viewModels/ListLessonsViewModel.js";
 
 export function createListLessonsRoute({ dataAccess }) {
     const router = express.Router();
@@ -15,7 +14,7 @@ export function createListLessonsRoute({ dataAccess }) {
             const presenter = new ListLessonsPresenter(viewModel);
             const interactor = new ListLessonsInteractor({
                 dataAccess,
-                outputBoundary: presenter
+                outputBoundary: presenter,
             });
             const controller = new ListLessonsController(interactor);
 

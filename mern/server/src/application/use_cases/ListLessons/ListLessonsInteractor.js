@@ -8,8 +8,8 @@
 //  - dataAccess: looks up modules and lessons
 //  - outputBoundary: receives the result
 
-import { ListLessonsInputBoundary } from './listLessonsInputBoundary.js';
-import { ListLessonsOutputData } from './listLessonsOutputData.js';
+import { ListLessonsInputBoundary } from "./ListLessonsInputBoundary.js";
+import { ListLessonsOutputData } from "./ListLessonsOutputData.js";
 
 export class ListLessonsInteractor extends ListLessonsInputBoundary {
     constructor({ dataAccess, outputBoundary }) {
@@ -21,33 +21,38 @@ export class ListLessonsInteractor extends ListLessonsInputBoundary {
 
     async execute({ moduleId }) {
         if (!moduleId) {
-            this.outputBoundary.prepareFailView('Module ID is required');
+            this.outputBoundary.prepareFailView("Module ID is required");
             return;
         }
 
         const module = await this.dataAccess.findModuleById(moduleId);
 
         if (!module) {
-            this.outputBoundary.prepareFailView(`Module "${moduleId}" not found.`);
+            this.outputBoundary.prepareFailView(
+                `Module "${moduleId}" not found.`,
+            );
             return;
         }
-        
-        try{
-            const lessons = await this.dataAccess.findLessonsByModuleId(moduleId);
+
+        try {
+            const lessons =
+                await this.dataAccess.findLessonsByModuleId(moduleId);
             if (!module) {
-                this.outputBoundary.prepareFailView('Module not found.');
+                this.outputBoundary.prepareFailView("Module not found.");
                 return;
             }
             const outputData = new ListLessonsOutputData({
                 moduleId,
                 lessons: lessons.map((lesson) => ({
                     id: lesson.id,
-                    title: lesson.title
-                }))
+                    title: lesson.title,
+                })),
             });
-        this.outputBoundary.prepareSuccessView(outputData);
-        } catch (error) {
-            this.outputBoundary.prepareFailView('Could not load lessons for module "${moduleId}".');
+            this.outputBoundary.prepareSuccessView(outputData);
+        } catch (_error) {
+            this.outputBoundary.prepareFailView(
+                `Could not load lessons for module ${moduleId}.`,
+            );
         }
     }
 }

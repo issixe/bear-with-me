@@ -1,31 +1,24 @@
 import { useEffect, useRef, useState } from "react";
-import { exampleModules, exampleLessons } from "../../../../server/src/database/seeds/seedData.js";
+import { useLessons } from "../hooks/useLessons";
+import ModuleComplete from "./ModuleComplete";
 import pip from "../../assets/pip/thumbs-up.png";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { useCurrentUser } from "../hooks/useUsers";
 import { useOpenLesson } from "../hooks/useSessions";
 import { useServices } from "../context/ServicesContext";
 
 const Learn = () => {
-  const [params] = useSearchParams();
   const location = useLocation();
   const session = location.state?.session ?? null;
 
-  const id = params.get("lesson") ?? "double_billing";
-  const lesson = exampleLessons.find((item) => item.lesson_id === id);
-
-  if (!lesson) {
-    return <main className="p-6">Lesson not found. <Link to="/" className="underline">Back home</Link></main>;
-  }
-
-  return <Lesson key={session?.sessionId ?? id} lesson={lesson} session={session} />;
+  if (!session) return <Navigate to="/" replace />;
+  return <Lesson key={session.sessionId} session={session} />;
 };
 
-function Lesson({ lesson, session }) {
-    const module = exampleModules.find((item) =>
-    item.lessons.includes(lesson.lesson_id),
-  );
-
+function Lesson({ session }) {
+  const { lessons: moduleLessons } = useLessons(session.moduleId);
+  const currentIndex = moduleLessons.findIndex(item => item.id === session.lessonId);
+  const nextLessonId = currentIndex >= 0 ? moduleLessons[currentIndex + 1]?.id : null;
   const { sessionService } = useServices();
   const { user } = useCurrentUser();
   const { openLesson, opening, error: startError } = useOpenLesson(user?.id);
@@ -59,10 +52,10 @@ function Lesson({ lesson, session }) {
 
   // Visual indicator based on the mood returned by the backend.
   const cScore = sessionProgress?.cScore ?? 0;
-  const maxScore = Object.keys(lesson.stages).length * 100;
+  const maxScore = session.stageCount * 100;
 
   const progress = Math.round(
-    (history.length / Object.keys(lesson.stages).length) * 100,
+    (history.length / session.stageCount) * 100,
   );
   
   useEffect(() => {
@@ -77,7 +70,7 @@ function Lesson({ lesson, session }) {
     if (
       !sessionProgress?.sessionId ||
       !user?.id ||
-      !module?.module_id
+      !session.moduleId
     ) {
       setSubmitError("Open the lesson from the module list first.");
       return;
@@ -97,7 +90,7 @@ function Lesson({ lesson, session }) {
       const result = await sessionService.submitAnswer({
         sessionId: sessionProgress.sessionId,
         userId: user.id,
-        moduleId: module.module_id,
+        moduleId: session.moduleId,
         stageId,
         answerId,
       });
@@ -109,6 +102,7 @@ function Lesson({ lesson, session }) {
           customer,
           mood,
           answer: selectedAnswer.text,
+          score: result.earnedScore,
         },
       ]);
 
@@ -146,41 +140,12 @@ function Lesson({ lesson, session }) {
 
   return (
     <main className="mx-auto min-h-screen max-w-6xl text-[#24413B] md:flex">
-      <aside className="border-b border-stone-200 bg-white p-4 md:sticky md:top-6 md:max-h-[calc(100dvh-3rem)] md:w-56 md:shrink-0 md:self-start md:overflow-y-auto md:border-r md:border-b-0">
-        <Link to="/" className="font-bold hover:underline">← My Progress</Link>
-        <p className="mt-6 mb-3 font-bold">{module?.title}</p>
-        <nav aria-label="Module lessons" className="flex gap-2 overflow-x-auto md:flex-col">
-          {module?.lessons.map((id) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => openLesson(id)}
-            disabled={opening}
-            aria-current={id === lesson.lesson_id ? "page" : undefined}
-            className={`min-w-40 shrink-0 rounded-lg p-3 text-left text-sm md:min-w-0 disabled:cursor-wait disabled:opacity-60 ${
-              id === lesson.lesson_id
-                ? "bg-[var(--selection)] font-bold text-[var(--selection-text)]"
-                : "hover:bg-stone-100"
-            }`}
-          >
-            {exampleLessons.find((item) => item.lesson_id === id)?.title}
-          </button>
-        ))}
-        </nav>
-        <img src={pip} alt="Pip cheering you on" className="mx-auto mt-8 hidden w-32 md:block" />
-        {startError && (
-          <p role="alert" className="mt-2 text-sm text-red-700">
-            Couldn't start that lesson. Try again.
-          </p>
-        )}
-      </aside>
-
       <section className="min-w-0 flex-1 bg-[var(--background)]">
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200 bg-white p-5">
-          <h1 className="text-xl font-extrabold">{lesson.title}</h1>
+          <h1 className="text-xl font-extrabold">{session.title}</h1>
           <div className="flex items-center gap-2 text-sm">
             <label htmlFor="score">
-              Customer Satisfication Score: {cScore.toFixed(0)} points
+              Customer Satisfaction Score: {cScore.toFixed(0)} points
             </label>
             <meter
               id="score"
@@ -199,6 +164,8 @@ function Lesson({ lesson, session }) {
         </header>
 
         <div className="space-y-6 p-4 md:p-6">
+          {(submitError || startError) && <p role="alert" className="text-red-700">{submitError || startError.message}</p>}
+          <Link to="/" className="font-bold hover:underline">← My Progress</Link>
           {history.map((turn) => (
             <div key={turn.stageId} className="space-y-4">
               {customerMessage(turn.customer, turn.mood)}
@@ -219,14 +186,14 @@ function Lesson({ lesson, session }) {
               </div>
             )}
             {complete ? (
-              <div className="rounded-2xl border border-stone-200 bg-white p-6 text-center">
-                <h2 className="text-2xl font-bold">Lesson complete!</h2>
-                <p className="my-3">
-                  You finished all {history.length} stages.
-                  Final score: {cScore.toFixed(0)} points.
-                </p>
-                <Link to="/" className="inline-block rounded-lg bg-[#287F6E] px-4 py-2 text-white">Back to modules</Link>
-              </div>
+              <ModuleComplete
+                lessonTitle={session.title}
+                moduleTitle={session.moduleTitle}
+                scores={history.map(turn => turn.score)}
+                cScore={cScore}
+                onContinue={nextLessonId ? () => openLesson(nextLessonId) : null}
+                opening={opening}
+              />
             ) : (
               <div className="space-y-4">
                 {customerMessage(customer, mood)}
@@ -238,6 +205,7 @@ function Lesson({ lesson, session }) {
                       key={option.answerId}
                       type="button"
                       onClick={() => choose(option.answerId)}
+                      disabled={submitting}
                       className="w-full rounded-xl border border-stone-200 p-3 text-left hover:border-[#287F6E] hover:bg-[var(--selection)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#287F6E]"
                     >
                       {option.text}
