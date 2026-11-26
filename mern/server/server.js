@@ -5,6 +5,7 @@ import { MongoListModulesDataAccess } from "./src/database/dataAccess/MongoListM
 import { createFindWorstCallsRoute } from "./src/routes/FindWorstCallsRoute.js";
 import { createListLessonsRoute } from "./src/routes/ListLessonsRoute.js";
 import { createListModulesRoute } from "./src/routes/ListModulesRoute.js";
+import { createGetUserProgressRoute } from "./src/routes/GetUserProgressRoute.js";
 
 const PORT = process.env.PORT || 5050;
 const app = express();

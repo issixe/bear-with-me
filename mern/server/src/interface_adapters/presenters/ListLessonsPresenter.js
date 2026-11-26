@@ -8,7 +8,10 @@ export class ListLessonsPresenter extends ListLessonsOutputBoundary {
 
     prepareSuccessView(outputData) {
         this.viewModel.httpStatus = 200;
-        this.viewModel.body = { moduleId: outputData.moduleId, lessons: outputData.lessons };
+        this.viewModel.body = {
+            moduleId: outputData.moduleId,
+            lessons: outputData.lessons,
+        };
     }
 
     prepareFailView(msg) {

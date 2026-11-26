@@ -2,7 +2,7 @@ import express from "express";
 import { GetUserProgressInteractor } from "../application/use_cases/GetUserProgress/GetUserProgressInteractor.js";
 import { GetUserProgressController } from "../interface_adapters/controllers/GetUserProgressController.js";
 import { GetUserProgressPresenter } from "../interface_adapters/presenters/GetUserProgressPresenter.js";
-import { GetUserProgressViewModel } from "../interface_adapters/viewModels/GetUserProgressDataAccess.js";
+import { GetUserProgressViewModel } from "../interface_adapters/viewModels/GetUserProgressViewModel.js";
 
 export function createGetUserProgressRoute({ dataAccess }) {
     const router = express.Router();

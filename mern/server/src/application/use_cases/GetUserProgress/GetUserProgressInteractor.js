@@ -9,21 +9,25 @@ import { GetUserProgressInputBoundary } from "./GetUserProgressInputBoundary.js"
 import { GetUserProgressOutputData } from "./GetUserProgressOutputData.js";
 
 export class GetUserProgressInteractor extends GetUserProgressInputBoundary {
-    constructor({ dataAccess, presenter }) {
+    constructor({ dataAccess, outputBoundary }) {
         super();
         this.dataAccess = dataAccess;
-        this.presenter = presenter;
+        this.outputBoundary = outputBoundary;
     }
 
     async execute({ agentId }) {
         if (!agentId) {
-            throw new Error("Agent ID is required");
+            this.outputBoundary.prepareFailView("agentId is required");
+            return;
         }
 
         const userProfile = await this.dataAccess.getUserById(agentId);
 
         if (!userProfile) {
-            throw new Error(`User with ID ${agentId} not found`);
+            this.outputBoundary.prepareFailView(
+                `User with ID ${agentId} not found`,
+            );
+            return;
         }
 
         const outputData = new GetUserProgressOutputData({
@@ -33,6 +37,6 @@ export class GetUserProgressInteractor extends GetUserProgressInputBoundary {
             completedModules: userProfile.completedModules,
         });
 
-        return this.presenter.present(outputData);
+        return this.outputBoundary.prepareSuccessView(outputData);
     }
 }
