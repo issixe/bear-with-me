@@ -36,6 +36,7 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
                     customerResponses: stage["customer responses"],
                     answers: stage.answers,
                     nextStage: stage.next_stage,
+                    pipWords: stage.pipWords ?? "",
                 },
             ]),
         );
@@ -59,5 +60,18 @@ export class MongoStartSessionDataAccess extends StartSessionDataAccess {
             status: session.status,
         });
         return result.insertedId.toString();
+    }
+
+    async findModuleForLesson(lessonId) {
+        const module = await db
+            .collection("modules")
+            .findOne(
+                { lessons: lessonId },
+                { projection: { module_id: 1, title: 1 } },
+            );
+
+        return module
+            ? { moduleId: module.module_id, title: module.title }
+            : null;
     }
 }

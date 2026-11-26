@@ -1,6 +1,7 @@
 import { useState } from "react";
 import streakIcon from "../../assets/streakIcon.png";
 import { useLeaderboard } from "../hooks/useLeaderboard";
+import { useAddLesson } from "../hooks/useAddLesson";
 
 const sampleEmployees = [
   { name: "Edward", streak: 5, avatarColor: "bg-[#e6daf8]" },
@@ -21,7 +22,6 @@ const rankColors = ["text-[#956000]", "text-[#62685f]", "text-[#925d36]"];
 const tabs = ["Homepage", "Settings", "Profile"];
 
 const fileInputs = [
-  { id: "custom-lesson", label: "Submit custom lesson" },
   { id: "past-conversations", label: "Upload past conversations" },
 ];
 
@@ -29,6 +29,16 @@ export default function Admin() {
   const [activeTab, setActiveTab] = useState("Homepage");
   const { entries, loading, error } = useLeaderboard(5);
   const isHomepage = activeTab === "Homepage";
+  const topAgents = [...leaderboard].sort((a, b) => b[2] - a[2]).slice(0, 5);
+  const { status, message, uploading, uploadLessonFile, reset } =
+    useAddLesson();
+
+  function handleLessonFile(event) {
+    const file = event.target.files?.[0];
+    event.target.value = ""; // so choosing the same file again still fires onChange
+    reset();
+    uploadLessonFile(file);
+  }
 
   return (
     <main className="flex min-h-dvh w-full text-[#24413B]">
@@ -146,6 +156,31 @@ export default function Admin() {
             className="mt-14 space-y-4"
           >
             <h2 className="text-xl font-extrabold">Add Custom Lesson</h2>
+            <label className="flex min-h-16 flex-wrap items-center justify-between gap-3 rounded-lg border border-[#ccd5ce] bg-[var(--selection)] px-3 py-3 text-[#242824]">
+              <span className="text-xl">Submit custom lesson</span>
+              <input
+                type="file"
+                accept=".json,application/json"
+                onChange={handleLessonFile}
+                disabled={uploading}
+                className="ml-auto block w-60 max-w-full cursor-pointer text-sm file:mr-3 file:cursor-pointer file:rounded-lg file:bg-white file:px-3 file:py-2 file:font-semibold disabled:cursor-wait disabled:opacity-60"
+              />
+            </label>
+
+            {status !== "idle" && (
+              <p
+                role={status === "error" ? "alert" : "status"}
+                className={`text-sm ${
+                  status === "error"
+                    ? "text-red-700"
+                    : status === "success"
+                      ? "font-semibold text-[var(--selection-text)]"
+                      : "text-stone-500"
+                }`}
+              >
+                {message}
+              </p>
+            )}
             {fileInputs.map(({ id, label }) => (
               <label
                 key={id}

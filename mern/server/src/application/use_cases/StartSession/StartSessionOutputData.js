@@ -14,16 +14,26 @@ export class StartSessionOutputData {
     constructor({
         sessionId,
         lessonId,
+        title,
+        moduleId,
+        moduleTitle,
+        stageCount,
         stage,
         customerMood,
         customerResponse,
+        pipWords,
         options,
     }) {
         this.sessionId = sessionId;
         this.lessonId = lessonId;
+        this.title = title;
+        this.moduleId = moduleId;
+        this.moduleTitle = moduleTitle;
+        this.stageCount = stageCount;
         this.stage = stage;
         this.customerMood = customerMood;
         this.customerResponse = customerResponse;
+        this.pipWords = pipWords;
         this.options = options;
     }
 }

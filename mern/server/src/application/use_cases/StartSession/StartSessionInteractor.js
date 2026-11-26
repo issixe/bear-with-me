@@ -30,7 +30,8 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
         // }
 
         if (!lessonId) {
-            throw new Error("Lesson ID is required");
+            this.presenter.prepareFailView("Lesson ID is required");
+            return;
         }
 
         // const userProfile = await this.dataAccess.getUserById(userId);
@@ -42,8 +43,13 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
         const lesson = await this.dataAccess.getLessonById(lessonId);
 
         if (!lesson) {
-            throw new Error(`Lesson with ID ${lessonId} not found`);
+            this.presenter.prepareFailView(
+                `Lesson with ID ${lessonId} not found`,
+            );
+            return;
         }
+
+        const module = await this.dataAccess.findModuleForLesson(lessonId);
 
         const stage = lesson.startingStage;
         const customerMood = "angry";
@@ -59,15 +65,22 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
 
         const options = lesson.getUserResponses(lesson.startingStage);
 
+        const pipWords = lesson.getPipWords(lesson.startingStage);
+
         const outputData = new StartSessionOutputData({
             sessionId,
             lessonId,
+            title: lesson.title,
+            moduleId: module?.moduleId ?? null,
+            moduleTitle: module?.title ?? null,
+            stageCount: Object.keys(lesson.stages).length,
             stage,
             customerMood,
             customerResponse,
+            pipWords,
             options,
         });
 
-        return this.presenter.prepareSuccessView(outputData);
+        this.presenter.prepareSuccessView(outputData);
     }
 }

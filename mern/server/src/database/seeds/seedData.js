@@ -199,6 +199,7 @@ function createSampleLesson([lesson_id, title, request, nextStep]) {
                     B: answer("You will have to try again later.", 35),
                     C: answer("That does not sound like our problem.", 10),
                 },
+                pipWords: "",
                 next_stage: "investigation",
             },
             investigation: {
@@ -215,6 +216,7 @@ function createSampleLesson([lesson_id, title, request, nextStep]) {
                     B: answer(nextStep, 95),
                     C: answer("Try checking the website yourself.", 35),
                 },
+                pipWords: "",
                 next_stage: "resolution",
             },
             resolution: {
@@ -231,6 +233,7 @@ function createSampleLesson([lesson_id, title, request, nextStep]) {
                         95,
                     ),
                 },
+                pipWords: "",
                 next_stage: null,
             },
         },
@@ -283,6 +286,8 @@ export const exampleLessons = [
                         },
                     },
                 },
+                pipWords:
+                    "Ah, the customer is having a bad day... Listen carefully and acknowledge the concern. You got this!",
                 next_stage: "investigation",
             },
             investigation: {
@@ -324,6 +329,7 @@ export const exampleLessons = [
                         },
                     },
                 },
+                pipWords: "Good Job!",
                 next_stage: "resolution",
             },
             resolution: {
@@ -364,6 +370,7 @@ export const exampleLessons = [
                         },
                     },
                 },
+                pipWords: "YOU GOT THIS!!",
                 next_stage: null,
             },
         },
