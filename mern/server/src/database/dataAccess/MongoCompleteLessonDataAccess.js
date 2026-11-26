@@ -44,7 +44,7 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
                         (typeof username === "string" && username.trim()) ||
                         "Unknown User",
                     totalPoints: 0,
-                    completedModules: [],
+                    completedLessonIds: [],
                     streak: 0,
                     lastActivity: null,
                     lessonScores: {},
@@ -62,7 +62,7 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
             userId: user._id.toString(),
             username: user.username,
             totalPoints: user.totalPoints ?? 0,
-            completedModules: user.completedModules ?? [],
+            completedLessonIds: user.completedLessonIds ?? [],
             streak: user.streak ?? 0,
             lastActivity: user.lastActivity ?? null,
             lessonScores: user.lessonScores ?? {},

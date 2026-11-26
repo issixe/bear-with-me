@@ -34,7 +34,7 @@ export class GetUserProgressInteractor extends GetUserProgressInputBoundary {
             userId: userProfile.userId,
             streak: userProfile.streak,
             totalPoints: userProfile.totalPoints,
-            completedModules: userProfile.completedModules,
+            completedLessonIds: userProfile.completedLessonIds,
         });
 
         return this.outputBoundary.prepareSuccessView(outputData);

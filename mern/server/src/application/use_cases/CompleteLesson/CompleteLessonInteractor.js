@@ -30,6 +30,7 @@ export class CompleteLessonInteractor {
         session.cScore = sessionScore;
         user.recordLessonCompletion({
             sessionId: session.sessionId,
+            lessonId: session.lessonId,
             sessionScore,
         });
         session.completed = true;

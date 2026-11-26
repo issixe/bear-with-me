@@ -7,7 +7,7 @@ import { GetUserProgressViewModel } from "../interface_adapters/viewModels/GetUs
 export function createGetUserProgressRoute({ dataAccess }) {
     const router = express.Router();
 
-    router.get("/:agentId", async (req, res, next) => {
+    router.get("/:userId/progress", async (req, res, next) => {
         try {
             const viewModel = new GetUserProgressViewModel();
             const presenter = new GetUserProgressPresenter(viewModel);
@@ -17,7 +17,7 @@ export function createGetUserProgressRoute({ dataAccess }) {
             });
             const controller = new GetUserProgressController(interactor);
 
-            await controller.execute(req.params.agentId);
+            await controller.execute(req.params.userId);
 
             return res.status(viewModel.httpStatus).json(viewModel.body);
         } catch (error) {

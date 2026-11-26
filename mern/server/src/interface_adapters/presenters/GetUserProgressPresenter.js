@@ -12,7 +12,7 @@ export class GetUserProgressPresenter extends GetUserProgressOutputBoundary {
             userId: outputData.userId,
             streak: outputData.streak,
             totalPoints: outputData.totalPoints,
-            completedModules: outputData.completedModules,
+            completedLessonIds: outputData.completedLessonIds,
         };
     }
 

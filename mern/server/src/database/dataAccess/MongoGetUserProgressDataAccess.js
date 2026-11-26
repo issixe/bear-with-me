@@ -18,7 +18,7 @@ export class MongoGetUserProgressDataAccess extends GetUserProgressDataAccess {
         return {
             userId: user._id.toString(),
             totalPoints: user.totalPoints,
-            completedModules: user.completedModules,
+            completedLessonIds: user.completedLessonIds,
             streak: user.streak,
         };
     }
