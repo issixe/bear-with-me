@@ -1,6 +1,6 @@
-// 1. Receive the agent ID, session ID, and selected answer ID and stage ID.
+// 1. Receive the user ID, session ID, and selected answer ID and stage ID.
 // 2. Load the session and its lesson.
-// 3. Check that the session belongs to the agent,
+// 3. Check that the session belongs to the user,
 //    is in progress, and the answer belongs to its current stage.
 // 4. Use domain logic to:
 //    - Calculate the selected answer's earned points.

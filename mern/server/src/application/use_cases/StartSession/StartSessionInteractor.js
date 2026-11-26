@@ -1,4 +1,4 @@
-// 1. Receive the agent ID and selected lesson ID.
+// 1. Receive the user ID and selected lesson ID.
 // 2. Load the lesson and check that it exists.
 // 3. Use domain logic to create a session with:
 //    - cScore: 0
@@ -21,18 +21,24 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
         this.presenter = presenter;
     }
 
-    async execute({ agentId, lessonId }) {
-        // Check that the agent and lesson referenced actually exist
+    async execute({ userId, lessonId }) {
+        // Check that the user and lesson referenced actually exist
         // TODO: restore once users are seeded
 
-        // if (!agentId) {
-        //   throw new Error("Agent ID is required");
+        // if (!userId) {
+        //   throw new Error("User ID is required");
         // }
 
         if (!lessonId) {
             this.presenter.prepareFailView("Lesson ID is required");
             return;
         }
+
+        // const userProfile = await this.dataAccess.getUserById(userId);
+
+        // if (!userProfile) {
+        //   throw new Error(`User with ID ${userId} not found`);
+        // }
 
         const lesson = await this.dataAccess.getLessonById(lessonId);
 
@@ -48,7 +54,7 @@ export class StartSessionInteractor extends StartSessionInputBoundary {
         const stage = lesson.startingStage;
         const customerMood = "angry";
 
-        const session = new Session({ agentId, lessonId, stage, customerMood });
+        const session = new Session({ userId, lessonId, stage, customerMood });
 
         const sessionId = await this.dataAccess.saveNewSession(session);
 

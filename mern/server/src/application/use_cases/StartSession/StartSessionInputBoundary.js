@@ -1,4 +1,4 @@
-// 1. Receive the agent ID and selected lesson ID.
+// 1. Receive the user ID and selected lesson ID.
 // 2. Load the lesson and check that it exists.
 // 3. Use domain logic to create a session with:
 //    - cScore: 0

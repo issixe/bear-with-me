@@ -21,8 +21,8 @@ for (const normalized of [false, true]) {
       getLessonById: async () => lesson,
       findModuleForLesson: async () => ({ moduleId: "module", title: "Module" }),
       saveNewSession: async session => { saved = session; return "session"; },
-    }, presenter: { prepareSuccessView: value => { opening = value; } } }).execute({ agentId: "agent", lessonId: "lesson" });
-    assert.equal(saved.agentId, "agent");
+    }, presenter: { prepareSuccessView: value => { opening = value; } } }).execute({ userId: "agent", lessonId: "lesson" });
+    assert.equal(saved.userId, "agent");
     assert.equal(opening.moduleId, "module");
     assert.equal(opening.stageCount, 2);
     assert.equal(opening.options[0].answerId, "A");

@@ -2,14 +2,14 @@ import { GetUserProgressInputData } from "../../application/use_cases/GetUserPro
 
 export function createGetUserProgressController({ getUserProgress }) {
     return async function getUserProgressController(req, res, next) {
-        const { agentId } = req.params;
+        const { userId } = req.params;
 
-        if (!agentId) {
-            return res.status(400).json({ error: "Agent ID is required" });
+        if (!userId) {
+            return res.status(400).json({ error: "User ID is required" });
         }
 
         try {
-            const inputData = new GetUserProgressInputData({ agentId });
+            const inputData = new GetUserProgressInputData({ userId });
             const responseData = await getUserProgress.execute(inputData);
 
             return res.status(200).json(responseData);

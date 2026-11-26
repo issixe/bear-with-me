@@ -43,6 +43,10 @@ function Lesson({ session }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
+  const [savingCompletion, setSavingCompletion] = useState(false);
+  const [completionError, setCompletionError] = useState(null);
+  const [completionSaved, setCompletionSaved] = useState(false);
+  const completionSavingRef = useRef(false);
   const submittingRef = useRef(false);
   const latest = useRef(null);
 
@@ -65,6 +69,33 @@ function Lesson({ session }) {
   }, [history.length]);
 
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
+
+  async function saveCompletion(score) {
+    if (completionSavingRef.current || completionSaved) return;
+    if (!session.sessionId || !user?.id) {
+      setCompletionError(
+        new Error("Open this lesson from the homepage to save your score."),
+      );
+      return;
+    }
+    completionSavingRef.current = true;
+    setSavingCompletion(true);
+    setCompletionError(null);
+    try {
+      await sessionService.complete({
+        sessionId: session.sessionId,
+        userId: user.id,
+        username: user.name,
+        sessionScore: score,
+      });
+      setCompletionSaved(true);
+    } catch (error) {
+      setCompletionError(error);
+    } finally {
+      completionSavingRef.current = false;
+      setSavingCompletion(false);
+    }
+  }
 
   async function choose(answerId) {
     if (submittingRef.current || complete) return;
@@ -106,6 +137,7 @@ function Lesson({ session }) {
 
       // The backend supplies the next stage, mood, and options.
       setSessionProgress(result);
+      if (result.isFinished) await saveCompletion(result.cScore);
     } catch (error) {
       setSubmitError(error.message || "Could not submit your answer.");
     } finally {
@@ -186,6 +218,22 @@ function Lesson({ session }) {
         </header>
 
         <div className="space-y-6 p-4 md:p-6">
+          {savingCompletion && <p role="status">Saving your score...</p>}
+          {completionError && (
+            <div className="flex items-center gap-3">
+              <p role="alert" className="text-red-700">
+                {completionError.message || "Could not save your score."}
+              </p>
+              <button
+                type="button"
+                onClick={() => void saveCompletion(cScore)}
+                disabled={savingCompletion}
+                className="font-bold underline"
+              >
+                Retry saving score
+              </button>
+            </div>
+          )}
           {(submitError || startError) && (
             <p role="alert" className="text-red-700">
               {submitError || startError.message}
@@ -226,7 +274,7 @@ function Lesson({ session }) {
                 onContinue={
                   nextLessonId ? () => openLesson(nextLessonId) : null
                 }
-                opening={opening}
+                opening={opening || savingCompletion || !completionSaved}
               />
             ) : (
               <div className="space-y-4">
@@ -239,7 +287,7 @@ function Lesson({ session }) {
                         key={option.answerId}
                         type="button"
                         onClick={() => choose(option.answerId)}
-                        disabled={submitting}
+                        disabled={submitting || savingCompletion || complete}
                         className="w-full rounded-xl border border-stone-200 p-3 text-left hover:border-[#287F6E] hover:bg-[var(--selection)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#287F6E]"
                       >
                         {option.text}

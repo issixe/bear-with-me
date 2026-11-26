@@ -21,7 +21,7 @@ export class MongoSubmitAnswerDataAccess extends SubmitAnswerDataAccess {
 
         return new Session({
             id: doc._id.toString(),
-            agentId: doc.agentId?.toString(),
+            userId: (doc.userId ?? doc.agentId)?.toString(),
             lessonId: doc.lessonId,
             stage: doc.stage,
             customerMood: doc.customerMood,

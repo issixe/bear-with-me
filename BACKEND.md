@@ -5,15 +5,16 @@ Not finalized -- more features could be added
 mern/server/
 ├── server.js
 ├── package.json
+├── package-lock.json
 ├── src/
 │   ├── routes/
-│   │   └── getUserProgressRoute.js
-│   ├── enterprise/
-│   │   └── entities/
-│   │       ├── lesson.js
-│   │       ├── module.js
-│   │       ├── session.js
-│   │       └── user.js
+│   │   ├── CompleteLessonRoute.js
+│   │   ├── GetLeaderboardRoute.js
+│   │   ├── GetUserProgressRoute.js
+│   │   ├── ListLessonRoute.js
+│   │   ├── ListLessonsRoute.js
+│   │   ├── ListModulesRoute.js
+│   │   └── StartSessionRoute.js
 │   ├── application/
 │   │   └── use_cases/
 │   │       ├── CompleteLesson/
@@ -23,98 +24,131 @@ mern/server/
 │   │       │   ├── CompleteLessonInteractor.js
 │   │       │   ├── CompleteLessonOutputBoundary.js
 │   │       │   └── CompleteLessonOutputData.js
-│   │       ├── SubmitAnswer/
-│   │       │   ├── SubmitAnswer.js
-│   │       │   ├── SubmitAnswerInputBoundary.js
-│   │       │   ├── SubmitAnswerInputData.js
-│   │       │   ├── SubmitAnswerInteractor.js
-│   │       │   ├── SubmitAnswerOutput.js
-│   │       │   └── SubmitAnswerOutputBoundary.js
-│   │       ├── getSessionResults/
-│   │       │   ├── getSessionResultsDataAccess.js
-│   │       │   ├── getSessionResultsInputBoundary.js
-│   │       │   ├── getSessionResultsInputData.js
-│   │       │   ├── getSessionResultsInteractor.js
-│   │       │   ├── getSessionResultsOutputBoundary.js
-│   │       │   └── getSessionResultsOutputData.js
-│   │       ├── getUserProgress/
-│   │       │   ├── getUserProgressDataAccess.js
-│   │       │   ├── getUserProgressInputBoundary.js
-│   │       │   ├── getUserProgressInputData.js
-│   │       │   ├── getUserProgressInteractor.js
-│   │       │   ├── getUserProgressOutputBoundary.js
-│   │       │   └── getUserProgressOutputData.js
-│   │       ├── listLessons/
-│   │       │   ├── listLessonsDataAccess.js
-│   │       │   ├── listLessonsInputBoundary.js
-│   │       │   ├── listLessonsInputData.js
-│   │       │   ├── listLessonsInteractor.js
-│   │       │   ├── listLessonsOutputBoundary.js
-│   │       │   └── listLessonsOutputData.js
-│   │       ├── listModules/
+│   │       ├── GetLeaderboard/
+│   │       │   ├── GetLeaderboardDataAccess.js
+│   │       │   ├── GetLeaderboardInputBoundary.js
+│   │       │   ├── GetLeaderboardInputData.js
+│   │       │   ├── GetLeaderboardInteractor.js
+│   │       │   ├── GetLeaderboardOutputBoundary.js
+│   │       │   └── GetLeaderboardOutputData.js
+│   │       ├── GetUserProgress/
+│   │       │   ├── GetUserProgressDataAccess.js
+│   │       │   ├── GetUserProgressInputBoundary.js
+│   │       │   ├── GetUserProgressInputData.js
+│   │       │   ├── GetUserProgressInteractor.js
+│   │       │   ├── GetUserProgressOutputBoundary.js
+│   │       │   └── GetUserProgressOutputData.js
+│   │       ├── ListLessons/
+│   │       │   ├── ListLessonsDataAccess.js
+│   │       │   ├── ListLessonsInputBoundary.js
+│   │       │   ├── ListLessonsInputData.js
+│   │       │   ├── ListLessonsInteractor.js
+│   │       │   ├── ListLessonsOutputBoundary.js
+│   │       │   └── ListLessonsOutputData.js
+│   │       ├── ListModules/
+│   │       │   ├── ListModulesDataAccess.js
+│   │       │   ├── ListModulesInputBoundary.js
+│   │       │   ├── ListModulesInputData.js
 │   │       │   ├── ListModulesInteractor.js
-│   │       │   ├── listModulesDataAccess.js
-│   │       │   ├── listModulesInputBoundary.js
-│   │       │   ├── listModulesInputData.js
-│   │       │   ├── listModulesOutputBoundary.js
-│   │       │   └── listModulesOutputData.js
-│   │       └── startTrainingSession/
-│   │           └── StartTrainingSession.js
+│   │       │   ├── ListModulesOutputBoundary.js
+│   │       │   └── ListModulesOutputData.js
+│   │       ├── StartSession/
+│   │       │   ├── StartSessionDataAccess.js
+│   │       │   ├── StartSessionInputBoundary.js
+│   │       │   ├── StartSessionInputData.js
+│   │       │   ├── StartSessionInteractor.js
+│   │       │   ├── StartSessionOutputBoundary.js
+│   │       │   └── StartSessionOutputData.js
+│   │       └── SubmitAnswer/
+│   │           ├── SubmitAnswer.js
+│   │           ├── SubmitAnswerInputBoundary.js
+│   │           ├── SubmitAnswerInputData.js
+│   │           ├── SubmitAnswerInteractor.js
+│   │           ├── SubmitAnswerOutput.js
+│   │           └── SubmitAnswerOutputBoundary.js
+│   ├── enterprise/
+│   │   └── entities/
+│   │       ├── Lesson.js
+│   │       ├── Module.js
+│   │       ├── Session.js
+│   │       └── User.js
 │   ├── interface_adapters/
 │   │   ├── controllers/
 │   │   │   ├── CompleteLessonController.js
-│   │   │   └── getUserProgressController.js
-│   │   └── presenters/
-│   │       ├── CompleteLessonPresenter.js
-│   │       └── getUserProgressPresenter.js
+│   │   │   ├── GetLeaderboardController.js
+│   │   │   ├── GetUserProgressController.js
+│   │   │   ├── ListLessonsController.js
+│   │   │   ├── ListModulesController.js
+│   │   │   └── StartSessionController.js
+│   │   ├── presenters/
+│   │   │   ├── CompleteLessonPresenter.js
+│   │   │   ├── GetLeaderboardPresenter.js
+│   │   │   ├── GetUserProgressPresenter.js
+│   │   │   ├── ListLessonsPresenter.js
+│   │   │   ├── ListModulesPresenter.js
+│   │   │   └── StartSessionPresenter.js
+│   │   └── viewModels/
+│   │       ├── CompleteLessonViewModel.js
+│   │       ├── GetLeaderboardViewModel.js
+│   │       ├── ListLessonsViewModel.js
+│   │       ├── ListModulesViewModel.js
+│   │       └── StartSessionViewModel.js
 │   └── database/
 │       ├── connection.js
 │       ├── dataAccess/
-│       │   ├── CompleteLessonDataAccess.js
-│       │   └── getUserProgressDataAccess.js
+│       │   ├── MongoCompleteLessonDataAccess.js
+│       │   ├── MongoGetLeaderboardDataAccess.js
+│       │   ├── MongoGetUserProgressDataAccess.js
+│       │   ├── MongoListLessonsDataAccess.js
+│       │   ├── MongoListModuleDataAccess.js
+│       │   └── MongoStartSessionDataAccess.js
 │       └── seeds/
 │           ├── seed.js
 │           └── seedData.js
-├── tests/
-│   └── domain/
-│       └── domain.test.js
-└── package-lock.json
+└── tests/
+    ├── domain/
+    │   ├── ListLessonsInteractor.test.js
+    │   ├── ListModulesInteractor.test.js
+    │   └── domain.test.js
+    ├── enterprise/
+    │   └── User.test.js
+    └── routes/
+        └── Leaderboard.test.js
 ```
 
-This tree reflects files currently present in the repository. `server.js` imports
-HTTP route modules from `src/interfaces/http/routes/`, but those files are not
-present in the current tree, so the documented application architecture and
-runtime wiring are not yet aligned.
+`server.js` wires the module, lesson, session-start, lesson-completion, and
+leaderboard routes. `GetUserProgressRoute.js` and `ListLessonRoute.js` are also
+present in the source tree but are not mounted by `server.js`.
 
 ## Vocabulary 
 
 |Concept|Definition|
 |----|----|
 | Module | A training module can contain several lessons, listed by lesson ID.|
-| Lesson |One lesson is one conversation of agent & customer |
-| Answer | Agent’s answer among different given option to reply to the customer |
-| Customer Response | Customer’s response / text to the agent (aka player) |
-| Stage | One step in a lesson’s conversation, containing customer dialogue and available agent answers.|
-| Session | One agent’s attempt at a lesson, tracking their current stage, selected answers, score, mood, and status.|
-| Agent | The person who completing the training module |
-| Agent profile | Information about an agent, including their identity and training progress: overall points, daily streak, and completed lessons.|
+| Lesson | One lesson is one conversation between a user and a customer. |
+| Answer | A user's selected response to the customer. |
+| Customer Response | The customer's response to the user. |
+| Stage | One step in a lesson's conversation, containing customer dialogue and available user answers. |
+| Session | One user's attempt at a lesson, tracking their current stage, selected answers, score, mood, and status. |
+| User | The person completing the training module. |
+| User profile | Information about a user, including their identity and training progress: overall points, daily streak, and completed lessons.|
 
 ## Use case files present
 
-The application layer currently contains use-case files for listing modules
-and lessons, starting a training session, submitting an answer, completing a
-lesson, retrieving session results, and retrieving user progress. Several are
-split into input/output data, boundaries, and interactors. This inventory
-describes files in the repository; it does not imply that all use cases are
-connected to the Express server.
+The application layer contains use cases for listing modules and lessons,
+starting a session, submitting an answer, completing a lesson, retrieving the
+leaderboard, and retrieving user progress. `server.js` currently wires the
+module, lesson, session-start, lesson-completion, and leaderboard routes.
+`GetUserProgressRoute.js` and `ListLessonRoute.js` are present but are not
+mounted by `server.js`.
 
 ## Domain entities 
 |Entity|Data|
 |---|---|
 |Module|`module_id`, title, description, `lessons` (lesson ID list)|
 |Lesson|`lesson_id`, title, starting stage, stages, customer responses, answer options and their scores|
-|Session|Agent ID, lesson ID, current stage, mood, cScore, answer history, status|
-|AgentProfile|Agent identity, overall points, completed lessons, streak information| 
+|Session|User ID, lesson ID, current stage, mood, cScore, answer history, status|
+|User|`userId`, `username`, weekly points, `completedModules`, `streak`, `lastActivity`, `lessonScores`, and `pointsWeekStart`|
 
 ## Seed data
 
@@ -131,8 +165,8 @@ preserved.
 
 ## Entities
 
-The current entity files are `module.js`, `lesson.js`, `session.js`, and
-`user.js` under `src/enterprise/entities/`. There are no domain service files
+The current entity files are `Module.js`, `Lesson.js`, `Session.js`, and
+`User.js` under `src/enterprise/entities/`. There are no domain service files
 in the current backend tree.
 
 ## Components responsibility 
@@ -142,4 +176,4 @@ in the current backend tree.
 |Controller|Handles HTTP communication: reads and validates request input, calls a use case, and converts its result into an HTTP response.|
 |Use case|Performs one application operation. The current use-case files are under `src/application/use_cases/`; their runtime wiring varies.|
 |Domain|The `enterprise/entities/` directory currently contains module, lesson, session, and user entity files. Separate scoring or streak service files are not present.|
-|Data access|The current `src/database/dataAccess/` files provide MongoDB-facing data access for user progress and lesson completion. Separate repository contracts and repository implementations are not present in the current tree.|
+|Data access|Use cases define data-access boundaries under `src/application/use_cases/`; MongoDB implementations are under `src/database/dataAccess/`.|

@@ -52,7 +52,7 @@ export class Lesson {
 
         if (!responses || typeof responses !== "object") {
             throw new Error(
-                `Agent responses not found in stage ${stageId} of lesson ${this.lessonId}`,
+                `User responses not found in stage ${stageId} of lesson ${this.lessonId}`,
             );
         }
 
