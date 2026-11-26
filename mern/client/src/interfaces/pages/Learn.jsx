@@ -1,59 +1,40 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
-import {
-  exampleLessons,
-  exampleModules,
-} from "../../../../server/src/database/seeds/seedData.js";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import pip from "../../assets/pip/thumbs-up.png";
+import { useLessons } from "../hooks/useLessons";
 import { useOpenLesson } from "../hooks/useSessions";
 import { useCurrentUser } from "../hooks/useUsers";
+import ModuleComplete from "./ModuleComplete";
 
 //Figuring out which lesson to show from the URL that the user clicks
 const Learn = () => {
-  const [params] = useSearchParams();
   const location = useLocation();
   const session = location.state?.session ?? null;
 
-  const id = params.get("lesson") ?? "double_billing";
-  //Looks through list of lessons in seedData.js and finds the one where lesson_id matches the id
-  const lesson = exampleLessons.find((item) => item.lesson_id === id);
-
   //No lesson was found
-  if (!lesson) {
-    return (
-      <main className="p-6">
-        Lesson not found.{" "}
-        <Link to="/" className="underline">
-          Back home
-        </Link>
-      </main>
-    );
+  if (!session) {
+    return <Navigate to="/" replace />;
   }
 
-  return (
-    <Lesson key={session?.sessionId ?? id} lesson={lesson} session={session} />
-  );
+  return <Lesson key={session.sessionId} session={session} />;
 };
 
 const MOOD_TENSION = { angry: 70, frustrated: 50, calm: 20 };
 
-function Lesson({ lesson, session }) {
-  const module = exampleModules.find((item) =>
-    item.lessons.includes(lesson.lesson_id),
+function Lesson({ session }) {
+  const { lessons: moduleLessons } = useLessons(session.moduleId);
+  const currentIndex = moduleLessons.findIndex(
+    (item) => item.id === session.lessonId,
   );
-  const [stageId, setStageId] = useState(
-    session?.stage ?? lesson.starting_stage,
-  );
+  const nextLessonId = moduleLessons[currentIndex + 1]?.id ?? null;
+  const [stageId, setStageId] = useState(session.stage);
   const [tension, setTension] = useState(
     MOOD_TENSION[session?.customerMood] ?? 70,
   );
   const [history, setHistory] = useState([]);
   const [complete, setComplete] = useState(false);
   const latest = useRef(null);
-  const stage = lesson.stages[stageId];
-  const progress = Math.round(
-    (history.length / Object.keys(lesson.stages).length) * 100,
-  );
+  const progress = Math.round((history.length / session.stageCount) * 100);
   const isFirstRound = history.length === 0 && session !== null;
 
   const { user } = useCurrentUser();
@@ -67,16 +48,8 @@ function Lesson({ lesson, session }) {
         ? "frustrated"
         : "calm";
 
-  const customer = isFirstRound
-    ? session.customerResponse
-    : stage["customer responses"][mood];
-
-  const options = isFirstRound
-    ? session.options
-    : Object.entries(stage.answers).map(([answerId, a]) => ({
-        answerId,
-        text: a.text,
-      }));
+  const customer = session.customerResponse;
+  const options = session.options;
 
   //Scrolling to the newest message in the chat
   useEffect(() => {
@@ -87,21 +60,9 @@ function Lesson({ lesson, session }) {
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
 
   function choose(answerId) {
-    const answer = stage.answers[answerId];
-    const score =
-      Object.values(answer.scores).reduce((sum, v) => sum + v, 0) /
-      Object.keys(answer.scores).length;
-
+    const answer = options.find((o) => o.answerId === answerId);
     setHistory([...history, { stageId, customer, mood, answer: answer.text }]);
-    setTension(
-      Math.max(
-        0,
-        Math.min(100, tension + (score >= 75 ? -25 : score >= 40 ? 5 : 20)),
-      ),
-    );
-    //Continues.
-    if (stage.next_stage === null) setComplete(true);
-    else setStageId(stage.next_stage);
+    // TODO: call next-round use case (teammate) → update stage, customer, options, tension
   }
 
   //Draws the chat bubble, emoji based on mood
@@ -130,22 +91,22 @@ function Lesson({ lesson, session }) {
         <Link to="/" className="font-bold hover:underline">
           ← My Progress
         </Link>
-        <p className="mt-6 mb-3 font-bold">{module?.title}</p>
+        <p className="mt-6 mb-3 font-bold">{session.moduleTitle}</p>
         <nav className="flex flex-col gap-2 overflow-x-auto">
-          {module?.lessons.map((id) => (
+          {moduleLessons.map((item) => (
             <button
-              key={id}
+              key={item.id}
               type="button"
-              onClick={() => openLesson(id)}
+              onClick={() => openLesson(item.id)}
               disabled={opening}
-              aria-current={id === lesson.lesson_id ? "page" : undefined}
+              aria-current={item.id === session.lessonId ? "page" : undefined}
               className={`min-w-40 shrink-0 rounded-lg p-3 text-left text-sm md:min-w-0 disabled:cursor-wait disabled:opacity-60 ${
-                id === lesson.lesson_id
+                item.id === session.lessonId
                   ? "bg-[var(--selection)] font-bold text-[var(--selection-text)]"
                   : "hover:bg-stone-100"
               }`}
             >
-              {exampleLessons.find((item) => item.lesson_id === id)?.title}
+              {item.title}
             </button>
           ))}
         </nav>
@@ -162,15 +123,15 @@ function Lesson({ lesson, session }) {
       </aside>
       {complete ? (
         <ModuleComplete
-          lessonTitle={lesson.title}
-          moduleTitle={module?.title}
-          nextLessonId={nextLessonId}
+          lessonTitle={session.title}
+          moduleTitle={session.moduleTitle}
+          onContinue={nextLessonId ? () => openLesson(nextLessonId) : null}
           scores={history.map((turn) => turn.score)}
         />
       ) : (
         <section className="min-w-0 flex-1 bg-[var(--background)]">
           <header className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200 bg-white p-5">
-            <h1 className="text-xl font-extrabold">{lesson.title}</h1>
+            <h1 className="text-xl font-extrabold">{session.title}</h1>
             <div className="flex items-center gap-2 text-sm">
               <label htmlFor="tension">Tension {tension}%</label>
               <meter

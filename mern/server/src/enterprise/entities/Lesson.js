@@ -64,4 +64,9 @@ export class Lesson {
         }
         return { answerId, text: answer.text, scores: { ...answer.scores } };
     }
+
+    /** Return Pip's tip for a stage */
+    getPipWords(stageId) {
+        return this.getStage(stageId).pipWords ?? "";
+    }
 }
