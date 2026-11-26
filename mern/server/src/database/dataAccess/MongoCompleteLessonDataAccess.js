@@ -88,6 +88,7 @@ export class MongoCompleteLessonDataAccess extends CompleteLessonDataAccess {
             {
                 $set: {
                     totalPoints: user.totalPoints,
+                    completedLessonIds: user.completedLessonIds,
                     streak: user.streak,
                     lastActivity: user.lastActivity,
                     lessonScores: user.lessonScores,

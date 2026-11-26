@@ -1,9 +1,10 @@
 export class Module {
-    constructor({ moduleId, title, description, lessons }) {
+    constructor({ moduleId, title, description, lessons, weights }) {
         this.moduleId = moduleId;
         this.title = title;
         this.description = description;
         this.lessons = lessons;
+        this.weights = weights;
     }
 
     /** Get all lesson IDs in this module */

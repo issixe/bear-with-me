@@ -11,7 +11,7 @@
 //    and available answer options without their scores.
 
 export class StartSessionOutputBoundary {
-    async prespareSuccessView(_outputData) {
+    async prepareSuccessView(_outputData) {
         throw new Error("prepareSuccessView not implemented");
     }
 

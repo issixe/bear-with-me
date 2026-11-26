@@ -4,6 +4,8 @@ import { MongoListLessonsDataAccess } from "./src/database/dataAccess/MongoListL
 import { MongoListModulesDataAccess } from "./src/database/dataAccess/MongoListModuleDataAccess.js";
 import { createFindWorstCallsRoute } from "./src/routes/FindWorstCallsRoute.js";
 import { createListLessonsRoute } from "./src/routes/ListLessonsRoute.js";
+import { MongoSubmitAnswerDataAccess } from "./src/database/dataAccess/MongoSubmitAnswerDataAccess.js";
+import { createSubmitAnswerRoute } from "./src/routes/SubmitAnswerRoute.js";
 import { MongoStartSessionDataAccess } from "./src/database/dataAccess/MongoStartSessionDataAccess.js";
 import { createStartSessionRoute } from "./src/routes/StartSessionRoute.js";
 import { MongoCompleteLessonDataAccess } from "./src/database/dataAccess/MongoCompleteLessonDataAccess.js";
@@ -23,10 +25,40 @@ app.use(cors());
 app.use(express.json());
 
 app.use(
-  "/modules",
-  createListModulesRoute({
-    dataAccess: new MongoListModulesDataAccess(),
+  "/sessions",
+  createStartSessionRoute({
+    dataAccess: new MongoStartSessionDataAccess(),
   }),
+);
+
+app.use(
+  "/sessions",
+  createSubmitAnswerRoute({
+    dataAccess: new MongoSubmitAnswerDataAccess(),
+  }),
+);
+
+app.use((error, req, res, next) => {
+  if (res.headersSent) {
+    return next(error);
+  }
+
+  const status = Number.isInteger(error.status) ? error.status : 500;
+
+  if (status >= 500) {
+    console.error(error);
+  }
+
+  return res.status(status).json({
+    error: status >= 500 ? "Internal server error" : error.message,
+  });
+});
+
+app.use(
+    "/modules",
+    createListModulesRoute({
+        dataAccess: new MongoListModulesDataAccess()
+    })
 );
 
 app.use(
@@ -58,7 +90,7 @@ app.use(
     dataAccess: new MongoGetLeaderboardDataAccess(),
   }),
 );
- 
+
  app.use(
   "/lessons",
   createAddLessonRoute({ dataAccess: new MongoAddLessonDataAccess() }),

@@ -1,6 +1,18 @@
 export const exampleModules = [
     {
         module_id: "conflict_resolution",
+        moduleWeight: {
+            compliance: 0.2,
+            process: 0.2,
+            communication: 0.2,
+            efficiency: 0.2,
+            outcome: 0.2,
+        },
+        moodThreshold: {
+            angry: [0, 40],
+            frustrated: [40, 75],
+            calm: [75, null],
+        },
         title: "Conflict Resolution",
         description:
             "Learn how to respond when a customer is upset or frustrated.",
