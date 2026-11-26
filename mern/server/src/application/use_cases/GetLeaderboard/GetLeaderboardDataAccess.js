@@ -1,5 +1,5 @@
 export class GetLeaderboardDataAccess {
-    async getTopUsers({ weekStart, topCount }) {
+    async getTopUsers({ _weekStart, _topCount }) {
         throw new Error("getTopUsers not implemented");
     }
 }
