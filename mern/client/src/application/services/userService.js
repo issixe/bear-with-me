@@ -10,7 +10,7 @@ export const userService = {
     }
 
     const progress = await apiClient.get(
-      `/users/${encodeURIComponent(userId)}/progress`
+      `/users/${encodeURIComponent(userId)}/progress`,
     );
 
     return {
@@ -22,4 +22,3 @@ export const userService = {
     };
   },
 };
-  
