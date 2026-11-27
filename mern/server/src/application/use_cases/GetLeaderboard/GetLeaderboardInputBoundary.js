@@ -1,5 +1,5 @@
 export class GetLeaderboardInputBoundary {
-    async execute(inputData) {
+    async execute(_inputData) {
         throw new Error("execute() not implemented");
     }
 }

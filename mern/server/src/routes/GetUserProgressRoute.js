@@ -1,102 +1,29 @@
-//Just reference code for routing, not accurate for file name
-
 import express from "express";
-// This help convert the id from string to ObjectId for the _id.
-import { ObjectId } from "mongodb";
-// This will help us connect to the database
-import db from "../../../database/connection.js";
+import { GetUserProgressInteractor } from "../application/use_cases/GetUserProgress/GetUserProgressInteractor.js";
+import { GetUserProgressController } from "../interface_adapters/controllers/GetUserProgressController.js";
+import { GetUserProgressPresenter } from "../interface_adapters/presenters/GetUserProgressPresenter.js";
+import { GetUserProgressViewModel } from "../interface_adapters/viewModels/GetUserProgressViewModel.js";
 
-// router is an instance of the express router.
-// We use it to define our routes.
-// The router will be added as a middleware and will take control of requests starting with path /lesson.
-const router = express.Router();
+export function createGetUserProgressRoute({ dataAccess }) {
+    const router = express.Router();
 
-// This section will help you get a list of all the lessons.
-router.get("/", async (_req, res) => {
-    const collection = await db.collection("lessons");
-    const results = await collection.find({}).toArray();
-    res.send(results).status(200);
-});
+    router.get("/:userId/progress", async (req, res, next) => {
+        try {
+            const viewModel = new GetUserProgressViewModel();
+            const presenter = new GetUserProgressPresenter(viewModel);
+            const interactor = new GetUserProgressInteractor({
+                dataAccess,
+                outputBoundary: presenter,
+            });
+            const controller = new GetUserProgressController(interactor);
 
-// This section will help you get a single lesson by id
-router.get("/:id", async (req, res) => {
-    const collection = db.collection("lessons");
+            await controller.execute(req.params.userId);
 
-    if (!ObjectId.isValid(req.params.id)) {
-        return res.status(400).json({ error: "Invalid lesson ID" });
-    }
-
-    const query = { _id: new ObjectId(req.params.id) };
-    const result = await collection.findOne(query);
-
-    if (!result) res.status(404).send("Not found");
-    else res.status(200).send(result);
-});
-
-// This section will help you create a new lesson.
-router.post("/", async (req, res) => {
-    try {
-        const newDocument = {
-            name: req.body.name,
-            position: req.body.position,
-            level: req.body.level,
-        };
-
-        const collection = db.collection("lessons");
-        const result = await collection.insertOne(newDocument);
-
-        res.status(201).json({
-            _id: result.insertedId,
-            ...newDocument,
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Error adding lesson");
-    }
-});
-
-// This section will help you update a lesson by id.
-router.patch("/:id", async (req, res) => {
-    try {
-        if (!ObjectId.isValid(req.params.id)) {
-            return res.status(400).json({ error: "Invalid lesson ID" });
+            return res.status(viewModel.httpStatus).json(viewModel.body);
+        } catch (error) {
+            return next(error);
         }
+    });
 
-        const query = { _id: new ObjectId(req.params.id) };
-        const updates = {
-            $set: {
-                name: req.body.name,
-                position: req.body.position,
-                level: req.body.level,
-            },
-        };
-
-        const collection = await db.collection("lessons");
-        const result = await collection.updateOne(query, updates);
-        res.send(result).status(200);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Error updating lesson");
-    }
-});
-
-// This section will help you delete a lesson
-router.delete("/:id", async (req, res) => {
-    try {
-        if (!ObjectId.isValid(req.params.id)) {
-            return res.status(400).json({ error: "Invalid lesson ID" });
-        }
-
-        const query = { _id: new ObjectId(req.params.id) };
-
-        const collection = db.collection("lessons");
-        const result = await collection.deleteOne(query);
-
-        res.send(result).status(200);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Error deleting lesson");
-    }
-});
-
-export default router;
+    return router;
+}

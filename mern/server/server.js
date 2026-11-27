@@ -15,6 +15,8 @@ import { createGetLeaderboardRoute } from './src/routes/GetLeaderboardRoute.js';
 import { MongoAddLessonDataAccess } from "./src/database/dataAccess/MongoAddLessonDataAccess.js";
 import { createAddLessonRoute } from "./src/routes/AddLessonRoute.js";
 import { createListModulesRoute } from "./src/routes/ListModulesRoute.js";
+import { createGetUserProgressRoute } from "./src/routes/GetUserProgressRoute.js";
+import { MongoGetUserProgressDataAccess } from "./src/database/dataAccess/MongoGetUserProgressDataAccess.js";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -64,6 +66,13 @@ app.use(
   createListLessonsRoute({
     dataAccess: new MongoListLessonsDataAccess(),
   }),
+);
+
+app.use(
+    "/users",
+    createGetUserProgressRoute({
+        dataAccess: new MongoGetUserProgressDataAccess(),
+    }),
 );
 
 app.use("/admin/calls", createFindWorstCallsRoute());

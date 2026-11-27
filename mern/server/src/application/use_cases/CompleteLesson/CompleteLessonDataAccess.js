@@ -13,7 +13,7 @@ export class CompleteLessonDataAccess {
         throw new Error("updateSession not implemented");
     }
 
-    async updateUser(user) {
+    async updateUser(_user) {
         throw new Error("updateUser not implemented");
     }
 }

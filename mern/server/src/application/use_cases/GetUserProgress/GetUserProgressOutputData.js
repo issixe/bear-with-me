@@ -7,10 +7,10 @@
 // 5. Do not award points or record a new completion.
 
 export class GetUserProgressOutputData {
-    constructor({ userId, streak, totalPoints, completedModules }) {
+    constructor({ userId, streak, totalPoints, completedLessonIds }) {
         this.userId = userId;
         this.streak = streak;
         this.totalPoints = totalPoints;
-        this.completedModules = completedModules;
+        this.completedLessonIds = completedLessonIds;
     }
 }

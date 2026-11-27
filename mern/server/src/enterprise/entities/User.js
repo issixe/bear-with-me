@@ -21,7 +21,7 @@ export class User {
         userId = null,
         username = null,
         totalPoints = 0,
-        completedModules = [],
+        completedLessonIds = [],
         streak = 0,
         lastActivity = null,
         lessonScores = {},
@@ -30,16 +30,24 @@ export class User {
         this.userId = userId;
         this.username = username;
         this.totalPoints = totalPoints;
-        this.completedModules = [...completedModules];
+        this.completedLessonIds = [...completedLessonIds];
         this.streak = streak;
         this.lastActivity = lastActivity;
         this.lessonScores = { ...lessonScores };
         this.pointsWeekStart = pointsWeekStart;
     }
 
-    recordLessonCompletion({ sessionId, sessionScore, date = new Date() }) {
+    recordLessonCompletion({
+        sessionId,
+        lessonId,
+        sessionScore,
+        date = new Date(),
+    }) {
         if (!sessionId) {
             throw new Error("Session ID is required");
+        }
+        if (!lessonId) {
+            throw new Error("Lesson ID is required");
         }
         if (!Number.isFinite(sessionScore) || sessionScore < 0) {
             throw new RangeError("Session score must be a non-negative number");
@@ -70,5 +78,9 @@ export class User {
         const previousScore = this.lessonScores[sessionId] ?? 0;
         this.totalPoints += sessionScore - previousScore;
         this.lessonScores[sessionId] = sessionScore;
+
+        if (!this.completedLessonIds.includes(lessonId)) {
+            this.completedLessonIds.push(lessonId);
+        }
     }
 }
